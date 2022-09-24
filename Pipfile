@@ -4,6 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+requests = "*"
+python-dotenv = "*"
+pycountry = "*"
+langcodes = "*"
+black = "*"
 
 [dev-packages]
 
