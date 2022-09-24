@@ -1,6 +1,7 @@
 import os
 import json
 from pprint import pprint
+from functools import partial
 
 import requests
 import pycountry
@@ -48,23 +49,42 @@ def get_recommended(search_key):
     return response.json()
 
 
+def get_recently_released(search_key, date_min, date_max):
+
+    response = requests.get(
+        f"{BASE_URL}{search_key}",
+        params={
+            "api_key": API_KEY,
+            "release_date.gte": date_min,
+            "release_date.lte": date_max,
+        },
+    )
+
+    return response.json()
+
+
 def main():
     # Get most popular movies in English Language
     most_popular_english = get_most_popular("/movie/popular", standardize_tag("eng_US"))
-    pprint(most_popular_english)
+    # pprint(most_popular_english)
 
     # Get first page of top rated movies abased on German region
     top_rated_german = get_top_rated("/movie/top_rated", COUNTRY_CODES["Germany"], 1)
-    pprint(top_rated_german)
+    # pprint(top_rated_german)
 
     # Get most similar movies to movie ID
     movie_id = 153
     most_similar = get_most_similar(f"/movie/{movie_id}/similar")
-    pprint(most_similar)
+    # pprint(most_similar)
 
     # Get recommended movies to movie ID
-    recommended = get_recommended(f"/movie/{movie_id}/similar")
-    pprint(recommended)
+    recommended = get_recommended(f"/movie/{movie_id}/recommendations")
+    # pprint(recommended)
+
+    recently_released = get_recently_released(
+        f"/discover/movie", "2022-09-02", "2022-09-23"
+    )
+    pprint(recently_released)
 
 
 if __name__ == "__main__":
