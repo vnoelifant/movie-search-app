@@ -46,11 +46,12 @@ def get_genre_id(genre_dict, genre_name):
             return genre["id"]
 
 
-def get_most_popular(endpoint, language):
+def get_most_popular(endpoint, language, page):
     """This function returns a JSON object of the current most popular movies based on language"""
 
     response = requests.get(
-        f"{BASE_URL}{endpoint}", params={"api_key": API_KEY, "language": language}
+        f"{BASE_URL}{endpoint}",
+        params={"api_key": API_KEY, "language": language, "page": page},
     )
 
     return response.json()
@@ -60,7 +61,7 @@ def get_top_rated(endpoint, region, page):
     """This function returns a a JSON object of the first page of the top rated movies by region"""
     response = requests.get(
         f"{BASE_URL}{endpoint}",
-        params={"api_key": API_KEY, "page": page, "region": region},
+        params={"api_key": API_KEY, "region": region, "page": page},
     )
 
     return response.json()
@@ -112,14 +113,29 @@ def get_year_genre(endpoint, region, year, genre_id):
     )
 
 
+def get_vote_popular(endpoint, year, vote_count, page):
+    """This function returns a JSON object of movies greater than vote count, sorted by popularity"""
+    response = requests.get(
+        f"{BASE_URL}{endpoint}",
+        params={
+            "api_key": API_KEY,
+            "primary_release_year": year,
+            "vote_count_gte": vote_count,
+            "page": page,
+        },
+    )
+
+
 def main():
     # Get most popular movies in English Language
-    most_popular_english = get_most_popular("/movie/popular", standardize_tag("eng_US"))
-    # pprint(most_popular_english)
+    most_popular_english = get_most_popular(
+        "/movie/popular", standardize_tag("eng_US"), 1
+    )
+    pprint(most_popular_english)
 
     # Get first page of top rated movies abased on German region
     top_rated_german = get_top_rated("/movie/top_rated", COUNTRY_CODES["Germany"], 1)
-    # pprint(top_rated_german)
+    pprint(top_rated_german)
 
     # Get a dictionary of movie details based on text query
     movie_dict = get_movie_dict("/search/movie", "Lost in Translation")
@@ -131,32 +147,39 @@ def main():
     most_similar = get_most_similar(
         f"/movie/{movie_id}/similar", COUNTRY_CODES["United States"]
     )
-    # pprint(most_similar)
+    pprint(most_similar)
 
     # Get recommended movies to movie ID based on US region
     recommended = get_recommended(
         f"/movie/{movie_id}/recommendations", COUNTRY_CODES["United States"]
     )
-    # pprint(recommended)
+    pprint(recommended)
 
     # Get movies within a recent date range based on US region
     recently_released = get_recently_released(
         "/discover/movie", COUNTRY_CODES["United States"], "2022-08-16", "2022-09-23"
     )
 
-    # pprint(recently_released)
+    pprint(recently_released)
 
     # Get a dictionary of available genres
     genre_dict = get_genre_dict("/genre/movie/list")
 
     # Get a genre ID based on selected genre name
     genre_id = get_genre_id(genre_dict, "Comedy")
+    # print(genre_id) # This prints an int 35
 
     # Get movies released by year based on US region and genre
     movie_year_genre = get_year_genre(
-        "/discover/movie", COUNTRY_CODES["United States"], 1990, genre_id
+        "/discover/movie", COUNTRY_CODES["United States"], 1990, str([genre_id])
     )
+
     pprint(movie_year_genre)
+
+    # Get movies with vote count greater than 2000 by year, sorted by popularity
+    movie_vote_popular = get_vote_popular("/discover/movie", 2021, 2000, 1)
+
+    pprint(movie_vote_popular)
 
 
 if __name__ == "__main__":
