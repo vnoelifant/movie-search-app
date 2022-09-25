@@ -15,87 +15,97 @@ BASE_URL = "https://api.themoviedb.org/3"
 COUNTRY_CODES = {country.name: country.alpha_2 for country in pycountry.countries}
 
 
-def get_movie_dict(search_key, text_query):
+def get_movie_dict(endpoint, text_query):
+    """This function returns a dictionary of movie details based on a text query"""
 
     response = requests.get(
-        f"{BASE_URL}{search_key}", params={"api_key": API_KEY, "query": text_query}
+        f"{BASE_URL}{endpoint}", params={"api_key": API_KEY, "query": text_query}
     )
 
     return response.json()
 
 
 def get_movie_id(movie_dict, movie_name):
+    """This function returns the movie ID for a specific movie title"""
     for movie in movie_dict["results"]:
         if movie["original_title"] == movie_name:
             return movie["id"]
 
 
-def get_genre_dict(search_key):
-
-    response = requests.get(f"{BASE_URL}{search_key}", params={"api_key": API_KEY})
+def get_genre_dict(endpoint):
+    """This function returns a dictionary of movie genres"""
+    response = requests.get(f"{BASE_URL}{endpoint}", params={"api_key": API_KEY})
 
     return response.json()
 
 
 def get_genre_id(genre_dict, genre_name):
+    """This function returns the genre ID in list form for a specific genre name"""
     for genre in genre_dict["genres"]:
         if genre["name"] == genre_name:
             return genre["id"]
 
 
-def get_most_popular(search_key, language):
-    """This function returns a JSON object of list of the current most popular movies"""
+def get_most_popular(endpoint, language):
+    """This function returns a JSON object of the current most popular movies based on language"""
 
     response = requests.get(
-        f"{BASE_URL}{search_key}", params={"api_key": API_KEY, "language": language}
+        f"{BASE_URL}{endpoint}", params={"api_key": API_KEY, "language": language}
     )
 
     return response.json()
 
 
-def get_top_rated(search_key, region, page):
-    """This function returns a a JSON object of list of the top rated movies"""
+def get_top_rated(endpoint, region, page):
+    """This function returns a a JSON object of the first page of the top rated movies by region"""
     response = requests.get(
-        f"{BASE_URL}{search_key}",
+        f"{BASE_URL}{endpoint}",
         params={"api_key": API_KEY, "page": page, "region": region},
     )
 
     return response.json()
 
 
-def get_most_similar(search_key):
-    """This function returns a a JSON object of list of the most similar movies to movie ID"""
-    response = requests.get(f"{BASE_URL}{search_key}", params={"api_key": API_KEY})
-
-    return response.json()
-
-
-def get_recommended(search_key):
-    """This function returns a a JSON object of list of recommended movies to movie ID"""
-    response = requests.get(f"{BASE_URL}{search_key}", params={"api_key": API_KEY})
-
-    return response.json()
-
-
-def get_recently_released(search_key, date_min, date_max):
-
+def get_most_similar(endpoint, region):
+    """This function returns a a JSON object of list of the most similar movies to movie ID based on region"""
     response = requests.get(
-        f"{BASE_URL}{search_key}",
+        f"{BASE_URL}{endpoint}", params={"api_key": API_KEY, "region": region}
+    )
+
+    return response.json()
+
+
+def get_recommended(endpoint, region):
+    """This function returns a a JSON object of list of recommended movies to movie ID based on region"""
+    response = requests.get(
+        f"{BASE_URL}{endpoint}", params={"api_key": API_KEY, "region": region}
+    )
+
+    return response.json()
+
+
+def get_recently_released(endpoint, region, date_min, date_max):
+    """This function returns a JSON object of movies based on a region within a recent date range"""
+    response = requests.get(
+        f"{BASE_URL}{endpoint}",
         params={
             "api_key": API_KEY,
-            "release_date.gte": date_min,
-            "release_date.lte": date_max,
+            "region": region,
+            "primary_release_date.gte": date_min,
+            "primary_release_date.lte": date_max,
         },
     )
 
     return response.json()
 
 
-def get_year_genre(search_key, year, genre_id):
+def get_year_genre(endpoint, region, year, genre_id):
+    """This function returns a JSON object of movies based on region, primary release year, and genre"""
     response = requests.get(
-        f"{BASE_URL}{search_key}",
+        f"{BASE_URL}{endpoint}",
         params={
             "api_key": API_KEY,
+            "region": region,
             "primary_release_year": year,
             "with_genres": genre_id,
         },
@@ -111,32 +121,41 @@ def main():
     top_rated_german = get_top_rated("/movie/top_rated", COUNTRY_CODES["Germany"], 1)
     # pprint(top_rated_german)
 
-    # Get most similar movies to movie with selected title
-    # Search for movies with text query
+    # Get a dictionary of movie details based on text query
     movie_dict = get_movie_dict("/search/movie", "Lost in Translation")
 
-    # Match the original movie title with movie ID
+    # Get movie idea based on selected movie title
     movie_id = get_movie_id(movie_dict, "Lost in Translation")
-    most_similar = get_most_similar(f"/movie/{movie_id}/similar")
+
+    # Get most similar movies to movie with selected title based on US region
+    most_similar = get_most_similar(
+        f"/movie/{movie_id}/similar", COUNTRY_CODES["United States"]
+    )
     # pprint(most_similar)
 
-    # Get recommended movies to movie ID
-    recommended = get_recommended(f"/movie/{movie_id}/recommendations")
+    # Get recommended movies to movie ID based on US region
+    recommended = get_recommended(
+        f"/movie/{movie_id}/recommendations", COUNTRY_CODES["United States"]
+    )
     # pprint(recommended)
 
-    # Get movies within a recent date range
-
+    # Get movies within a recent date range based on US region
     recently_released = get_recently_released(
-        "/discover/movie", "2022-08-16", "2022-09-23"
+        "/discover/movie", COUNTRY_CODES["United States"], "2022-08-16", "2022-09-23"
     )
 
     # pprint(recently_released)
 
-    # Get movies of from primary release year based on genre
+    # Get a dictionary of available genres
     genre_dict = get_genre_dict("/genre/movie/list")
+
+    # Get a genre ID based on selected genre name
     genre_id = get_genre_id(genre_dict, "Comedy")
 
-    movie_year_genre = get_year_genre("/discover/movie", 1990, genre_id)
+    # Get movies released by year based on US region and genre
+    movie_year_genre = get_year_genre(
+        "/discover/movie", COUNTRY_CODES["United States"], 1990, genre_id
+    )
     pprint(movie_year_genre)
 
 
