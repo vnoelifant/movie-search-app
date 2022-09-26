@@ -15,13 +15,10 @@ BASE_URL = "https://api.themoviedb.org/3"
 COUNTRY_CODES = {country.name: country.alpha_2 for country in pycountry.countries}
 
 
-def get_movie_dict(endpoint, text_query):
+def get_movies(endpoint, text_query):
     """This function returns a dictionary of movie details based on a text query"""
-
-    response = requests.get(
-        f"{BASE_URL}{endpoint}", params={"api_key": API_KEY, "query": text_query}
-    )
-
+    params = {"api_key": API_KEY, "query": text_query}
+    response = requests.get(f"{BASE_URL}{endpoint}", params=params)
     return response.json()
 
 
@@ -32,11 +29,12 @@ def get_movie_id(movie_dict, movie_name):
             return movie["id"]
 
 
-def get_genre_dict(endpoint):
+def get_genres(endpoint) -> dict[str, int]:
     """This function returns a dictionary of movie genres"""
     response = requests.get(f"{BASE_URL}{endpoint}", params={"api_key": API_KEY})
-
-    return response.json()
+    # return response.json()
+    ret = {row["name"]: row["id"] for row in response.json()["genres"]}
+    return ret
 
 
 def get_genre_id(genre_dict, genre_name):
@@ -111,6 +109,7 @@ def get_year_genre(endpoint, region, year, genre_id):
             "with_genres": genre_id,
         },
     )
+    return response.json()
 
 
 def get_vote_popular(endpoint, year, vote_count, page):
@@ -124,6 +123,7 @@ def get_vote_popular(endpoint, year, vote_count, page):
             "page": page,
         },
     )
+    return response.json()
 
 
 def main():
@@ -138,7 +138,7 @@ def main():
     pprint(top_rated_german)
 
     # Get a dictionary of movie details based on text query
-    movie_dict = get_movie_dict("/search/movie", "Lost in Translation")
+    movie_dict = get_movies("/search/movie", "Lost in Translation")
 
     # Get movie idea based on selected movie title
     movie_id = get_movie_id(movie_dict, "Lost in Translation")
@@ -163,7 +163,7 @@ def main():
     pprint(recently_released)
 
     # Get a dictionary of available genres
-    genre_dict = get_genre_dict("/genre/movie/list")
+    genre_dict = get_genres("/genre/movie/list")
 
     # Get a genre ID based on selected genre name
     genre_id = get_genre_id(genre_dict, "Comedy")
@@ -171,7 +171,7 @@ def main():
 
     # Get movies released by year based on US region and genre
     movie_year_genre = get_year_genre(
-        "/discover/movie", COUNTRY_CODES["United States"], 1990, str([genre_id])
+        "/discover/movie", COUNTRY_CODES["United States"], 1990, str(genre_id)
     )
 
     pprint(movie_year_genre)
