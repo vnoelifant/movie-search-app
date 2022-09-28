@@ -15,7 +15,7 @@ BASE_URL = "https://api.themoviedb.org/3"
 COUNTRY_CODES = {country.name: country.alpha_2 for country in pycountry.countries}
 
 
-def get_movies(endpoint: str, text_query: str) -> dict[str, str]:
+def get_movies(endpoint: str, text_query: str) -> dict[str, int]:
     """This function returns a dictionary of movie details based on a text query"""
     url = f"{BASE_URL}{endpoint}"
     params = {"api_key": API_KEY, "query": text_query}
@@ -27,7 +27,7 @@ def get_movies(endpoint: str, text_query: str) -> dict[str, str]:
     return movies
 
 
-def get_genres(endpoint: str) -> dict[str, str]:
+def get_genres(endpoint: str) -> dict[str, int]:
     """This function returns a dictionary of movie genres"""
 
     url = f"{BASE_URL}{endpoint}"
