@@ -9,6 +9,8 @@ python-dotenv = "*"
 pycountry = "*"
 langcodes = "*"
 black = "*"
+django = "*"
+python-decouple = "*"
 
 [dev-packages]
 
