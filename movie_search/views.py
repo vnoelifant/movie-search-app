@@ -8,13 +8,22 @@ def home(request):
     return render(request, "home.html")
 
 
-def movies(request):
+def movies_popular(request):
 
     popular = movie_api.get_most_popular("/movie/popular")
-    top_rated = movie_api.get_top_rated("/movie/top_rated")
+
     context = {
         "popular": popular,
+    }
+
+    return render(request, "movies_popular.html", context)
+
+
+def movies_top_rated(request):
+
+    top_rated = movie_api.get_top_rated("/movie/top_rated")
+    context = {
         "top_rated": top_rated,
     }
 
-    return render(request, "movies.html", context)
+    return render(request, "movies_top_rated.html", context)
