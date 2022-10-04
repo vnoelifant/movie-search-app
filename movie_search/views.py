@@ -1,3 +1,4 @@
+import requests
 from django.shortcuts import render
 from django.http import HttpResponse
 
@@ -28,3 +29,25 @@ def movies_top_rated(request):
     }
 
     return render(request, "movies_top_rated.html", context)
+
+
+def movies_similar(request):
+
+    query = request.GET.get("query")
+
+    # Get a dictionary of movie details based on text query
+    movies = movie_api.get_movies("/search/movie", query)
+
+    # Get movie id based on selected movie title
+    movie_id = movies.get(query)
+
+    if query:
+        similar = movie_api.get_most_similar(f"/movie/{movie_id}/similar")
+        context = {
+            "similar": similar,
+        }
+
+    else:
+        return HttpResponse("Please enter a Movie Title")
+
+    return render(request, "movies_similar.html", context)
