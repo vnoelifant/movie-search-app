@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 from movie_search import movie_api
+from movie_search.models import Movie
 
 # Create your views here.
 def home(request):
