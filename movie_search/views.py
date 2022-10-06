@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 from movie_search import movie_api
-from movie_search.models import Movie
+from movie_search.models import Search
 
 # Create your views here.
 def home(request):
@@ -35,19 +35,24 @@ def movies_similar(request):
 
     query = request.GET.get("query")
 
-    # Get a dictionary of movie details based on text query
-    movies = movie_api.get_movies("/search/movie", query)
-
-    # Get movie id based on selected movie title
-    movie_id = movies.get(query)
-
     if query:
+        
+        # Get a dictionary of movie details based on text query
+        movies = movie_api.get_movies("/search/movie", query)
+
+        # Get movie id based on selected movie title
+        movie_id = movies.get(query)
+        
         similar = movie_api.get_most_similar(f"/movie/{movie_id}/similar")
         context = {
             "similar": similar,
         }
 
     else:
-        return HttpResponse("Please enter a Movie Title")
+        return render(request, "error.html")
 
     return render(request, "movies_similar.html", context)
+
+
+
+    
