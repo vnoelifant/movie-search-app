@@ -36,13 +36,15 @@ def movies_similar(request):
     query = request.GET.get("query")
 
     if query:
-        
+
         # Get a dictionary of movie details based on text query
         movies = movie_api.get_movies("/search/movie", query)
 
+        # TODO: this does not work as expected - https://github.com/vnoelifant/movie-search-app/issues/27
+
         # Get movie id based on selected movie title
         movie_id = movies.get(query)
-        
+
         similar = movie_api.get_most_similar(f"/movie/{movie_id}/similar")
         context = {
             "similar": similar,
@@ -55,4 +57,4 @@ def movies_similar(request):
 
 
 
-    
+
