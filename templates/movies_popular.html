@@ -3,4 +3,16 @@
 
 {% block title %}Popular Movies{% endblock title %}
 
-{% block body %} {{popular.results}} {% endblock body %}
+{% block body %} 
+
+<div class="row">
+    {% for movie in popular.results %}
+        <div class="card" style="width: 18rem;">
+            <img src="https://image.tmdb.org/t/p/w200{{ movie.poster_path }}" class="card-img-top" alt="...">
+            <div class="card-body">
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock body %}
