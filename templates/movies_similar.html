@@ -5,12 +5,16 @@
 
 {% block body %} 
 
-<div class="row">
-    {% for movie in similar.results %}
-        <div class="card" style="width: 18rem;">
-            <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" class="card-img-top" alt="...">
-        </div>
-    {% endfor %}
+<div class="container-fluid text-center" style="color: #1a1a1d; background-color: #d6d6d6; margin-right: 100px; margin-left: 100px; padding-top: 20px; padding-bottom: 20px;">  
+    <h2>Similar Movies</h2><br><br>
+
+    <div class="row" style="margin-right: 20px; margin-left: 20px;">
+        {% for movie in similar.results %}
+            <div class="card" style="width: 18rem;">
+                <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" class="card-img-top" alt="...">
+            </div>
+        {% endfor %}
+    </div>
 </div>
 
 {% endblock body %}
