@@ -4,7 +4,7 @@ from django.http import HttpResponse
 
 from movie_search import movie_api
 from movie_search.models import Search
-from movie_search.utils import title_case
+from movie_search.utils import title_format
 
 # Create your views here.
 def home(request):
@@ -34,7 +34,7 @@ def movies_top_rated(request):
 
 def movies_similar(request):
 
-    query = title_case(request.GET.get("query"))
+    query = title_format(request.GET.get("query"))
 
     if query:
 
