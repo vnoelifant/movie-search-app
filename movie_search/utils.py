@@ -3,7 +3,6 @@ import re
 def title_format(query):
     
     exceptions = ["and", "or", "the", "a", "of", "in"]
-    title = "a lesson in string splicing"
 
     lowercase_query = re.split(" ", query.lower())
     final_query = [lowercase_query[0].capitalize()]
