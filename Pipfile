@@ -11,6 +11,7 @@ langcodes = "*"
 black = "*"
 django = "*"
 python-decouple = "*"
+django-bootstrap-v5 = "*"
 
 [dev-packages]
 
