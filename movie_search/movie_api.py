@@ -27,6 +27,31 @@ def get_movies(endpoint: str, text_query: str) -> dict[str, int]:
 
     return movies
 
+def get_movie_detail(endpoint, language=LANG_ENG):
+
+    url = f"{BASE_URL}{endpoint}"
+
+    params = {
+        "api_key": API_KEY,
+        "language": language,
+    }
+
+    response = requests.get(url, params=params)
+
+    return response.json()
+
+def get_movie_videos(endpoint, language=LANG_ENG):
+
+    url = f"{BASE_URL}{endpoint}"
+
+    params = {
+        "api_key": API_KEY,
+        "language": language,
+    }
+
+    response = requests.get(url, params=params)
+
+    return response.json()
 
 def get_genres(endpoint: str) -> dict[str, int]:
     """This function returns a dictionary of movie genres"""

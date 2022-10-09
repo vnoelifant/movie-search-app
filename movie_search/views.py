@@ -54,6 +54,16 @@ def movies_similar(request):
 
     return render(request, "movies_similar.html", context)
 
+def movie_detail(request, movie_id):
 
+    movie_detail = movie_api.get_movie_detail(f"/movie/{movie_id}")
+    movie_videos = movie_api.get_movie_videos(f"/movie/{movie_id}/videos")
+    
+    context = {
+        "movie_detail": movie_detail,
+        "movie_videos": movie_videos,
+    }
+
+    return render(request, "movie_detail.html", context)
 
 

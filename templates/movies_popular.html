@@ -5,13 +5,14 @@
 
 {% block body %}
 
-<div class="container-fluid text-center" style="color: #1a1a1d; background-color: #d6d6d6; margin-right: 100px; padding-top: 20px; padding-bottom: 20px;">
+<div class="container-fluid text-center" style="color: #1a1a1d; background-color: #b3c6e4; margin-right: 100px; padding-top: 20px; padding-bottom: 20px;">
     <h2>Popular Movies</h2><br><br>
 
     <div class="row" style="margin-right: 20px; margin-left: 20px;">
         {% for movie in popular.results %}
             <div class="card" style="width: 18rem;">
                 <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" class="card-img-top" alt="...">
+                <a href="/movie/{{ movie.id }}" class="btn btn-primary">View Details</a>
             </div>
         {% endfor %}
     </div>
