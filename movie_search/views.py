@@ -1,6 +1,7 @@
 import requests
 from django.shortcuts import render
 from django.http import HttpResponse
+from pprint import pprint
 
 from movie_search import movie_api
 from movie_search.models import Search
@@ -67,6 +68,8 @@ def media_similar(request):
 def movie_detail(request, movie_id):
 
     movie_detail = movie_api.get_movie_detail(f"/movie/{movie_id}")
+    print("MOVIE DETAIL: ", movie_detail)
+    
     movie_videos = movie_api.get_movie_videos(f"/movie/{movie_id}/videos")
 
     context = {

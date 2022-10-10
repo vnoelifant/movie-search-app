@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Top Rated Movies{% endblock %}
+{% block title %}Movie Details{% endblock %}
 
 {% block body %}
 
@@ -10,17 +10,29 @@
     <img src="https://image.tmdb.org/t/p/w500{{ movie_detail.backdrop_path }}" alt="..." style="border-radius:15px; margin-left: 30px; margin-top: 30px;" >
     <div class="col mov-info" style="color:#000000; margin-left:550px; margin-top: -300px; min-height: 290px;" >
         <h2> {{ movie_detail.title }}</h2>
-        {% for genre in movie_detail.genres %}
-            <h8>{{genre.name}} |</h8>
-        {% endfor %}
+        {% if movie_detail.genres|length > 1 %}
+            {% for genre in movie_detail.genres %}
+                <h8>{{genre.name}} |</h8>
+            {% endfor %}
+        {% else %}
+            {% for genre in movie_detail.genres %}
+                <h8>{{genre.name}}</h8>
+             {% endfor %}
+        {% endif %}
         <h4><b>{{ movie_detail.tagline }}</b></h4>
         <h4>Total Votes: <b>{{movie_detail.vote_count}}</b> | Vote Score: <b>{{ movie_detail.vote_average }}</b> | Popularity: <b>{{movie_detail.popularity}}</b></h4>
         <h4>Release Date: <b>{{ movie_detail.release_date }}</b></h4> 
         <h4>Duration: <b>{{ movie_detail.runtime }} minutes</b></h4>
         <h4>Production Companies:</h4>
-        {% for company in movie_detail.production_companies %}
-            <h8>{{company.name}} |</h8>
-        {% endfor %}
+        {% if movie_detail.production_companies|length > 1 %}
+            {% for company in movie_detail.production_companies %}
+                <h8>{{company.name}} |</h8>
+            {% endfor %}
+        {% else %}
+            {% for company in movie_detail.production_companies %}
+                <h8>{{company.name}}</h8>
+            {% endfor %}
+        {% endif %}
     </div>
     <div class="col overview" style="color:black; margin-left: 30px; margin-right: 260px; font-size: medium;">
         <h3>Overview</h3>
