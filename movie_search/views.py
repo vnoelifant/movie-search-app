@@ -4,7 +4,6 @@ from django.http import HttpResponse
 
 from movie_search import movie_api
 from movie_search.models import Search
-from movie_search.utils import title_format
 
 # Create your views here.
 def home(request):
@@ -34,37 +33,45 @@ def movies_top_rated(request):
 
 def media_similar(request):
 
-    query = title_format(request.GET.get("query"))
+    query = request.GET.get("query")
+    year = request.GET.get("year")
 
     if query:
 
-        # Get a dictionary of movie details based on text query
-        media = movie_api.get_media(f"/search/{request.GET.get('type')}", query)
+        query = query.lower()
 
-        # Get movie id based on selected movie title
+        print("QUERY: ", request.GET.get("query"))
+
+        print("TYPE: ", request.GET.get("type"))
+        # Get a dictionary of movie details based on text query
+        media = movie_api.get_media(
+            f"/search/{request.GET.get('type')}", query, year=year
+        )
+
+        media = {media.lower(): idx for media, idx in media.items()}
+
+        # Get media id based on selected media title
         media_id = media.get(query)
 
-        similar = movie_api.get_most_similar(f"/{request.GET.get('type')}/{media_id}/similar")
-        context = {
-            "similar": similar,
-            "type": request.GET.get("type")
-        }
+        similar = movie_api.get_most_similar(
+            f"/{request.GET.get('type')}/{media_id}/similar"
+        )
+        context = {"similar": similar, "type": request.GET.get("type")}
 
     else:
         return render(request, "error.html")
 
     return render(request, "media_similar.html", context)
 
+
 def movie_detail(request, movie_id):
 
     movie_detail = movie_api.get_movie_detail(f"/movie/{movie_id}")
     movie_videos = movie_api.get_movie_videos(f"/movie/{movie_id}/videos")
-    
+
     context = {
         "movie_detail": movie_detail,
         "movie_videos": movie_videos,
     }
 
     return render(request, "movie_detail.html", context)
-
-

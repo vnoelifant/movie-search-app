@@ -12,17 +12,21 @@ load_dotenv()
 API_KEY = os.getenv("PROJECT_API_KEY")
 BASE_URL = "https://api.themoviedb.org/3"
 COUNTRY_CODES = {country.name: country.alpha_2 for country in pycountry.countries}
-LANG_ENG = 'en-US'
+LANG_ENG = "en-US"
 REGION_US = COUNTRY_CODES.get("United States")
 
 
-def get_media(endpoint: str, text_query: str) -> dict[str, int]:
+def get_media(endpoint: str, text_query: str, year: int = None) -> dict[str, int]:
     """This function returns a dictionary of movie details based on a text query"""
     url = f"{BASE_URL}{endpoint}"
     params = {"api_key": API_KEY, "query": text_query}
 
+    if year is not None:
+        params.update({"year": year})
+
     response = requests.get(url, params=params)
 
+    print("Endpoint: ", endpoint)
     if "movie" in endpoint:
 
         media = {row["original_title"]: row["id"] for row in response.json()["results"]}
@@ -31,6 +35,7 @@ def get_media(endpoint: str, text_query: str) -> dict[str, int]:
         media = {row["original_name"]: row["id"] for row in response.json()["results"]}
 
     return media
+
 
 def get_movie_detail(endpoint, language=LANG_ENG):
 
@@ -45,6 +50,7 @@ def get_movie_detail(endpoint, language=LANG_ENG):
 
     return response.json()
 
+
 def get_movie_videos(endpoint, language=LANG_ENG):
 
     url = f"{BASE_URL}{endpoint}"
@@ -57,6 +63,7 @@ def get_movie_videos(endpoint, language=LANG_ENG):
     response = requests.get(url, params=params)
 
     return response.json()
+
 
 def get_genres(endpoint: str) -> dict[str, int]:
     """This function returns a dictionary of movie genres"""
@@ -115,7 +122,12 @@ def get_recommended(endpoint, region=REGION_US):
     return response.json()
 
 
-def get_recently_released(endpoint, date_min, date_max, region=REGION_US,):
+def get_recently_released(
+    endpoint,
+    date_min,
+    date_max,
+    region=REGION_US,
+):
     """This function returns a JSON object of movies based on a region within a recent date range"""
 
     url = f"{BASE_URL}{endpoint}"
@@ -171,4 +183,3 @@ def get_vote_sorted(endpoint, vote_count, year, sort_option, page=1):
     )
 
     return response.json()
-
