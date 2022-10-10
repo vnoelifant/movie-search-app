@@ -1,9 +1,8 @@
 
-.container-fluid text-center {
+#movieWrapper {
     color: #1a1a1d;
-    background-color: #c7e4b3; 
+    background-color: #c7e4b3;
     margin-right: 100px;
     padding-top: 20px;
     padding-bottom: 20px;
-    
-  }
+}
