@@ -16,10 +16,12 @@ LANG_ENG = 'en-US'
 REGION_US = COUNTRY_CODES.get("United States")
 
 
-def get_movies(endpoint: str, text_query: str) -> dict[str, int]:
+def get_movies(endpoint: str, text_query: str, year: int = None) -> dict[str, int]:
     """This function returns a dictionary of movie details based on a text query"""
     url = f"{BASE_URL}{endpoint}"
     params = {"api_key": API_KEY, "query": text_query}
+    if year is not None:
+        params.update({"year": year})
 
     response = requests.get(url, params=params)
 

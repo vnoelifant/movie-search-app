@@ -4,7 +4,6 @@ from django.http import HttpResponse
 
 from movie_search import movie_api
 from movie_search.models import Search
-from movie_search.utils import title_format
 
 # Create your views here.
 def home(request):
@@ -34,12 +33,22 @@ def movies_top_rated(request):
 
 def movies_similar(request):
 
-    query = title_format(request.GET.get("query"))
+    query = request.GET.get("query")
+    year = request.GET.get("year")
 
     if query:
 
         # Get a dictionary of movie details based on text query
-        movies = movie_api.get_movies("/search/movie", query)
+        query = query.lower()
+
+        movies = movie_api.get_movies("/search/movie", query, year=year)
+        movies = {
+            movie.lower(): idx for
+            movie, idx in movies.items()
+        }
+
+        from pprint import pprint as pp
+        pp(movies)
 
         # Get movie id based on selected movie title
         movie_id = movies.get(query)
@@ -58,7 +67,7 @@ def movie_detail(request, movie_id):
 
     movie_detail = movie_api.get_movie_detail(f"/movie/{movie_id}")
     movie_videos = movie_api.get_movie_videos(f"/movie/{movie_id}/videos")
-    
+
     context = {
         "movie_detail": movie_detail,
         "movie_videos": movie_videos,
