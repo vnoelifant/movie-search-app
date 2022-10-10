@@ -16,16 +16,21 @@ LANG_ENG = 'en-US'
 REGION_US = COUNTRY_CODES.get("United States")
 
 
-def get_movies(endpoint: str, text_query: str) -> dict[str, int]:
+def get_media(endpoint: str, text_query: str) -> dict[str, int]:
     """This function returns a dictionary of movie details based on a text query"""
     url = f"{BASE_URL}{endpoint}"
     params = {"api_key": API_KEY, "query": text_query}
 
     response = requests.get(url, params=params)
 
-    movies = {row["original_title"]: row["id"] for row in response.json()["results"]}
+    if "movie" in endpoint:
 
-    return movies
+        media = {row["original_title"]: row["id"] for row in response.json()["results"]}
+
+    else:
+        media = {row["original_name"]: row["id"] for row in response.json()["results"]}
+
+    return media
 
 def get_movie_detail(endpoint, language=LANG_ENG):
 

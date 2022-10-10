@@ -1,19 +1,20 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Top Rated Movies{% endblock %}
+{% block title %}Similar Content{% endblock %}
 
 {% block body %}
 
 <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 
 <div class="container-fluid text-center">
-    <h2>Similar Movies</h2><br><br>
+    <h2>Similar Content</h2><br><br>
 
     <div class="row" style="margin-right: 20px; margin-left: 20px;">
-        {% for movie in similar.results %}
+        {% for media in similar.results %}
             <div class="card" style="width: 18rem;">
-                <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" class="card-img-top" alt="...">
+                <img src="https://image.tmdb.org/t/p/w500{{ media.poster_path }}" class="card-img-top" alt="...">
+                <a href="/movie/{{ media.id }}" class="btn btn-primary">View Details</a>
             </div>
         {% endfor %}
     </div>

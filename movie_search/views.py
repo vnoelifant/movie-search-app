@@ -32,27 +32,28 @@ def movies_top_rated(request):
     return render(request, "movies_top_rated.html", context)
 
 
-def movies_similar(request):
+def media_similar(request):
 
     query = title_format(request.GET.get("query"))
 
     if query:
 
         # Get a dictionary of movie details based on text query
-        movies = movie_api.get_movies("/search/movie", query)
+        media = movie_api.get_media(f"/search/{request.GET.get('type')}", query)
 
         # Get movie id based on selected movie title
-        movie_id = movies.get(query)
+        media_id = media.get(query)
 
-        similar = movie_api.get_most_similar(f"/movie/{movie_id}/similar")
+        similar = movie_api.get_most_similar(f"/{request.GET.get('type')}/{media_id}/similar")
         context = {
             "similar": similar,
+            "type": request.GET.get("type")
         }
 
     else:
         return render(request, "error.html")
 
-    return render(request, "movies_similar.html", context)
+    return render(request, "media_similar.html", context)
 
 def movie_detail(request, movie_id):
 
