@@ -68,7 +68,7 @@ def media_similar(request):
 def movie_detail(request, movie_id):
 
     movie_detail = movie_api.get_movie_detail(f"/movie/{movie_id}")
-    print("MOVIE DETAIL: ", movie_detail)
+    # print("MOVIE DETAIL: ", movie_detail)
     
     movie_videos = movie_api.get_movie_videos(f"/movie/{movie_id}/videos")
 

@@ -10,6 +10,7 @@
     <img src="https://image.tmdb.org/t/p/w500{{ movie_detail.backdrop_path }}" alt="..." style="border-radius:15px; margin-left: 30px; margin-top: 30px;" >
     <div class="col mov-info" style="color:#000000; margin-left:550px; margin-top: -300px; min-height: 290px;" >
         <h2> {{ movie_detail.title }}</h2>
+        <h5><b>Genre:</b></h5>
         {% if movie_detail.genres|length > 1 %}
             {% for genre in movie_detail.genres %}
                 <h8>{{genre.name}} |</h8>
