@@ -15,9 +15,7 @@
                 <h8>{{genre.name}} |</h8>
             {% endfor %}
         {% else %}
-            {% for genre in movie_detail.genres %}
-                <h8>{{genre.name}}</h8>
-             {% endfor %}
+            <h8>{{movie_detail.genres.0.name}}</h8>
         {% endif %}
         <h4><b>{{ movie_detail.tagline }}</b></h4>
         <h4>Total Votes: <b>{{movie_detail.vote_count}}</b> | Vote Score: <b>{{ movie_detail.vote_average }}</b> | Popularity: <b>{{movie_detail.popularity}}</b></h4>
@@ -29,9 +27,7 @@
                 <h8>{{company.name}} |</h8>
             {% endfor %}
         {% else %}
-            {% for company in movie_detail.production_companies %}
-                <h8>{{company.name}}</h8>
-            {% endfor %}
+            <h8>{{movie_detail.production_companies.0.name}}</h8>
         {% endif %}
     </div>
     <div class="col overview" style="color:black; margin-left: 30px; margin-right: 260px; font-size: medium;">
