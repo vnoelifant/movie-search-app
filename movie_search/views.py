@@ -54,22 +54,75 @@ def media_similar(request):
         # Get media id based on selected media title
         media_id = media.get(query)
 
-        similar = movie_api.get_most_similar(
-            f"/{request.GET.get('type')}/{media_id}/similar"
-        )
-        context = {"similar": similar, "type": request.GET.get("type")}
+        if request.GET.get("choice") == "similar":
+
+            similar = movie_api.get_most_similar(
+                f"/{request.GET.get('type')}/{media_id}/similar"
+            )
+
+            context = {
+                "similar": similar,
+                "type": request.GET.get("type"),
+            }
+
+        else:
+            recommended = movie_api.get_recommended(
+                f"/{request.GET.get('type')}/{media_id}/recommendations"
+            )
+
+            context = {
+                "recommended": recommended,
+                "type": request.GET.get("type"),
+            }
+
+        return render(request, "media_similar.html", context)
 
     else:
         return render(request, "error.html")
 
-    return render(request, "media_similar.html", context)
+def media_recommended(request):
+
+    query = request.GET.get("query")
+    year = request.GET.get("year")
+
+    if query:
+
+        query = query.lower()
+
+        print("QUERY: ", request.GET.get("query"))
+
+        print("TYPE: ", request.GET.get("type"))
+        # Get a dictionary of movie details based on text query
+        media = movie_api.get_media(
+            f"/search/{request.GET.get('type')}", query, year=year
+        )
+
+        media = {media.lower(): idx for media, idx in media.items()}
+
+        # Get media id based on selected media title
+        media_id = media.get(query)
+
+       
+        recommended = movie_api.get_recommended(
+            f"/{request.GET.get('type')}/{media_id}/recommendations"
+        )
+
+        context = {
+            "recommended": recommended,
+            "type": request.GET.get("type"),
+        }
+
+        return render(request, "media_recommended.html", context)
+
+    else:
+        return render(request, "error.html")
 
 
 def movie_detail(request, movie_id):
 
     movie_detail = movie_api.get_movie_detail(f"/movie/{movie_id}")
     # print("MOVIE DETAIL: ", movie_detail)
-    
+
     movie_videos = movie_api.get_movie_videos(f"/movie/{movie_id}/videos")
 
     context = {
