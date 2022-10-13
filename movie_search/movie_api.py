@@ -111,6 +111,16 @@ def get_most_similar(endpoint, region=REGION_US):
     return response.json()
 
 
+def get_movie_data(endpoint, region=REGION_US):
+    """This function returns a a JSON object of list of the most similar movies to movie ID based on region"""
+
+    url = f"{BASE_URL}{endpoint}"
+    params = {"api_key": API_KEY, "region": region}
+    response = requests.get(url, params=params)
+
+    return response.json()
+
+
 def get_recommended(endpoint, region=REGION_US):
     """This function returns a a JSON object of list of recommended movies to movie ID based on region"""
 

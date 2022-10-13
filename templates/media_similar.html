@@ -1,24 +1,20 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Similar Content{% endblock %}
+{% block title %}Media Search{% endblock %}
 
 {% block body %}
 
 <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 
 <div class="container-fluid text-center">
-    {% if type == 'movie' %}
-    <h2>Similar Movies</h2><br><br>
-    {% else %}
-    <h2>Similar TV Shows</h2><br><br>
-    {% endif %}
+    <h2>Results: {{choice|title}} </h2><br><br>
 
     <div class="row" style="margin-right: 20px; margin-left: 20px;">
-        {% for media in similar.results %}
+        {% for media in data.results %}
             <div class="card" style="width: 18rem;">
                 <img src="https://image.tmdb.org/t/p/w500{{ media.poster_path }}" class="card-img-top" alt="...">
-                <a href="/movie/{{ media.id }}" class="btn btn-primary">View Details</a>
+                <a href="/{{type}}/{{ media.id }}" class="btn btn-primary">View Details</a>
             </div>
         {% endfor %}
     </div>

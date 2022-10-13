@@ -32,22 +32,22 @@
         </ul>
       </div>
     </div>
-    <form action="/media_similar" method="get" class="d-flex">
-        <select class="form-select mr-sm-2" name="type"  style="padding-left: 5px; background-color: #131213; color: #d6d6d6; border-radius: 5px; width: 225px; height: 45px;" class="mb-3">
-            <option value="movie">Similar Movies</option>
-            <option value="tv">Similar TV Shows</option>
-        </select>
-    </form>
 
-    <form action="/media_recommended" method="get" class="d-flex">
-      <select class="form-select mr-sm-2" name="type"  style="padding-left: 5px; background-color: #131213; color: #d6d6d6; border-radius: 5px; width: 225px; height: 45px;" class="mb-3">
-        <option value="movie">Recommended Movies</option>
-        <option value="tv">Recommended TV Shows</option>
-    </select>
-    
-    <input class="form-control me-2" name="query" style="width: 400px" type="text" placeholder="Enter title to find out what to watch next!!" aria-label="Search">
-    <button class="btn btn-outline-success" type="submit">Search</button>
-  </form>
+    <form action="/media_similar" method="get" class="d-flex">
+      <select class="form-select mr-sm-2" name="type" style="padding-left: 5px; background-color: #131213; color: #d6d6d6; border-radius: 5px; width: 100px; height: 45px;" class="mb-3">
+        <option value="movie">Movies</option>
+        <option value="tv">TV Shows</option>
+      </select>
+
+      <select class="form-select mr-sm-2" name="choice" style="padding-left: 5px; background-color: #131213; color: #d6d6d6; border-radius: 5px; width: 175px; height: 45px;" class="mb-3">
+        <option value="similar">Similar</option>
+        <option value="recommendations">Recommendation</option>
+      </select>
+      
+      <input class="form-control me-2" name="query" style="width: 400px" type="text" placeholder="Enter title to find out what to watch next!!" aria-label="Search">
+      <button class="btn btn-outline-success" type="submit">Search</button>
+  
+    </form>
   </nav>
 
   {% block body %}{% endblock %}
