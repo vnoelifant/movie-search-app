@@ -68,16 +68,16 @@ def media_similar(request):
         return render(request, "media_similar.html", context)
 
 
-def movie_detail(request, type, movie_id):
+def movie_detail(request, movie_id):
 
-    media_detail = movie_api.get_movie_detail(f"/{type}/{movie_id}")
+    movie_detail = movie_api.get_movie_detail(f"/movie/{movie_id}")
     # print("MOVIE DETAIL: ", movie_detail)
 
-    media_videos = movie_api.get_movie_videos(f"/{type}/{movie_id}/videos")
+    movie_videos = movie_api.get_movie_videos(f"/movie/{movie_id}/videos")
 
     context = {
-        "media_detail": media_detail,
-        "media_videos": media_videos,
+        "movie_detail": movie_detail,
+        "movie_videos": movie_videos,
     }
 
-    return render(request, "media_detail.html", context)
+    return render(request, "movie_detail.html", context)
