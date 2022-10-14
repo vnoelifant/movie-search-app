@@ -61,7 +61,7 @@ def media_similar(request):
         # Get media id based on selected media title
         media_id = media.get(query)
 
-        data = movie_api.get_movie_data(f"/{type}/{media_id}/{choice}")
+        data = movie_api.get_media_data(f"/{type}/{media_id}/{choice}")
 
         context = {"data": data, "type": type, "choice": choice}
 
