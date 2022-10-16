@@ -1,14 +1,21 @@
 #movieWrapper {
     color: #1a1a1d;
-    background-color: #b3dee4;
+    background-color: #c4e4e8;
     margin-right: 100px;
     padding-top: 20px;
     padding-bottom: 20px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+}
+
+/*
+container-fluid { 
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 h2#movieWrapper {
-    font-family: fantasy;
+    font-family: Arial;
 }
+*/
 
 
 
