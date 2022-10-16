@@ -1,8 +1,14 @@
-
 #movieWrapper {
     color: #1a1a1d;
-    background-color: #c7e4b3;
+    background-color: #b3dee4;
     margin-right: 100px;
     padding-top: 20px;
     padding-bottom: 20px;
 }
+
+h2#movieWrapper {
+    font-family: fantasy;
+}
+
+
+
