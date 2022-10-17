@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from pprint import pprint
 
-from movie_search import movie_api
+from movie_search import media_api
 from movie_search.models import Search
 
 # Create your views here.
@@ -13,7 +13,7 @@ def home(request):
 
 def movies_popular(request):
 
-    popular = movie_api.get_most_popular("/movie/popular")
+    popular = media_api.get_media_data("/movie/popular")
 
     context = {
         "popular": popular,
@@ -24,12 +24,45 @@ def movies_popular(request):
 
 def movies_top_rated(request):
 
-    top_rated = movie_api.get_top_rated("/movie/top_rated")
+    top_rated = media_api.get_media_data("/movie/top_rated")
     context = {
         "top_rated": top_rated,
     }
 
     return render(request, "movies_top_rated.html", context)
+
+
+def movies_now_playing(request):
+
+    now_playing = media_api.get_media_data("/movie/now_playing")
+
+    context = {
+        "now_playing": now_playing,
+    }
+
+    return render(request, "movies_now_playing.html", context)
+
+
+def movies_upcoming(request):
+
+    upcoming = media_api.get_media_data("/movie/upcoming")
+
+    context = {
+        "upcoming": upcoming,
+    }
+
+    return render(request, "movies_upcoming.html", context)
+
+
+def movies_trending(request):
+
+    trending = media_api.get_media_data("/trending/movie/week")
+
+    context = {
+        "trending": trending,
+    }
+
+    return render(request, "movies_trending.html", context)
 
 
 def media_similar(request):
@@ -54,14 +87,14 @@ def media_similar(request):
         print("QUERY: ", query)
 
         # Get a dictionary of movie details based on text query
-        media = movie_api.get_media(f"/search/{type}", query, year=year)
+        media = media_api.get_media(f"/search/{type}", query, year=year)
 
         media = {media.lower(): idx for media, idx in media.items()}
 
         # Get media id based on selected media title
         media_id = media.get(query)
 
-        data = movie_api.get_media_data(f"/{type}/{media_id}/{choice}")
+        data = media_api.get_media_data(f"/{type}/{media_id}/{choice}")
 
         context = {"data": data, "type": type, "choice": choice}
 
@@ -70,10 +103,10 @@ def media_similar(request):
 
 def movie_detail(request, movie_id):
 
-    movie_detail = movie_api.get_movie_detail(f"/movie/{movie_id}")
+    movie_detail = media_api.get_movie_detail(f"/movie/{movie_id}")
     # print("MOVIE DETAIL: ", movie_detail)
 
-    movie_videos = movie_api.get_movie_videos(f"/movie/{movie_id}/videos")
+    movie_videos = media_api.get_movie_videos(f"/movie/{movie_id}/videos")
 
     context = {
         "movie_detail": movie_detail,

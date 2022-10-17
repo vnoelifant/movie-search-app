@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Movies Playing{% endblock %}
+
+{% block body %}
+
+<div class="container-fluid text-center" id="movieWrapper">
+    <h2>Movies Now Playing</h2><br><br>
+
+    <div class="row " style="margin-right: 20px; margin-left: 20px;">
+        {% for movie in now_playing.results %}
+            <div class="card" style="width: 18rem;">
+                <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" class="card-img-top" alt="...">
+                <a href="/movie/{{ movie.id }}" class="btn btn-primary">View Details</a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

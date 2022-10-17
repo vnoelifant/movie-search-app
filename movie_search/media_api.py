@@ -77,47 +77,17 @@ def get_genres(endpoint: str) -> dict[str, int]:
     return genres
 
 
-def get_most_popular(endpoint, language=LANG_ENG, page=1):
-    """This function returns a JSON object of the current most popular movies based on language"""
+def get_media_data(endpoint, language=LANG_ENG, region=REGION_US):
+    """This function returns a JSON object of tmdb media data"""
 
     url = f"{BASE_URL}{endpoint}"
-    params = {"api_key": API_KEY, "language": language, "page": page}
+    params = {"api_key": API_KEY, "language": language, "region": region}
     response = requests.get(url, params=params)
 
     return response.json()
 
 
-def get_top_rated(endpoint, region=REGION_US, page=1):
-    """This function returns a a JSON object of the top rated movies by region"""
-
-    url = f"{BASE_URL}{endpoint}"
-    params = {"api_key": API_KEY, "region": region, "page": page}
-    response = requests.get(
-        url,
-        params=params,
-    )
-
-    return response.json()
-
-
-def get_most_similar(endpoint, region=REGION_US):
-    """This function returns a a JSON object of list of the most similar movies to movie ID based on region"""
-
-    url = f"{BASE_URL}{endpoint}"
-    params = {"api_key": API_KEY, "region": region}
-    response = requests.get(url, params=params)
-
-    return response.json()
-
-
-def get_media_data(endpoint, region=REGION_US):
-    """This function returns a a JSON object of list of the most similar movies to movie ID based on region"""
-
-    url = f"{BASE_URL}{endpoint}"
-    params = {"api_key": API_KEY, "region": region}
-    response = requests.get(url, params=params)
-
-    return response.json()
+# Discover endpoint functions
 
 
 def get_recently_released(
