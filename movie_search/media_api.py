@@ -17,7 +17,7 @@ REGION_US = COUNTRY_CODES.get("United States")
 
 
 def get_media(endpoint: str, text_query: str, year: int = None) -> dict[str, int]:
-    """This function returns a dictionary of movie details based on a text query"""
+    """This function returns a dictionary of media details based on a text query"""
     url = f"{BASE_URL}{endpoint}"
     params = {"api_key": API_KEY, "query": text_query}
 
@@ -81,8 +81,13 @@ def get_media_data(endpoint, language=LANG_ENG, region=REGION_US):
     """This function returns a JSON object of tmdb media data"""
 
     url = f"{BASE_URL}{endpoint}"
+
+    print("URL: ", url)
     params = {"api_key": API_KEY, "language": language, "region": region}
+    
     response = requests.get(url, params=params)
+    
+    print("Response: ", response.json())
 
     return response.json()
 
