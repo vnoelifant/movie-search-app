@@ -8,9 +8,9 @@
 <div class="container-fluid text-center" id="movieWrapper">
     <h2>Upcoming Movies</h2><br><br>
 
-    <div class="row " style="margin-right: 20px; margin-left: 20px;">
+    <div class="row" id="movieRow">
         {% for movie in upcoming.results %}
-            <div class="card" style="width: 18rem;">
+            <div class="card" id="movieCard">
                 <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" class="card-img-top" alt="...">
                 <a href="{% url 'movie_detail' movie_id=movie.id  %}" class="btn btn-primary">View Details</a>
             </div>
