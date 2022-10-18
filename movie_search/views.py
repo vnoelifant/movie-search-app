@@ -106,6 +106,7 @@ def movie_detail(request, movie_id):
 
     movie_detail = media_api.get_movie_detail(f"/movie/{movie_id}")
     # print("MOVIE DETAIL: ", movie_detail)
+    pprint(movie_detail)
 
     movie_videos = media_api.get_movie_videos(f"/movie/{movie_id}/videos")
 
