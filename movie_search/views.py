@@ -8,6 +8,7 @@ from movie_search.models import Search
 
 # Create your views here.
 def home(request):
+    trending = media_api.get_media_data("/trending/all/day")
     return render(request, "home.html")
 
 
@@ -86,7 +87,7 @@ def media_similar(request):
 
         print("QUERY: ", query)
 
-        # Get a dictionary of movie details based on text query
+        # Get a dictionary of media details based on text query
         media = media_api.get_media(f"/search/{type}", query, year=year)
 
         media = {media.lower(): idx for media, idx in media.items()}
