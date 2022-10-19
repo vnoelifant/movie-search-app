@@ -16,7 +16,7 @@
 <div class="container-fluid text-center" id="movieWrapper">  
     <h2>Trending of the Day</h2><br><br>
     
-    <div class="row ten-columns" style="margin-right: 20px; margin-left: 20px;">
+    <div class="row ten-columns" id="movieRow">
         {% for media in trending.results %}
             <div class="card" id="movieCard">
                 {% if media.poster_path %}
