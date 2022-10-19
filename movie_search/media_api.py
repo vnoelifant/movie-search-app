@@ -36,21 +36,7 @@ def get_media(endpoint: str, text_query: str, year: int = None) -> dict[str, int
     return media
 
 
-def get_movie_detail(endpoint, language=LANG_ENG):
-
-    url = f"{BASE_URL}{endpoint}"
-
-    params = {
-        "api_key": API_KEY,
-        "language": language,
-    }
-
-    response = requests.get(url, params=params)
-
-    return response.json()
-
-
-def get_movie_videos(endpoint, language=LANG_ENG):
+def get_media_detail(endpoint, language=LANG_ENG):
 
     url = f"{BASE_URL}{endpoint}"
 
@@ -86,8 +72,6 @@ def get_media_data(endpoint, language=LANG_ENG, region=REGION_US):
     params = {"api_key": API_KEY, "language": language, "region": region}
     
     response = requests.get(url, params=params)
-    
-    print("Response: ", response.json())
 
     return response.json()
 

@@ -5,10 +5,11 @@
 
 {% block body %}
 
-<div class="container first" style="background-color: #f8ebc1; "> 
+<div class="container first" id="detailBc"> 
     
     <img src="https://image.tmdb.org/t/p/w500{{ movie_detail.backdrop_path }}" alt="..." style="border-radius:15px; margin-left: 30px; margin-top: 30px;" >
-    <div class="col mov-info" style="color:#000000; margin-left:550px; margin-top: -300px; min-height: 290px;" >
+    
+    <div class="col mov-info" id="mediaInfo" >
         <h2> {{ movie_detail.title }}</h2>
         <h5><b>Genre:</b></h5>
         {% for genre in movie_detail.genres %}
@@ -23,31 +24,36 @@
             <h8>{{company.name}} |</h8>
         {% endfor %}
     </div>
-    <div class="col overview" style="color:black; margin-left: 30px; margin-right: 260px; font-size: medium;">
+
+    <div class="col mediaOverview">
         <h3>Overview</h3>
         <p>{{movie_detail.overview}}</p>
     </div>
-    <div class="col overview" style="color:black; margin-left: 30px; font-size: medium;">
+
+    <div class="col mediaOverviewSecond">
         <h3>Budget and Revenue</h3>
         <p><b>Budget:</b> {{movie_detail.budget}}$</p>
         <p><b>Revenue:</b> {{movie_detail.revenue}}$</p>
         <h3>Official Homepage</h3>
         {% if movie_detail.homepage %}
-            <a href={{movie_detail.homepage}} style="color:black">{{movie_detail.homepage}}</a>
+            <a href={{movie_detail.homepage}} id="detailHome">{{movie_detail.homepage}}</a>
         {% else %}
             <p>No homepage available.</p>
         {% endif %} 
     </div>
 
-    <div class="trailer" style="color:black; margin-left: 30px; font-weight: bold;"><h2>Trailer and Short Videos</h2></div>
-    <div class="scrolling-wrapper" style="margin-left:30px; overflow-x: scroll; overflow-y: hidden;white-space: nowrap;">
+    <div class="trailer" id="trailer"><h2>Trailer and Short Videos</h2></div>
+    
+    <div class="scrolling-wrapper" id="trailerScroll">
         {% for vid in movie_videos.results%}
             <div class="col-lg-6">
-                <div class="embed-responsive embed-responsive-16by9" style= "margin-bottom: 20px; margin-right: 120px;">
+                <div class="embed-responsive embed-responsive-16by9" id="trailerResults">
                     <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/{{ vid.key }}"></iframe>
                 </div>
             </div>    
         {% endfor %}
     </div>
 
-    {% endblock %}
+</div>
+
+{% endblock %}

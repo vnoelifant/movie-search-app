@@ -9,12 +9,19 @@ from movie_search.models import Search
 # Create your views here.
 def home(request):
     trending = media_api.get_media_data("/trending/all/day")
-    return render(request, "home.html")
+    # pprint("TRENDING: ", trending)
+
+    context = {
+        "trending": trending,
+    }
+    
+    return render(request, "home.html", context)
 
 
 def movies_popular(request):
 
     popular = media_api.get_media_data("/movie/popular")
+    # pprint("POPULAR: ", popular)
 
     context = {
         "popular": popular,
@@ -26,6 +33,8 @@ def movies_popular(request):
 def movies_top_rated(request):
 
     top_rated = media_api.get_media_data("/movie/top_rated")
+    # pprint("TOP RATED: ", top_rated)
+
     context = {
         "top_rated": top_rated,
     }
@@ -36,6 +45,7 @@ def movies_top_rated(request):
 def movies_now_playing(request):
 
     now_playing = media_api.get_media_data("/movie/now_playing")
+    # pprint("NOW PLAYING: ", now_playing)
 
     context = {
         "now_playing": now_playing,
@@ -47,6 +57,7 @@ def movies_now_playing(request):
 def movies_upcoming(request):
 
     upcoming = media_api.get_media_data("/movie/upcoming")
+     # pprint("UPCOMING ", upcoming)
 
     context = {
         "upcoming": upcoming,
@@ -55,9 +66,10 @@ def movies_upcoming(request):
     return render(request, "movies_upcoming.html", context)
 
 
-def movies_trending(request):
+def movies_trending_week(request):
 
     trending = media_api.get_media_data("/trending/movie/week")
+    # pprint("TRENDING: ", trending)
 
     context = {
         "trending": trending,
@@ -96,6 +108,7 @@ def media_similar(request):
         media_id = media.get(query)
 
         data = media_api.get_media_data(f"/{type}/{media_id}/{choice}")
+        # pprint("DATA: ", data)
 
         context = {"data": data, "type": type, "choice": choice}
 
@@ -104,15 +117,30 @@ def media_similar(request):
 
 def movie_detail(request, movie_id):
 
-    movie_detail = media_api.get_movie_detail(f"/movie/{movie_id}")
-    # print("MOVIE DETAIL: ", movie_detail)
-    pprint(movie_detail)
+    movie_detail = media_api.get_media_detail(f"/movie/{movie_id}")
+    # pprint("MOVIE DETAIL: ", movie_detail)
 
-    movie_videos = media_api.get_movie_videos(f"/movie/{movie_id}/videos")
+    movie_videos = media_api.get_media_detail(f"/movie/{movie_id}/videos")
 
     context = {
         "movie_detail": movie_detail,
         "movie_videos": movie_videos,
+        "type": "movie"
     }
 
     return render(request, "movie_detail.html", context)
+
+def tv_detail(request, tv_id):
+
+    tv_detail = media_api.get_media_detail(f"/tv/{tv_id}")
+    # pprint("TV DETAIL: ", tv_detail)
+
+    tv_videos = media_api.get_media_detail(f"/tv/{tv_id}/videos")
+
+    context = {
+        "tv_detail": tv_detail,
+        "tv_videos": tv_videos,
+        "type": "tv",
+    }
+
+    return render(request, "tv_detail.html", context)
