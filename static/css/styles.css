@@ -18,18 +18,12 @@
     min-height: 290px;
 }
 
-.mediaOverview {
+.col.mediaOverview {
     color:black; 
     margin-left: 30px;
     margin-right: 260px;
     font-size: medium
 
-}
-
-.mediaOverviewSecond {
-    color:black;
-    margin-left: 30px;
-    font-size: medium;
 }
 
 #trailer {
