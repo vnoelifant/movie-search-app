@@ -100,7 +100,7 @@ def media_similar(request):
         print("QUERY: ", query)
 
         # Get a dictionary of media details based on text query
-        media = media_api.get_media(f"/search/{type}", query, year=year)
+        media = media_api.get_media(f"/search/{type}", query, type, year=year)
 
         media = {media.lower(): idx for media, idx in media.items()}
 
