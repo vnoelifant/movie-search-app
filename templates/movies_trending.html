@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Top Rated Movies{% endblock %}
+{% block title %}Trending Movies of Week{% endblock %}
 
 {% block body %}
 
 <div class="container-fluid text-center" id="movieWrapper">
-    <h2>Top Rated Movies</h2><br><br>
+    <h2>Trending of the Week</h2><br><br>
 
     <div class="row" id="movieRow">
-        {% for movie in top_rated.results %}
+        {% for movie in trending.results %}
             <div class="card" id="movieCard">
                 <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" class="card-img-top" alt="...">
                 <a href="{% url 'movie_detail' movie_id=movie.id  %}" class="btn btn-primary">View Details</a>
