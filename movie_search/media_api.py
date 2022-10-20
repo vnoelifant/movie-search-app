@@ -16,7 +16,7 @@ LANG_ENG = "en-US"
 REGION_US = COUNTRY_CODES.get("United States")
 
 
-def get_media(endpoint: str, text_query: str, type, year: int = None) -> dict[str, int]:
+def get_media(endpoint: str, text_query: str, type: str, year: int = None) -> dict[str, int]:
     """This function returns a dictionary of media details based on a text query"""
     url = f"{BASE_URL}{endpoint}"
     params = {"api_key": API_KEY, "query": text_query}
