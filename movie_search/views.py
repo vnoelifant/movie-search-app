@@ -130,6 +130,60 @@ def movie_detail(request, movie_id):
 
     return render(request, "movie_detail.html", context)
 
+def tv_popular(request):
+
+    popular = media_api.get_media_data("/tv/popular")
+    # pprint("POPULAR: ", popular)
+
+    context = {
+        "popular": popular,
+    }
+
+    return render(request, "tv_popular.html", context)
+
+
+def tv_top_rated(request):
+
+    top_rated = media_api.get_media_data("/tv/top_rated")
+    # pprint("TOP RATED: ", top_rated)
+
+    context = {
+        "top_rated": top_rated,
+    }
+
+    return render(request, "tv_top_rated.html", context)
+
+def tv_trending_week(request):
+
+    trending = media_api.get_media_data("/trending/tv/week")
+    # pprint("TRENDING: ", trending)
+
+    context = {
+        "trending": trending,
+    }
+
+    return render(request, "tv_trending.html", context)
+
+def tv_air(request):
+
+    tv_air = media_api.get_media_data("/tv/on_the_air")
+
+    context = {
+        "tv_air": tv_air,
+    }
+
+    return render(request, "tv_air.html", context)
+
+def tv_air_today(request):
+
+    tv_air_today = media_api.get_media_data("/tv/airing_today")
+
+    context = {
+        "tv_air_today": tv_air_today,
+    }
+
+    return render(request, "tv_air_today.html", context)
+
 def tv_detail(request, tv_id):
 
     tv_detail = media_api.get_media_detail(f"/tv/{tv_id}")
