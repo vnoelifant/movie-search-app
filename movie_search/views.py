@@ -1,19 +1,27 @@
 import requests
 from django.shortcuts import render
 from django.http import HttpResponse
+from pprint import pprint
 
-from movie_search import movie_api
+from movie_search import media_api
 from movie_search.models import Search
-from movie_search.utils import title_format
 
 # Create your views here.
 def home(request):
-    return render(request, "home.html")
+    trending = media_api.get_media_data("/trending/all/day")
+    # pprint("TRENDING: ", trending)
+
+    context = {
+        "trending": trending,
+    }
+    
+    return render(request, "home.html", context)
 
 
 def movies_popular(request):
 
-    popular = movie_api.get_most_popular("/movie/popular")
+    popular = media_api.get_media_data("/movie/popular")
+    # pprint("POPULAR: ", popular)
 
     context = {
         "popular": popular,
@@ -24,7 +32,9 @@ def movies_popular(request):
 
 def movies_top_rated(request):
 
-    top_rated = movie_api.get_top_rated("/movie/top_rated")
+    top_rated = media_api.get_media_data("/movie/top_rated")
+    # pprint("TOP RATED: ", top_rated)
+
     context = {
         "top_rated": top_rated,
     }
@@ -32,38 +42,105 @@ def movies_top_rated(request):
     return render(request, "movies_top_rated.html", context)
 
 
-def movies_similar(request):
+def movies_now_playing(request):
 
-    query = title_format(request.GET.get("query"))
+    now_playing = media_api.get_media_data("/movie/now_playing")
+    # pprint("NOW PLAYING: ", now_playing)
 
-    if query:
+    context = {
+        "now_playing": now_playing,
+    }
 
-        # Get a dictionary of movie details based on text query
-        movies = movie_api.get_movies("/search/movie", query)
+    return render(request, "movies_now_playing.html", context)
 
-        # Get movie id based on selected movie title
-        movie_id = movies.get(query)
 
-        similar = movie_api.get_most_similar(f"/movie/{movie_id}/similar")
-        context = {
-            "similar": similar,
-        }
+def movies_upcoming(request):
 
-    else:
+    upcoming = media_api.get_media_data("/movie/upcoming")
+     # pprint("UPCOMING ", upcoming)
+
+    context = {
+        "upcoming": upcoming,
+    }
+
+    return render(request, "movies_upcoming.html", context)
+
+
+def movies_trending_week(request):
+
+    trending = media_api.get_media_data("/trending/movie/week")
+    # pprint("TRENDING: ", trending)
+
+    context = {
+        "trending": trending,
+    }
+
+    return render(request, "movies_trending.html", context)
+
+
+def media_similar(request):
+
+    query = request.GET.get("query")
+    year = request.GET.get("year")
+    type = request.GET.get("type")
+    choice = request.GET.get("choice")
+
+    if not query:
+
         return render(request, "error.html")
 
-    return render(request, "movies_similar.html", context)
+    else:
+
+        print("TYPE: ", type)
+
+        print("CHOICE: ", choice)
+
+        query = query.lower()
+
+        print("QUERY: ", query)
+
+        # Get a dictionary of media details based on text query
+        media = media_api.get_media(f"/search/{type}", query, type, year=year)
+
+        media = {media.lower(): idx for media, idx in media.items()}
+
+        # Get media id based on selected media title
+        media_id = media.get(query)
+
+        data = media_api.get_media_data(f"/{type}/{media_id}/{choice}")
+        # pprint("DATA: ", data)
+
+        context = {"data": data, "type": type, "choice": choice}
+
+        return render(request, "media_similar.html", context)
+
 
 def movie_detail(request, movie_id):
 
-    movie_detail = movie_api.get_movie_detail(f"/movie/{movie_id}")
-    movie_videos = movie_api.get_movie_videos(f"/movie/{movie_id}/videos")
-    
+    movie_detail = media_api.get_media_detail(f"/movie/{movie_id}")
+    # pprint("MOVIE DETAIL: ", movie_detail)
+
+    movie_videos = media_api.get_media_detail(f"/movie/{movie_id}/videos")
+
     context = {
         "movie_detail": movie_detail,
         "movie_videos": movie_videos,
+        "type": "movie"
     }
 
     return render(request, "movie_detail.html", context)
 
+def tv_detail(request, tv_id):
 
+    tv_detail = media_api.get_media_detail(f"/tv/{tv_id}")
+    # pprint("TV DETAIL: ", tv_detail)
+
+    tv_videos = media_api.get_media_detail(f"/tv/{tv_id}/videos")
+
+    context = {
+        "tv_detail": tv_detail,
+        "tv_videos": tv_videos,
+        "type": "tv",
+    }
+
+    return render(request, "tv_detail.html", context)
