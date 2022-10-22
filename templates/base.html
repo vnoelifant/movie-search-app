@@ -41,11 +41,11 @@
                 Browse TV Shows
             </a>
             <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
-              <li><a class="dropdown-item" href="#">Trending of the Week</a></li>
-              <li><a class="dropdown-item" href="#">Popular</a></li>
-              <li><a class="dropdown-item" href="#">Top Rated</a></li>
-              <li><a class="dropdown-item" href="#">On Air</a></li>
-              <li><a class="dropdown-item" href="#">On Air Today</a></li>
+              <li><a class="dropdown-item" href="{% url 'tv_trending_week' %}">Trending of the Week</a></li>
+              <li><a class="dropdown-item" href="{% url 'tv_popular' %}">Popular</a></li>
+              <li><a class="dropdown-item" href="{% url 'tv_top_rated' %}">Top Rated</a></li>
+              <li><a class="dropdown-item" href="{% url 'tv_air' %}">On Air</a></li>
+              <li><a class="dropdown-item" href="{% url 'tv_air_today' %}">On Air Today</a></li>
             </ul> 
           </li>
       
