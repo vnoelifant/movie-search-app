@@ -23,7 +23,10 @@
                 {% else %}
                     <img src="{% static 'img/no_img.png' %}" alt="...">
                 {% endif %}
-                <a href="/{{ media.media_type }}/{{ media.id }}/" class="btn btn-dark">View Details</a>
+                {% if type == 'movie' %}
+                    <a href="{% url 'movie_detail' movie_id=media.id  %}" class="btn btn-dark">View Details</a>
+                <a href="{% url 'tv_detail' tv_id=media.id  %}" class="btn btn-dark">View Details</a>
+                {% endif %}
             </div>
         {% endfor %}
     </div>
