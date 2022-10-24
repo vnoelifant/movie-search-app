@@ -3,6 +3,8 @@
 
 {% block title %}Home{% endblock %}
 
+{% block body %}
+
 <style>
     .bg{
         width: 100%;
@@ -11,9 +13,7 @@
     }
 </style>
 
-{% block body %}
-
-<div class="container-fluid text-center" id="movieWrapper">  
+<div class="container-fluid text-center bg" id="movieWrapper">  
     <h2>Trending of the Day</h2><br><br>
     
     <div class="row ten-columns" id="movieRow">
@@ -24,7 +24,7 @@
                 {% else %}
                     <img src="{% static 'img/no_img.png' %}" alt="...">
                 {% endif %}
-                <a href="/{{ media.media_type }}/{{ media.id }}/" class="btn btn-primary">View Details</a>
+                <a href="/{{ media.media_type }}/{{ media.id }}/" class="btn btn-dark">View Details</a>
             </div>
         {% endfor %}
     </div>
