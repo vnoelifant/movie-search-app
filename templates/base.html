@@ -82,16 +82,16 @@
           <div class="col-1">
             <h5>Genres</h5>
             <form action="{% url 'discover' %}" method="get" class="d-flex">
-              <div class="form-check form-check-inline" name="genre">
-                <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="Horror">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" name="genre" type="checkbox" id="inlineCheckbox1" value="Drama">
                 <label class="form-check-label" for="inlineCheckbox1">Drama</label>
               </div>
-              <div class="form-check form-check-inline" name="genre">
-                <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="Drama">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" name="genre" type="checkbox" id="inlineCheckbox2" value="Comedy">
                 <label class="form-check-label" for="inlineCheckbox2">Comedy</label>
               </div>
-              <div class="form-check form-check-inline" name="genre">
-                <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="Comedy">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" name="genre" type="checkbox" id="inlineCheckbox3" value="Horror">
                 <label class="form-check-label" for="inlineCheckbox3">Horror</label>
               </div>
               <button class="btn btn-dark" type="submit">Discover</button>
