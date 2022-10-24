@@ -2,14 +2,15 @@ html,
 body {
     height: 100%;
 }
-#green {
+#sidebar {
 
     background: linear-gradient(rgb(55, 155, 55), rgb(178, 178, 184));
     text-align: center;
     color: black;
-    padding: 50px;
-}
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    padding: 10px;
 
+}
 
 #movieWrapper {
     color: #FFFFFF;

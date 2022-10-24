@@ -14,7 +14,7 @@ def home(request):
     context = {
         "trending": trending,
     }
-    
+
     return render(request, "home.html", context)
 
 
@@ -57,7 +57,7 @@ def movies_now_playing(request):
 def movies_upcoming(request):
 
     upcoming = media_api.get_media_data("/movie/upcoming")
-     # pprint("UPCOMING ", upcoming)
+    # pprint("UPCOMING ", upcoming)
 
     context = {
         "upcoming": upcoming,
@@ -78,7 +78,26 @@ def movies_trending_week(request):
     return render(request, "movies_trending.html", context)
 
 
-def media_similar(request):
+def discover(request):
+
+    # Get a dictionary of available genres
+    genres = media_api.get_genres("/genre/movie/list")
+
+    genre = request.GET.get("genre")
+    print("GENRE: ", genre)
+
+    # Get genre ID
+    genre_id = genres.get(genre)
+    print("GENRE ID: ", genre_id)
+
+    data = media_api.get_media_data("/discover/movie", genre_id=genre_id)
+
+    context = {"data": data}
+
+    return render(request, "discover.html", context)
+
+
+def media_search(request):
 
     query = request.GET.get("query")
     year = request.GET.get("year")
@@ -112,7 +131,7 @@ def media_similar(request):
 
         context = {"data": data, "type": type, "choice": choice}
 
-        return render(request, "media_similar.html", context)
+        return render(request, "media_search.html", context)
 
 
 def movie_detail(request, movie_id):
@@ -125,10 +144,11 @@ def movie_detail(request, movie_id):
     context = {
         "movie_detail": movie_detail,
         "movie_videos": movie_videos,
-        "type": "movie"
+        "type": "movie",
     }
 
     return render(request, "movie_detail.html", context)
+
 
 def tv_popular(request):
 
@@ -153,6 +173,7 @@ def tv_top_rated(request):
 
     return render(request, "tv_top_rated.html", context)
 
+
 def tv_trending_week(request):
 
     trending = media_api.get_media_data("/trending/tv/week")
@@ -164,6 +185,7 @@ def tv_trending_week(request):
 
     return render(request, "tv_trending.html", context)
 
+
 def tv_air(request):
 
     tv_air = media_api.get_media_data("/tv/on_the_air")
@@ -174,6 +196,7 @@ def tv_air(request):
 
     return render(request, "tv_air.html", context)
 
+
 def tv_air_today(request):
 
     tv_air_today = media_api.get_media_data("/tv/airing_today")
@@ -183,6 +206,7 @@ def tv_air_today(request):
     }
 
     return render(request, "tv_air_today.html", context)
+
 
 def tv_detail(request, tv_id):
 

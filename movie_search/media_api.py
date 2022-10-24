@@ -16,7 +16,9 @@ LANG_ENG = "en-US"
 REGION_US = COUNTRY_CODES.get("United States")
 
 
-def get_media(endpoint: str, text_query: str, type: str, year: int = None) -> dict[str, int]:
+def get_media(
+    endpoint: str, text_query: str, type: str, year: int = None
+) -> dict[str, int]:
     """This function returns a dictionary of media details based on a text query"""
     url = f"{BASE_URL}{endpoint}"
     params = {"api_key": API_KEY, "query": text_query}
@@ -29,7 +31,7 @@ def get_media(endpoint: str, text_query: str, type: str, year: int = None) -> di
     print("Endpoint: ", endpoint)
     data = response.json()["results"]
 
-    title_key = "original_title" if type =="movie" else "original_name"
+    title_key = "original_title" if type == "movie" else "original_name"
 
     media = {row[title_key]: row["id"] for row in data}
 
@@ -63,14 +65,20 @@ def get_genres(endpoint: str) -> dict[str, int]:
     return genres
 
 
-def get_media_data(endpoint, language=LANG_ENG, region=REGION_US):
+def get_media_data(endpoint, language=LANG_ENG, region=REGION_US, genre_id=None):
     """This function returns a JSON object of tmdb media data"""
 
     url = f"{BASE_URL}{endpoint}"
 
     print("URL: ", url)
+
     params = {"api_key": API_KEY, "language": language, "region": region}
-    
+
+    if genre_id is not None:
+        params.update({"with_genres": genre_id})
+
+    print("Params: ", params)
+
     response = requests.get(url, params=params)
 
     return response.json()
