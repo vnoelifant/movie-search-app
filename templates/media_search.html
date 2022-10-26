@@ -12,10 +12,7 @@
         {% for media in data.results %}
             <div class="card" id="movieCard">
                 <img src="https://image.tmdb.org/t/p/w500{{ media.poster_path }}" class="card-img-top" alt="...">
-                {% if type == 'movie' %}
-                    <a href="{% url 'movie_detail' movie_id=media.id  %}" class="btn btn-dark">View Details</a>
-                <a href="{% url 'tv_detail' tv_id=media.id  %}" class="btn btn-dark">View Details</a>
-                {% endif %}
+                <a href="{% url url_path obj_id=media.id  %}" class="btn btn-dark">View Details</a>
             </div>
         {% endfor %}
     </div>

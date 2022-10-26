@@ -8,12 +8,11 @@ from movie_search.models import Search
 
 # Create your views here.
 def home(request):
+
     trending = media_api.get_media_data("/trending/all/day")
     # pprint("TRENDING: ", trending)
 
-    context = {
-        "trending": trending,
-    }
+    context = {"trending": trending}
 
     return render(request, "home.html", context)
 
@@ -129,17 +128,18 @@ def media_search(request):
         data = media_api.get_media_data(f"/{type}/{media_id}/{choice}")
         # pprint("DATA: ", data)
 
-        context = {"data": data, "type": type, "choice": choice}
+        url_path = "movie_detail" if type == "movie" else "tv_detail"
+        context = {"data": data, "type": type, "choice": choice, "url_path": url_path}
 
         return render(request, "media_search.html", context)
 
 
-def movie_detail(request, movie_id):
+def movie_detail(request, obj_id):
 
-    movie_detail = media_api.get_media_detail(f"/movie/{movie_id}")
+    movie_detail = media_api.get_media_detail(f"/movie/{obj_id}")
     # pprint("MOVIE DETAIL: ", movie_detail)
 
-    movie_videos = media_api.get_media_detail(f"/movie/{movie_id}/videos")
+    movie_videos = media_api.get_media_detail(f"/movie/{obj_id}/videos")
 
     context = {
         "movie_detail": movie_detail,
@@ -208,12 +208,12 @@ def tv_air_today(request):
     return render(request, "tv_air_today.html", context)
 
 
-def tv_detail(request, tv_id):
+def tv_detail(request, obj_id):
 
-    tv_detail = media_api.get_media_detail(f"/tv/{tv_id}")
+    tv_detail = media_api.get_media_detail(f"/tv/{obj_id}")
     # pprint("TV DETAIL: ", tv_detail)
 
-    tv_videos = media_api.get_media_detail(f"/tv/{tv_id}/videos")
+    tv_videos = media_api.get_media_detail(f"/tv/{obj_id}/videos")
 
     context = {
         "tv_detail": tv_detail,
