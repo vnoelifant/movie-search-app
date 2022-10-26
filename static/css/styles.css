@@ -15,7 +15,6 @@ body {
 #movieWrapper {
     color: #FFFFFF;
     background-color: #070707;
-    margin-right: 100px;
     padding-top: 20px;
     padding-bottom: 20px;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -27,13 +26,13 @@ body {
 
 #mediaInfo {
     color: #000000;
-    margin-left:550px; 
+    margin-left:550px;
     margin-top: -300px;
     min-height: 290px;
 }
 
 .col.mediaOverview {
-    color:black; 
+    color:black;
     margin-left: 30px;
     margin-right: 260px;
     font-size: medium
@@ -67,7 +66,7 @@ body {
 
 .form-select.mr-sm-2 {
     padding-left: 5px;
-    background-color: #131213; 
+    background-color: #131213;
     color: #d6d6d6;
     border-radius: 5px;
     width: 175px;
@@ -86,7 +85,6 @@ body {
 #movieRow {
     margin-right: 20px; margin-left: 20px;
 }
-
 
 
 
