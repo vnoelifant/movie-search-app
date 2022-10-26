@@ -7,15 +7,13 @@
 
 <style>
     .bg{
-        width: 100%;
-        height: 300px;
         background-image: url("{% static 'img/movies-unsplash.jpg' %}");
+        background-size: contain, cover;
     }
 </style>
 
-<div class="container-fluid text-center bg" id="movieWrapper">  
     <h2>Trending of the Day</h2><br><br>
-    
+
     <div class="row ten-columns" id="movieRow">
         {% for media in trending.results %}
             <div class="card" id="movieCard">
@@ -24,11 +22,14 @@
                 {% else %}
                     <img src="{% static 'img/no_img.png' %}" alt="...">
                 {% endif %}
-                <a href="/{{ media.media_type }}/{{ media.id }}/" class="btn btn-dark">View Details</a>
+                {% if media.media_type == 'movie' %}
+                    <a href="{% url 'movie_detail' obj_id=media.id  %}" class="btn btn-dark">View Details</a>
+                {% else %}
+                    <a href="{% url 'tv_detail' obj_id=media.id  %}" class="btn btn-dark">View Details</a>
+                {% endif %}
             </div>
         {% endfor %}
     </div>
-</div> 
 
     <!--
     <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
@@ -40,5 +41,5 @@
             {% endfor %}
         </div>
     </div>
-    --> 
+    -->
 {% endblock %}

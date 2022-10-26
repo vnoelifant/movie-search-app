@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Upcoming Movies{% endblock %}
+{% block title %}Discovered Movies{% endblock %}
 
 {% block body %}
 
 <div class="container-fluid text-center" id="movieWrapper">
-    <h2>Upcoming Movies</h2><br><br>
+    <h2>Discovered Movies</h2><br><br>
 
-    <div class="row" id="movieRow">
-        {% for movie in upcoming.results %}
+    <div class="row " id="movieRow">
+        {% for movie in data.results %}
             <div class="card" id="movieCard">
                 <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" class="card-img-top" alt="...">
                 <a href="{% url 'movie_detail' obj_id=movie.id  %}" class="btn btn-dark">View Details</a>
