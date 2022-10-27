@@ -84,7 +84,7 @@
         <!-- Navigation links in sidebar-->
         <form action="{% url 'discover' %}" method="get" class="d-flex">
           <fieldset class="group"> 
-            <legend>Select Genre</legend> 
+            <legend>Genre</legend> 
             <ul class="checkbox"> 
               <li><input name="genre" type="checkbox" id="cb1" value="Drama" /><label for="cb1">Drama</label></li> 
               <li><input name="genre" type="checkbox" id="cb2" value="Comedy" /><label for="cb2">Comedy</label></li> 
@@ -92,9 +92,31 @@
               <li><input name="genre" type="checkbox" id="cb3" value="Crime" /><label for="cb4">Crime</label></li>
               <li><input name="genre" type="checkbox" id="cb3" value="Family" /><label for="cb5">Family</label></li>
               <li><input name="genre" type="checkbox" id="cb3" value="Mystery" /><label for="cb6">Mystery</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="Action" /><label for="cb7">Action</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="Adventure" /><label for="cb8">Adventure</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="Thriller" /><label for="cb9">Thriller</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="War" /><label for="cb10">War</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="Western" /><label for="cb11">Western</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="TV Movie" /><label for="cb12">TV Movie</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="Romance" /><label for="cb13">Romance</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="Science Fiction" /><label for="cb14">Science Fiction</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="Music" /><label for="cb15">Music</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="History" /><label for="cb16">Histery</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="Mystery" /><label for="c17">Fantasy</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="Mystery" /><label for="cb18">Documentary</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="Mystery" /><label for="cb19">Animation</label></li>
+            </ul>
+            <hr>
+            <legend>Provider</legend> 
+            <ul class="checkbox"> 
+              <li><input name="provider" type="checkbox" id="cb1" value="Netflix" /><label for="cb1">Netflix</label></li> 
+              <li><input name="provider" type="checkbox" id="cb2" value="Prime" /><label for="cb2">Amazon</label></li> 
+              <li><input name="provider" type="checkbox" id="cb3" value="Hulu" /><label for="cb3">Hulu</label></li>  
             </ul> 
-          </fieldset> 
-        <button class="btn btn-dark" type="submit">Discover</button>
+          </fieldset>  
+          <div>
+            <button class="btn btn-dark" type="submit">Discover</button>
+          </div>
         </form>
         
       </div>

@@ -21,12 +21,6 @@ h2 {
 
 }
 
-/*
-#rowMain {
-    margin-left: 300px;
-}
-*/
-
 fieldset.group  { 
     margin: 0; 
     padding: 0; 
@@ -35,28 +29,29 @@ fieldset.group  {
   } 
   
 fieldset.group legend { 
-margin: 0; 
-padding: 0; 
-font-weight: bold; 
-margin-left: 20px; 
-font-size: 100%; 
-color: black; 
+    margin: 0; 
+    padding: 0; 
+    font-weight: bold; 
+    margin-left: 20px; 
+    font-size: 100%; 
+    color: black; 
 } 
   
   
 ul.checkbox  { 
-margin: 0; 
-padding: 0; 
-margin-left: 20px; 
-list-style: none; 
+    margin: 0; 
+    padding: 0; 
+    margin-left: 20px; 
+    list-style: none; 
+    /*column-count: 3;*/
 } 
 
 ul.checkbox li input { 
-margin-right: .25em; 
+    margin-right: .25em; 
 } 
 
 ul.checkbox li { 
-border: 1px transparent solid; 
+    border: 1px transparent solid; 
 } 
   
 
