@@ -2,6 +2,13 @@ html,
 body {
     height: 100%;
 }
+
+h2 {
+
+    text-align: center;
+    
+    }
+    
 #sidebar {
 
     background: linear-gradient(rgb(55, 155, 55), rgb(178, 178, 184));
