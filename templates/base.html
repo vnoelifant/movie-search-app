@@ -77,30 +77,43 @@
   <!-- This container contains the sidebar -->
   <div class="container-fluid h-100">
 
-    <div class="row">
+    <div class="row" id="rowMain">
 
       <div class="col-2" id="sidebar">
         <h4>Discover Media</h4>
         <!-- Navigation links in sidebar-->
-        <h5>Genres</h5>
         <form action="{% url 'discover' %}" method="get" class="d-flex">
+          <h5>Genres</h5>
+          <button class="btn btn-dark" type="submit">Discover</button>
           <div class="form-check form-check-inline">
             <input class="form-check-input" name="genre" type="checkbox" id="inlineCheckbox1" value="Drama">
             <label class="form-check-label" for="inlineCheckbox1">Drama</label>
           </div>
           <div class="form-check form-check-inline">
             <input class="form-check-input" name="genre" type="checkbox" id="inlineCheckbox2" value="Comedy">
-            <label class="form-check-label" for="inlineCheckbox2">Comedy</label>
+            <label class="form-check-label" for="inlineCheckbox2">Comedy</label><br>
           </div>
           <div class="form-check form-check-inline">
             <input class="form-check-input" name="genre" type="checkbox" id="inlineCheckbox3" value="Horror">
             <label class="form-check-label" for="inlineCheckbox3">Horror</label>
+          </div><br>
+          <h5>Providers</h5>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" name="platform" type="checkbox" id="inlineCheckbox1" value="8">
+            <label class="form-check-label" for="inlineCheckbox1">Netflix</label>
           </div>
-          <button class="btn btn-dark" type="submit">Discover</button>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" name="platform" type="checkbox" id="inlineCheckbox2" value="9">
+            <label class="form-check-label" for="inlineCheckbox2">Amazon Prime</label><br>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" name="platform" type="checkbox" id="inlineCheckbox3" value="9">
+            <label class="form-check-label" for="inlineCheckbox3">Hulu</label>
+          </div>
         </form>
       </div>
 
-      <div class="col-10" id="movieWrapper" style="float: right">
+      <div class="col-10" id="movieWrapper" style="float: right;">
         {% block body %} {% endblock %}
       </div>
 

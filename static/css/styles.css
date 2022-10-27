@@ -8,7 +8,7 @@ h2 {
     text-align: center;
     
     }
-    
+
 #sidebar {
 
     background: linear-gradient(rgb(55, 155, 55), rgb(178, 178, 184));
@@ -16,8 +16,15 @@ h2 {
     color: black;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     padding: 10px;
+    /*width: 300px;*/
 
 }
+
+/*
+#rowMain {
+    margin-left: 300px;
+}
+*/
 
 #movieWrapper {
     color: #FFFFFF;
