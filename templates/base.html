@@ -83,34 +83,20 @@
         <h4>Discover Media</h4>
         <!-- Navigation links in sidebar-->
         <form action="{% url 'discover' %}" method="get" class="d-flex">
-          <h5>Genres</h5>
-          <button class="btn btn-dark" type="submit">Discover</button>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" name="genre" type="checkbox" id="inlineCheckbox1" value="Drama">
-            <label class="form-check-label" for="inlineCheckbox1">Drama</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" name="genre" type="checkbox" id="inlineCheckbox2" value="Comedy">
-            <label class="form-check-label" for="inlineCheckbox2">Comedy</label><br>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" name="genre" type="checkbox" id="inlineCheckbox3" value="Horror">
-            <label class="form-check-label" for="inlineCheckbox3">Horror</label>
-          </div><br>
-          <h5>Providers</h5>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" name="platform" type="checkbox" id="inlineCheckbox1" value="8">
-            <label class="form-check-label" for="inlineCheckbox1">Netflix</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" name="platform" type="checkbox" id="inlineCheckbox2" value="9">
-            <label class="form-check-label" for="inlineCheckbox2">Amazon Prime</label><br>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" name="platform" type="checkbox" id="inlineCheckbox3" value="9">
-            <label class="form-check-label" for="inlineCheckbox3">Hulu</label>
-          </div>
+          <fieldset class="group"> 
+            <legend>Select Genre</legend> 
+            <ul class="checkbox"> 
+              <li><input name="genre" type="checkbox" id="cb1" value="Drama" /><label for="cb1">Drama</label></li> 
+              <li><input name="genre" type="checkbox" id="cb2" value="Comedy" /><label for="cb2">Comedy</label></li> 
+              <li><input name="genre" type="checkbox" id="cb3" value="Horror" /><label for="cb3">Horror</label></li>  
+              <li><input name="genre" type="checkbox" id="cb3" value="Crime" /><label for="cb4">Crime</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="Family" /><label for="cb5">Family</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="Mystery" /><label for="cb6">Mystery</label></li>
+            </ul> 
+          </fieldset> 
+        <button class="btn btn-dark" type="submit">Discover</button>
         </form>
+        
       </div>
 
       <div class="col-10" id="movieWrapper" style="float: right;">
