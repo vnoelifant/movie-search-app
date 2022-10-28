@@ -84,6 +84,7 @@
         <!-- Navigation links in sidebar-->
         <form action="{% url 'discover' %}" method="get" class="d-flex">
           <fieldset class="group"> 
+            
             <legend>Genre</legend> 
             <ul class="checkbox"> 
               <li><input name="genre" type="checkbox" id="cb1" value="Drama" /><label for="cb1">Drama</label></li> 
@@ -107,14 +108,55 @@
               <li><input name="genre" type="checkbox" id="cb3" value="Mystery" /><label for="cb19">Animation</label></li>
             </ul>
             <hr>
+            
             <legend>Provider</legend> 
             <ul class="checkbox"> 
               <li><input name="provider" type="checkbox" id="cb1" value="Netflix" /><label for="cb1">Netflix</label></li> 
               <li><input name="provider" type="checkbox" id="cb2" value="Prime" /><label for="cb2">Amazon</label></li> 
               <li><input name="provider" type="checkbox" id="cb3" value="Hulu" /><label for="cb3">Hulu</label></li>  
             </ul> 
+            <hr>
+            
+            <legend>Region</legend>
+              <p>
+              <select name="Region">
+                <!-- TODO: Import countries from data structure -->
+                <option>United States</option>
+                <option>England</option>
+                <option>Germany</option>
+              </select></p>
+              <p>
+            <hr>
+            
+            <legend>Release Year</legend>
+              <input type="date" id="start" name="year" value="2018-07-22" min="1940-01-01" max="2022-12-31">
+            <hr>
+
+            <legend>Director</legend>
+            <input type="text" class="form-control" id="directorName" placeholder="Enter First and Last Name">
+
+            <hr>
+            
+            <legend>Sort</legend>
+            <!-- The default is popularity descending -->
+            <select class="form-select" multiple aria-label="multiple select sort" name="sort">
+              <option selected>--Sort By--</option>
+              <option value="Popularity Ascending">Popularity Ascending</option>
+              <option value="Release Date Ascending">Release Date Ascending</option>
+              <option value="Release Date Descending">Release Date Descending</option>
+              <option value="Primary Release Date Ascending">Primary Release Date Ascending</option>
+              <option value="Primary Release Date Descending">Primary Release Date Descending</option>
+              <option value="Original Title Ascending">Original Title Ascending</option>
+              <option value="Original Title Descending">Original Title Descending</option>
+              <option value="Vote Average Ascending">Vote Average Ascending</option>
+              <option value="Vote Average Desending">Vote Average Descending</option>
+              <option value="Vote Count Ascending">Vote Count Ascending</option>
+              <option value="Vote Count Descending">Vote Count Descending</option>
+            </select>
+
           </fieldset>  
-          <div>
+          
+            <div>
             <button class="btn btn-dark" type="submit">Discover</button>
           </div>
         </form>
