@@ -9,6 +9,10 @@ h2 {
     
 }
 
+hr.a  {
+    border-top: 3px double black;
+    width: 210px;
+  }
 
 #sidebar {
 
