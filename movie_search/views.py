@@ -82,11 +82,12 @@ def discover(request):
     # Get a dictionary of available genres
     genres = media_api.get_genres("/genre/movie/list")
 
-    genre = request.GET.get("genre")
-    print("GENRE: ", genre)
+    genre_list = request.GET.getlist("genre")
+    print("Request: ", request.GET)
+    print("GENRE: ", genre_list)
 
-    # Get genre ID
-    genre_id = genres.get(genre)
+    # Get genre ID/s
+    genre_id = [genres.get(genre) for genre in genre_list]
     print("GENRE ID: ", genre_id)
 
     data = media_api.get_media_data("/discover/movie", genre_id=genre_id)

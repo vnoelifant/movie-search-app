@@ -67,7 +67,7 @@ def get_genres(endpoint: str) -> dict[str, int]:
 
 def get_media_data(endpoint, language=LANG_ENG, region=REGION_US, genre_id=None):
     """This function returns a JSON object of tmdb media data"""
-
+    print("Inside get_media_data functon!!!!!!!!!!!!")
     url = f"{BASE_URL}{endpoint}"
 
     print("URL: ", url)
@@ -85,7 +85,6 @@ def get_media_data(endpoint, language=LANG_ENG, region=REGION_US, genre_id=None)
 
 
 # Discover endpoint functions
-
 
 def get_recently_released(
     endpoint,

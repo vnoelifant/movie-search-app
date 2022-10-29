@@ -77,30 +77,93 @@
   <!-- This container contains the sidebar -->
   <div class="container-fluid h-100">
 
-    <div class="row">
+    <div class="row" id="rowMain">
 
       <div class="col-2" id="sidebar">
         <h4>Discover Media</h4>
         <!-- Navigation links in sidebar-->
-        <h5>Genres</h5>
         <form action="{% url 'discover' %}" method="get" class="d-flex">
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" name="genre" type="checkbox" id="inlineCheckbox1" value="Drama">
-            <label class="form-check-label" for="inlineCheckbox1">Drama</label>
+          <fieldset class="group"> 
+            
+            <legend>Genre</legend> 
+            <ul class="checkbox"> 
+              <li><input name="genre" type="checkbox" id="cb1" value="Drama" /><label for="cb1">Drama</label></li> 
+              <li><input name="genre" type="checkbox" id="cb2" value="Comedy" /><label for="cb2">Comedy</label></li> 
+              <li><input name="genre" type="checkbox" id="cb3" value="Horror" /><label for="cb3">Horror</label></li>  
+              <li><input name="genre" type="checkbox" id="cb3" value="Crime" /><label for="cb4">Crime</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="Family" /><label for="cb5">Family</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="Mystery" /><label for="cb6">Mystery</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="Action" /><label for="cb7">Action</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="Adventure" /><label for="cb8">Adventure</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="Thriller" /><label for="cb9">Thriller</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="War" /><label for="cb10">War</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="Western" /><label for="cb11">Western</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="TV Movie" /><label for="cb12">TV Movie</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="Romance" /><label for="cb13">Romance</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="Science Fiction" /><label for="cb14">Science Fiction</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="Music" /><label for="cb15">Music</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="History" /><label for="cb16">History</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="Mystery" /><label for="c17">Fantasy</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="Mystery" /><label for="cb18">Documentary</label></li>
+              <li><input name="genre" type="checkbox" id="cb3" value="Mystery" /><label for="cb19">Animation</label></li>
+            </ul>
+            <hr class="a">
+            
+            <legend>Provider</legend> 
+            <ul class="checkbox"> 
+              <li><input name="provider" type="checkbox" id="cb1" value="Netflix" /><label for="cb1">Netflix</label></li> 
+              <li><input name="provider" type="checkbox" id="cb2" value="Prime" /><label for="cb2">Amazon</label></li> 
+              <li><input name="provider" type="checkbox" id="cb3" value="Hulu" /><label for="cb3">Hulu</label></li>  
+            </ul> 
+            <hr class="a">
+            
+            <legend>Region</legend>
+              <p>
+              <select name="region">
+                <!-- TODO: Import countries from data structure -->
+                <option>United States</option>
+                <option>England</option>
+                <option>Germany</option>
+              </select></p>
+              <p>
+            <hr class="a">
+            
+            <legend>Release Year</legend>
+              <input type="date" id="start" name="year" value="2018-07-22" min="1940-01-01" max="2022-12-31">
+            <hr class="a">
+
+            <legend>Director</legend>
+            <input type="text" class="form-control" id="directorName" placeholder="Enter First and Last Name">
+
+            <hr class="a">
+            
+            <legend>Sort</legend>
+            <!-- The default is popularity descending -->
+            <select class="form-select" multiple aria-label="multiple select sort" name="sort">
+              <option selected>--Sort By--</option>
+              <option value="Popularity Ascending">Popularity Ascending</option>
+              <option value="Release Date Ascending">Release Date Ascending</option>
+              <option value="Release Date Descending">Release Date Descending</option>
+              <option value="Primary Release Date Ascending">Primary Release Date Ascending</option>
+              <option value="Primary Release Date Descending">Primary Release Date Descending</option>
+              <option value="Original Title Ascending">Original Title Ascending</option>
+              <option value="Original Title Descending">Original Title Descending</option>
+              <option value="Vote Average Ascending">Vote Average Ascending</option>
+              <option value="Vote Average Desending">Vote Average Descending</option>
+              <option value="Vote Count Ascending">Vote Count Ascending</option>
+              <option value="Vote Count Descending">Vote Count Descending</option>
+            </select>
+
+          </fieldset>  
+          
+            <div>
+            <button class="btn btn-dark" type="submit">Discover</button>
           </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" name="genre" type="checkbox" id="inlineCheckbox2" value="Comedy">
-            <label class="form-check-label" for="inlineCheckbox2">Comedy</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" name="genre" type="checkbox" id="inlineCheckbox3" value="Horror">
-            <label class="form-check-label" for="inlineCheckbox3">Horror</label>
-          </div>
-          <button class="btn btn-dark" type="submit">Discover</button>
         </form>
+        
       </div>
 
-      <div class="col-10" id="movieWrapper" style="float: right">
+      <div class="col-10" id="movieWrapper" style="float: right;">
         {% block body %} {% endblock %}
       </div>
 
