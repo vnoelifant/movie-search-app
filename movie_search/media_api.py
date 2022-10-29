@@ -65,7 +65,7 @@ def get_genres(endpoint: str) -> dict[str, int]:
     return genres
 
 
-def get_media_data(endpoint, language=LANG_ENG, region=REGION_US, genre_id=None):
+def get_media_data(endpoint, language=LANG_ENG, region=REGION_US, genre_id=None, sort_option=None):
     """This function returns a JSON object of tmdb media data"""
     print("Inside get_media_data functon!!!!!!!!!!!!")
     url = f"{BASE_URL}{endpoint}"
@@ -76,6 +76,9 @@ def get_media_data(endpoint, language=LANG_ENG, region=REGION_US, genre_id=None)
 
     if genre_id is not None:
         params.update({"with_genres": genre_id})
+
+    if sort_option is not None:
+        params.update({"sort_by": sort_option})
 
     print("Params: ", params)
 
