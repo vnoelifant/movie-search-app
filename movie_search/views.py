@@ -89,10 +89,11 @@ def discover(request):
     genre_id = [genres.get(genre) for genre in genre_list]
     print("GENRE ID: ", genre_id)
 
-    sort_option = request.GET.get("sort")
+    sort_option = request.GET.getlist("sort")
     print("SORT BY: ", sort_option)
 
 
+    print("REQUEST: ", request.GET)
     data = media_api.get_media_data("/discover/movie", genre_id=genre_id, sort_option=sort_option)
 
     context = {"data": data}
