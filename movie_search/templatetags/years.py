@@ -7,8 +7,7 @@ register = template.Library()
 def get_years():
 
     year_dropdown = []
-    for year in range(1940, (datetime.datetime.now().year + 2)):
+    for year in range((datetime.datetime.now().year + 2), 1940, -1):
         year_dropdown.append(year)
-    year_dropdown.reverse()
 
     return year_dropdown
