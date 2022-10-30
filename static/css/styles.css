@@ -56,6 +56,12 @@ ul.checkbox li input {
 ul.checkbox li { 
     border: 1px transparent solid; 
 } 
+
+#sortBy {
+    width: 200px;
+    overflow-x: scroll;
+    overflow-y: hidden; 
+}
   
 #directorName {
     width: 205px;
