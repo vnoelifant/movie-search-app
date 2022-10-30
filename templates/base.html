@@ -120,12 +120,13 @@
             
             <legend>Region</legend>
               <p>
-              <select name="region">
-                <!-- TODO: Import countries from data structure -->
-                <option>United States</option>
-                <option>England</option>
-                <option>Germany</option>
-              </select></p>
+                {% load countries %}
+                {% get_countries as countries %}
+                <select class="form-select" id="countryList" >
+                {% for country in countries %}
+                    <option value="{{ country.code }}">{{ country.name }}</option>
+                {% endfor %}
+                </select>
               <p>
             <hr class="a">
             
