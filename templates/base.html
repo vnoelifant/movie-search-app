@@ -125,8 +125,14 @@
           <hr class="a">
             
             <legend>Release Year</legend>
-              <input type="text" class="form-control" id="year" placeholder="Enter year">
-            <hr class="a">
+            {% load years %}
+            {% get_years as years %}
+            <select class="form-select year" name="year" >
+            {% for year in years %}
+                <option value="{{ year }}">{{ year }}</option>
+            {% endfor %}
+            </select>
+          <hr class="a">
 
             <legend>Director</legend>
             <input type="text" class="form-control" id="directorName" placeholder="Enter First and Last Name">
