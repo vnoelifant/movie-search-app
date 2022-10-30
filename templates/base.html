@@ -119,16 +119,24 @@
             <hr class="a">
             
             <legend>Region</legend>
-              <p>
-                {% load countries %}
-                {% get_countries as countries %}
-                <select class="form-select" id="countryList" >
-                {% for country in countries %}
-                    <option value="{{ country.code }}">{{ country.name }}</option>
-                {% endfor %}
-                </select>
-              <p>
+              {% load countries %}
+              {% get_countries as countries %}
+              <select class="form-select country" name="region" >
+              {% for country in countries %}
+                  <option value="{{ country.code }}">{{ country.name }}</option>
+              {% endfor %}
+              </select>
             <hr class="a">
+
+            <legend>Watch Region</legend>
+            {% load countries %}
+            {% get_countries as countries %}
+            <select class="form-select country" name="watch_region" >
+            {% for country in countries %}
+                <option value="{{ country.code }}">{{ country.name }}</option>
+            {% endfor %}
+            </select>
+          <hr class="a">
             
             <legend>Release Year</legend>
               <input type="text" class="form-control" id="year" placeholder="Enter year">
@@ -139,10 +147,9 @@
 
             <hr class="a">
             
-            <legend>Sort</legend>
+            <legend>Sort By</legend>
             <!-- The default is popularity descending -->
-            <select class="form-select" multiple="multiple" size="15" name="sort" id="sortBy" >
-              <option selected>--Sort By--</option>
+            <select class="form-select" multiple="multiple" size="10" name="sort" id="sortBy" >
               <option value="Popularity Descending">Popularity Descending</option>
               <option value="Popularity Ascending">Popularity Ascending</option>
               <option value="Release Date Ascending">Release Date Ascending</option>

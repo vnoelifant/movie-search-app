@@ -92,9 +92,14 @@ def discover(request):
     sort_option = request.GET.getlist("sort")
     print("SORT BY: ", sort_option)
 
+    region = request.GET.get("region")
+    print("REGION: ", region)
+
+    watch_region = request.GET.get("watch_region")
+    print("WATCH REGION: ", region)
 
     print("REQUEST: ", request.GET)
-    data = media_api.get_media_data("/discover/movie", genre_id=genre_id, sort_option=sort_option)
+    data = media_api.get_media_data("/discover/movie",region=region, genre_id=genre_id, sort_option=sort_option, watch_region=watch_region)
 
     context = {"data": data}
 

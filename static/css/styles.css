@@ -24,6 +24,10 @@ hr.a  {
 
 }
 
+.form-select.country {
+    width: 150px;
+}
+
 fieldset.group  { 
     margin: 0; 
     padding: 0; 
@@ -59,8 +63,7 @@ ul.checkbox li {
 
 #sortBy {
     width: 200px;
-    overflow-x: scroll;
-    overflow-y: hidden; 
+    overflow: auto;
 }
   
 #directorName {
