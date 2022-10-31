@@ -98,8 +98,18 @@ def discover(request):
     watch_region = request.GET.get("watch_region")
     print("WATCH REGION: ", region)
 
+    year = int(request.GET.get("year"))
+    print("YEAR: ", year, type(year))
+
     print("REQUEST: ", request.GET)
-    data = media_api.get_media_data("/discover/movie",region=region, genre_id=genre_id, sort_option=sort_option, watch_region=watch_region)
+    data = media_api.get_media_data(
+        "/discover/movie",
+        region=region,
+        year=year,
+        genre_id=genre_id,
+        sort_option=sort_option,
+        watch_region=watch_region,
+    )
 
     context = {"data": data}
 

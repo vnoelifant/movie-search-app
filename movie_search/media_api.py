@@ -65,7 +65,15 @@ def get_genres(endpoint: str) -> dict[str, int]:
     return genres
 
 
-def get_media_data(endpoint, language=LANG_ENG, region=REGION_US, genre_id=None, sort_option=None, watch_region=None):
+def get_media_data(
+    endpoint,
+    language=LANG_ENG,
+    region=REGION_US,
+    year=None,
+    genre_id=None,
+    sort_option=None,
+    watch_region=None,
+):
     """This function returns a JSON object of tmdb media data"""
     print("Inside get_media_data functon!!!!!!!!!!!!")
     url = f"{BASE_URL}{endpoint}"
@@ -79,9 +87,12 @@ def get_media_data(endpoint, language=LANG_ENG, region=REGION_US, genre_id=None,
 
     if sort_option is not None:
         params.update({"sort_by": sort_option})
-    
+
     if watch_region is not None:
         params.update({"watch_region": watch_region})
+
+    if year is not None:
+        params.update({"primary_release_year": year})
 
     print("Params: ", params)
 
@@ -91,6 +102,7 @@ def get_media_data(endpoint, language=LANG_ENG, region=REGION_US, genre_id=None,
 
 
 # Discover endpoint functions
+
 
 def get_recently_released(
     endpoint,
