@@ -28,6 +28,10 @@ hr.a  {
     width: 150px;
 }
 
+.form-select.year {
+    width: 150px;
+}
+
 fieldset.group  { 
     margin: 0; 
     padding: 0; 

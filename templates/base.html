@@ -51,14 +51,14 @@
 
           <form action="{% url 'media_search' %}" method="get" class="d-flex">
             <select class="form-select mr-sm-2" name="type" class="mb-3">
-              <option value="">--Select Media--</option>
+              <option disabled="disabled" selected="selected">Select Media</option>
               <option value="movie">Movies</option>
               <option value="tv">TV Shows</option>
             </select>
 
 
             <select class="form-select mr-sm-2" name="choice" id="selectionChoice" class="mb-3">
-              <option value="">--Select Criteria--</option>
+              <option disabled="disabled" selected="selected">Select Criteria</option>
               <option value="similar">Similar</option>
               <option value="recommendations">Recommendation</option>
             </select>
@@ -108,9 +108,10 @@
               {% load countries %}
               {% get_countries as countries %}
               <select class="form-select country" name="region" >
-              {% for country in countries %}
-                  <option value="{{ country.code }}">{{ country.name }}</option>
-              {% endfor %}
+                <option disabled="disabled" selected="selected">Select Option</option>
+                {% for country in countries %}
+                    <option value="{{ country.code }}">{{ country.name }}</option>
+                {% endfor %}
               </select>
             <hr class="a">
 
@@ -118,9 +119,10 @@
             {% load countries %}
             {% get_countries as countries %}
             <select class="form-select country" name="watch_region" >
-            {% for country in countries %}
-                <option value="{{ country.code }}">{{ country.name }}</option>
-            {% endfor %}
+              <option disabled="disabled" selected="selected">Select Option</option>
+              {% for country in countries %}
+                  <option value="{{ country.code }}">{{ country.name }}</option>
+              {% endfor %}
             </select>
           <hr class="a">
             
@@ -128,9 +130,10 @@
             {% load years %}
             {% get_years as years %}
             <select class="form-select year" name="year" >
-            {% for year in years %}
-                <option value="{{ year }}">{{ year }}</option>
-            {% endfor %}
+              <option disabled="disabled" selected="selected">Select Option</option>
+              {% for year in years %}
+                  <option value="{{ year }}">{{ year }}</option>
+              {% endfor %}
             </select>
           <hr class="a">
 
