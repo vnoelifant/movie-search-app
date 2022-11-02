@@ -24,6 +24,14 @@ hr.a  {
 
 }
 
+.form-select.country {
+    width: 150px;
+}
+
+.form-select.year {
+    width: 200px;
+}
+
 fieldset.group  { 
     margin: 0; 
     padding: 0; 
@@ -56,6 +64,11 @@ ul.checkbox li input {
 ul.checkbox li { 
     border: 1px transparent solid; 
 } 
+
+#sortBy {
+    width: 200px;
+    overflow: auto;
+}
   
 #directorName {
     width: 205px;

@@ -51,14 +51,14 @@
 
           <form action="{% url 'media_search' %}" method="get" class="d-flex">
             <select class="form-select mr-sm-2" name="type" class="mb-3">
-              <option value="">--Select Media--</option>
+              <option disabled="disabled" selected="selected">Select Media</option>
               <option value="movie">Movies</option>
               <option value="tv">TV Shows</option>
             </select>
 
 
             <select class="form-select mr-sm-2" name="choice" id="selectionChoice" class="mb-3">
-              <option value="">--Select Criteria--</option>
+              <option disabled="disabled" selected="selected">Select Criteria</option>
               <option value="similar">Similar</option>
               <option value="recommendations">Recommendation</option>
             </select>
@@ -86,26 +86,13 @@
           <fieldset class="group"> 
             
             <legend>Genre</legend> 
+            {% load genres %}
+            {% get_genres as genre_list %}
             <ul class="checkbox"> 
-              <li><input name="genre" type="checkbox" id="cb1" value="Drama" /><label for="cb1">Drama</label></li> 
-              <li><input name="genre" type="checkbox" id="cb2" value="Comedy" /><label for="cb2">Comedy</label></li> 
-              <li><input name="genre" type="checkbox" id="cb3" value="Horror" /><label for="cb3">Horror</label></li>  
-              <li><input name="genre" type="checkbox" id="cb3" value="Crime" /><label for="cb4">Crime</label></li>
-              <li><input name="genre" type="checkbox" id="cb3" value="Family" /><label for="cb5">Family</label></li>
-              <li><input name="genre" type="checkbox" id="cb3" value="Mystery" /><label for="cb6">Mystery</label></li>
-              <li><input name="genre" type="checkbox" id="cb3" value="Action" /><label for="cb7">Action</label></li>
-              <li><input name="genre" type="checkbox" id="cb3" value="Adventure" /><label for="cb8">Adventure</label></li>
-              <li><input name="genre" type="checkbox" id="cb3" value="Thriller" /><label for="cb9">Thriller</label></li>
-              <li><input name="genre" type="checkbox" id="cb3" value="War" /><label for="cb10">War</label></li>
-              <li><input name="genre" type="checkbox" id="cb3" value="Western" /><label for="cb11">Western</label></li>
-              <li><input name="genre" type="checkbox" id="cb3" value="TV Movie" /><label for="cb12">TV Movie</label></li>
-              <li><input name="genre" type="checkbox" id="cb3" value="Romance" /><label for="cb13">Romance</label></li>
-              <li><input name="genre" type="checkbox" id="cb3" value="Science Fiction" /><label for="cb14">Science Fiction</label></li>
-              <li><input name="genre" type="checkbox" id="cb3" value="Music" /><label for="cb15">Music</label></li>
-              <li><input name="genre" type="checkbox" id="cb3" value="History" /><label for="cb16">History</label></li>
-              <li><input name="genre" type="checkbox" id="cb3" value="Mystery" /><label for="c17">Fantasy</label></li>
-              <li><input name="genre" type="checkbox" id="cb3" value="Mystery" /><label for="cb18">Documentary</label></li>
-              <li><input name="genre" type="checkbox" id="cb3" value="Mystery" /><label for="cb19">Animation</label></li>
+              {% for genre in genre_list %}
+              <li><input name="genre" type="checkbox" id="cb" value="{{genre}}" /><label for="cb">{{genre}}</label></li> 
+              {% endfor %}
+              <script src="{% static 'js/checkbox.js' %}"></script>
             </ul>
             <hr class="a">
             
@@ -118,29 +105,46 @@
             <hr class="a">
             
             <legend>Region</legend>
-              <p>
-              <select name="region">
-                <!-- TODO: Import countries from data structure -->
-                <option>United States</option>
-                <option>England</option>
-                <option>Germany</option>
-              </select></p>
-              <p>
+              {% load countries %}
+              {% get_countries as countries %}
+              <select class="form-select country" name="region" >
+                <option disabled="disabled" selected="selected">Select Option</option>
+                {% for country in countries %}
+                    <option value="{{ country.code }}">{{ country.name }}</option>
+                {% endfor %}
+              </select>
             <hr class="a">
+
+            <legend>Watch Region</legend>
+            {% load countries %}
+            {% get_countries as countries %}
+            <select class="form-select country" name="watch_region" >
+              <option disabled="disabled" selected="selected">Select Option</option>
+              {% for country in countries %}
+                  <option value="{{ country.code }}">{{ country.name }}</option>
+              {% endfor %}
+            </select>
+          <hr class="a">
             
             <legend>Release Year</legend>
-              <input type="date" id="start" name="year" value="2018-07-22" min="1940-01-01" max="2022-12-31">
-            <hr class="a">
+            {% load years %}
+            <select class="form-select year" name="year" id="year" >
+              <option disabled="disabled" selected="selected">Select Option</option>
+              {% for year in 2023|range:"1940,-1" %} 
+                  <option value="{{ year }}">{{ year }}</option>
+              {% endfor %}
+            </select>
+          <hr class="a">
 
             <legend>Director</legend>
             <input type="text" class="form-control" id="directorName" placeholder="Enter First and Last Name">
 
             <hr class="a">
             
-            <legend>Sort</legend>
+            <legend>Sort By</legend>
             <!-- The default is popularity descending -->
-            <select class="form-select" multiple aria-label="multiple select sort" name="sort">
-              <option selected>--Sort By--</option>
+            <select class="form-select" multiple="multiple" size="10" name="sort" id="sortBy" >
+              <option value="Popularity Descending">Popularity Descending</option>
               <option value="Popularity Ascending">Popularity Ascending</option>
               <option value="Release Date Ascending">Release Date Ascending</option>
               <option value="Release Date Descending">Release Date Descending</option>

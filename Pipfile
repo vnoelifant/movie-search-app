@@ -12,6 +12,7 @@ black = "*"
 django = "*"
 python-decouple = "*"
 django-bootstrap-v5 = "*"
+django-countries = "*"
 
 [dev-packages]
 

@@ -3,8 +3,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from pprint import pprint
 
+from movie_search.models import Genre
 from movie_search import media_api
-from movie_search.models import Search
 
 # Create your views here.
 def home(request):
@@ -83,14 +83,33 @@ def discover(request):
     genres = media_api.get_genres("/genre/movie/list")
 
     genre_list = request.GET.getlist("genre")
-    print("Request: ", request.GET)
     print("GENRE: ", genre_list)
 
     # Get genre ID/s
     genre_id = [genres.get(genre) for genre in genre_list]
     print("GENRE ID: ", genre_id)
 
-    data = media_api.get_media_data("/discover/movie", genre_id=genre_id)
+    sort_option = request.GET.getlist("sort")
+    print("SORT BY: ", sort_option)
+
+    region = request.GET.get("region")
+    print("REGION: ", region)
+
+    watch_region = request.GET.get("watch_region")
+    print("WATCH REGION: ", region)
+
+    year = int(request.GET.get("year"))
+    print("YEAR: ", year, type(year))
+
+    print("REQUEST: ", request.GET)
+    data = media_api.get_media_data(
+        "/discover/movie",
+        region=region,
+        year=year,
+        genre_id=genre_id,
+        sort_option=sort_option,
+        watch_region=watch_region,
+    )
 
     context = {"data": data}
 

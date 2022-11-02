@@ -9,9 +9,7 @@ urlpatterns = [
     path("home/", views.home, name="home"),
     path("movies_popular/", views.movies_popular, name="movies_popular"),
     path("movies_top_rated/", views.movies_top_rated, name="movies_top_rated"),
-    path(
-        "movies_trending_week/", views.movies_trending_week, name="movies_trending_week"
-    ),
+    path("movies_trending_week/", views.movies_trending_week, name="movies_trending_week"),
     path("movies_now_playing/", views.movies_now_playing, name="movies_now_playing"),
     path("movies_upcoming/", views.movies_upcoming, name="movies_upcoming"),
     path("movie/<int:obj_id>/", views.movie_detail, name="movie_detail"),
