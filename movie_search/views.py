@@ -4,7 +4,6 @@ from django.http import HttpResponse
 from pprint import pprint
 
 from movie_search import media_api
-from movie_search.models import Search
 
 # Create your views here.
 def home(request):

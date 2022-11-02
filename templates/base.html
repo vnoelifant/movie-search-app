@@ -87,9 +87,9 @@
             
             <legend>Genre</legend> 
             {% load genres %}
-            {% get_genres as genres %}
+            {% get_genres as genre_list %}
             <ul class="checkbox"> 
-              {% for genre in genres %}
+              {% for genre in genre_list %}
               <li><input name="genre" type="checkbox" id="cb" value="{{genre}}" /><label for="cb">{{genre}}</label></li> 
               {% endfor %}
               <script src="{% static 'js/checkbox.js' %}"></script>
@@ -129,7 +129,7 @@
             <legend>Release Year</legend>
             {% load years %}
             {% get_years as years %}
-            <select class="form-select year" name="year" >
+            <select class="form-select year" name="year" id="year" >
               <option disabled="disabled" selected="selected">Select Option</option>
               {% for year in years %}
                   <option value="{{ year }}">{{ year }}</option>
