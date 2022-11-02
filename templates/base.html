@@ -128,10 +128,9 @@
             
             <legend>Release Year</legend>
             {% load years %}
-            {% get_years as years %}
             <select class="form-select year" name="year" id="year" >
               <option disabled="disabled" selected="selected">Select Option</option>
-              {% for year in years %}
+              {% for year in 2023|range:"1940,-1" %} 
                   <option value="{{ year }}">{{ year }}</option>
               {% endfor %}
             </select>
