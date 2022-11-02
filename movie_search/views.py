@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from pprint import pprint
 
+from movie_search.models import Genre
 from movie_search import media_api
 
 # Create your views here.
