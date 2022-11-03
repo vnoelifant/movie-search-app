@@ -87,9 +87,9 @@
             
             <legend>Genre</legend> 
             {% load genres %}
-            {% get_genres as genre_list %}
+            {% get_genres as genre_names %}
             <ul class="checkbox"> 
-              {% for genre in genre_list %}
+              {% for genre in genre_names %}
               <li><input name="genre" type="checkbox" id="cb" value="{{genre}}" /><label for="cb">{{genre}}</label></li> 
               {% endfor %}
               <script src="{% static 'js/checkbox.js' %}"></script>

@@ -14,7 +14,7 @@
         "name": "Adventure",
         "id": 12
       }
-    }
+    },
     {
         "model": "movie_search.Genre",
         "pk": 3,
@@ -30,7 +30,7 @@
           "name": "Comedy",
           "id": 35
         }
-      }
+      },
       {
         "model": "movie_search.Genre",
         "pk": 5,
@@ -46,7 +46,7 @@
           "name": "Documentary",
           "id": 99
         }
-      }
+      },
       {
         "model": "movie_search.Genre",
         "pk": 7,
@@ -62,7 +62,7 @@
           "name": "Family",
           "id": 10751
         }
-      }
+      },
       {
         "model": "movie_search.Genre",
         "pk": 9,
@@ -78,7 +78,7 @@
           "name": "History",
           "id": 36
         }
-      }
+      },
       {
         "model": "movie_search.Genre",
         "pk": 11,
@@ -94,7 +94,7 @@
           "name": "Music",
           "id": 10402
         }
-      }
+      },
       {
         "model": "movie_search.Genre",
         "pk": 13,
@@ -110,7 +110,7 @@
           "name": "Romance",
           "id": 10749
         }
-      }
+      },
       {
         "model": "movie_search.Genre",
         "pk": 15,
@@ -126,7 +126,7 @@
           "name": "TV Movie",
           "id": 10770
         }
-      }
+      },
       {
         "model": "movie_search.Genre",
         "pk": 17,
@@ -142,7 +142,7 @@
           "name": "War",
           "id": 10752
         }
-      }
+      },
       {
         "model": "movie_search.Genre",
         "pk": 19,
