@@ -106,7 +106,11 @@ def discover(request):
     watch_region = request.GET.get("watch_region")
     print("WATCH REGION: ", region)
 
-    year = int(request.GET.get("year"))
+    year = request.GET.get("year")
+
+    if year:
+        year = int(year)
+    
     print("YEAR: ", year, type(year))
 
     print("REQUEST: ", request.GET)
