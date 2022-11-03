@@ -9,5 +9,5 @@ class Genre(models.Model):
     
     def __str__(self):
         """String for representing the Model object."""
-        return f"{self.id}, {self.name}"
+        return f"{self.id}: {self.name}"
 
