@@ -1,0 +1,154 @@
+[
+    {
+      "model": "movie_search.Genre",
+      "pk": 1,
+      "fields": {
+        "name": "Action",
+        "id": 28
+      }
+    },
+    {
+      "model": "movie_search.Genre",
+      "pk": 2,
+      "fields": {
+        "name": "Adventure",
+        "id": 12
+      }
+    }
+    {
+        "model": "movie_search.Genre",
+        "pk": 3,
+        "fields": {
+          "name": "Animation",
+          "id": 16
+        }
+      },
+      {
+        "model": "movie_search.Genre",
+        "pk": 4,
+        "fields": {
+          "name": "Comedy",
+          "id": 35
+        }
+      }
+      {
+        "model": "movie_search.Genre",
+        "pk": 5,
+        "fields": {
+          "name": "Crime",
+          "id": 80
+        }
+      },
+      {
+        "model": "movie_search.Genre",
+        "pk": 6,
+        "fields": {
+          "name": "Documentary",
+          "id": 99
+        }
+      }
+      {
+        "model": "movie_search.Genre",
+        "pk": 7,
+        "fields": {
+          "name": "Drama",
+          "id": 18
+        }
+      },
+      {
+        "model": "movie_search.Genre",
+        "pk": 8,
+        "fields": {
+          "name": "Family",
+          "id": 10751
+        }
+      }
+      {
+        "model": "movie_search.Genre",
+        "pk": 9,
+        "fields": {
+          "name": "Fantasy",
+          "id": 14
+        }
+      },
+      {
+        "model": "movie_search.Genre",
+        "pk": 10,
+        "fields": {
+          "name": "History",
+          "id": 36
+        }
+      }
+      {
+        "model": "movie_search.Genre",
+        "pk": 11,
+        "fields": {
+          "name": "Horror",
+          "id": 27
+        }
+      },
+      {
+        "model": "movie_search.Genre",
+        "pk": 12,
+        "fields": {
+          "name": "Music",
+          "id": 10402
+        }
+      }
+      {
+        "model": "movie_search.Genre",
+        "pk": 13,
+        "fields": {
+          "name": "Mystery",
+          "id": 9648
+        }
+      },
+      {
+        "model": "movie_search.Genre",
+        "pk": 14,
+        "fields": {
+          "name": "Romance",
+          "id": 10749
+        }
+      }
+      {
+        "model": "movie_search.Genre",
+        "pk": 15,
+        "fields": {
+          "name": "Science Fiction",
+          "id": 878
+        }
+      },
+      {
+        "model": "movie_search.Genre",
+        "pk": 16,
+        "fields": {
+          "name": "TV Movie",
+          "id": 10770
+        }
+      }
+      {
+        "model": "movie_search.Genre",
+        "pk": 17,
+        "fields": {
+          "name": "Thriller",
+          "id": 53
+        }
+      },
+      {
+        "model": "movie_search.Genre",
+        "pk": 18,
+        "fields": {
+          "name": "War",
+          "id": 10752
+        }
+      }
+      {
+        "model": "movie_search.Genre",
+        "pk": 19,
+        "fields": {
+          "name": "Western",
+          "id": 37
+        }
+      }
+]

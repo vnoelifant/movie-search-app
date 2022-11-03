@@ -4,8 +4,9 @@ from django.db import models
 from django.db import models
 
 class Genre(models.Model):
-    genres = models.TextField(null=True)
+    name = models.CharField(null=True)
+    id =   models.IntegerField(null=True)
     
     def __str__(self):
-        return self.genres
+        return self.name
 
