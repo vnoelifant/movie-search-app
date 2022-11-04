@@ -82,17 +82,13 @@ def discover(request):
     # Create a dictionary of available genres
 
     # Retrieve genre fields from DB
-    genres = Genre.objects.all()
 
-    genre_data = {genre.name: genre.id for genre in genres}
-    print("GENRE DATA: ", genre_data)
-
-    
     genre_names = request.GET.getlist("genre")
     print("GENRE NAMES: ", genre_names)
 
-    # Get genre ID/s
-    genre_ids = [genre_data.get(genre) for genre in genre_names]
+    genre_ids = Genre.objects.filter(
+        name__in=genre_names
+    ).values_list("id", flat=True)
     print("GENRE IDS: ", genre_ids)
 
     sort_option = request.GET.getlist("sort")
@@ -108,7 +104,7 @@ def discover(request):
 
     if year:
         year = int(year)
-    
+
     print("YEAR: ", year, type(year))
 
     print("REQUEST: ", request.GET)
@@ -116,7 +112,7 @@ def discover(request):
         "/discover/movie",
         region=region,
         year=year,
-        genre_ids=genre_ids,
+        genre_ids=list(genre_ids),
         sort_option=sort_option,
         watch_region=watch_region,
     )
