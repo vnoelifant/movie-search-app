@@ -5,9 +5,9 @@ from django.db import models
 
 class Genre(models.Model):
     name = models.CharField(max_length=200)
-    id =  models.AutoField(primary_key=True)
-    
+    tmdb_id = models.PositiveSmallIntegerField(default=0)
+
     def __str__(self):
         """String for representing the Model object."""
-        return f"{self.id}: {self.name}"
+        return f"{self.tmdb_id}: {self.name}"
 
