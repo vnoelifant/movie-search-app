@@ -11,7 +11,7 @@ def get_genres():
     genres = Genre.objects.all()
     print("Genres: ", genres)
     genre_names = Genre.objects.values_list('name', flat=True)
-    genre_names = [genre.name for genre in genres]
+
     print("Genre Names", genre_names)
 
     return genre_names
