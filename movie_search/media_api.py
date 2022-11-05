@@ -28,7 +28,7 @@ def get_media(
 
     response = requests.get(url, params=params)
 
-    print("Endpoint: ", endpoint)
+    print("Search endpoint: ", endpoint)
     data = response.json()["results"]
 
     title_key = "original_title" if type == "movie" else "original_name"

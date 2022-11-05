@@ -86,9 +86,7 @@ def discover(request):
     genre_names = request.GET.getlist("genre")
     print("GENRE NAMES: ", genre_names)
 
-    genre_ids = Genre.objects.filter(
-        name__in=genre_names
-    ).values_list("id", flat=True)
+    genre_ids = Genre.objects.filter(name__in=genre_names).values_list("id", flat=True)
     print("GENRE IDS: ", genre_ids)
 
     sort_option = request.GET.getlist("sort")
@@ -150,14 +148,51 @@ def media_search(request):
 
         # Get media id based on selected media title
         media_id = media.get(query)
-
-        data = media_api.get_media_data(f"/{type}/{media_id}/{choice}")
-        # pprint("DATA: ", data)
+        print("MEDIA ID", media_id)
 
         url_path = "movie_detail" if type == "movie" else "tv_detail"
-        context = {"data": data, "type": type, "choice": choice, "url_path": url_path}
 
-        return render(request, "media_search.html", context)
+        if choice == "general" and type == "movie":
+
+            movie_detail = media_api.get_media_detail(f"/movie/{media_id}")
+            print("MOVIE DETAIL: ", movie_detail)
+
+            movie_videos = media_api.get_media_detail(f"/movie/{media_id}/videos")
+
+            context = {
+                "movie_detail": movie_detail,
+                "movie_videos": movie_videos,
+                "type": "movie",
+            }
+            return render(request, "movie_detail.html", context)
+
+        elif choice == "general" and type == "tv":
+
+            tv_detail = media_api.get_media_detail(f"/tv/{media_id}")
+            print("TV DETAIL: ", tv_detail)
+
+            tv_videos = media_api.get_media_detail(f"/tv/{media_id}/videos")
+
+            context = {
+                "tv_detail": tv_detail,
+                "tv_videos": tv_videos,
+                "type": "tv",
+            }
+            return render(request, "tv_detail.html", context)
+
+        else:
+
+            data = media_api.get_media_data(f"/{type}/{media_id}/{choice}")
+            # pprint("DATA: ", data)
+
+            context = {
+                "data": data,
+                "type": type,
+                "choice": choice,
+                "url_path": url_path,
+            }
+
+            return render(request, "media_search.html", context)
 
 
 def movie_detail(request, obj_id):
