@@ -152,33 +152,20 @@ def media_search(request):
 
         url_path = "movie_detail" if type == "movie" else "tv_detail"
 
-        if choice == "general" and type == "movie":
+        if choice == "general":
 
-            movie_detail = media_api.get_media_detail(f"/movie/{media_id}")
-            print("MOVIE DETAIL: ", movie_detail)
+            media_detail = media_api.get_media_detail(f"/{type}/{media_id}")
+            print("MEDIA DETAIL: ", media_detail)
 
-            movie_videos = media_api.get_media_detail(f"/movie/{media_id}/videos")
-
-            context = {
-                "movie_detail": movie_detail,
-                "movie_videos": movie_videos,
-                "type": "movie",
-            }
-            return render(request, "movie_detail.html", context)
-
-        elif choice == "general" and type == "tv":
-
-            tv_detail = media_api.get_media_detail(f"/tv/{media_id}")
-            print("TV DETAIL: ", tv_detail)
-
-            tv_videos = media_api.get_media_detail(f"/tv/{media_id}/videos")
+            media_videos = media_api.get_media_detail(f"/{type}/{media_id}/videos")
 
             context = {
-                "tv_detail": tv_detail,
-                "tv_videos": tv_videos,
-                "type": "tv",
+                f"{type}_detail": media_detail,
+                f"{type}_videos": media_videos,
+                "type": type,
             }
-            return render(request, "tv_detail.html", context)
+            return render(request, f"{type}_detail.html", context)
+
 
         else:
 
