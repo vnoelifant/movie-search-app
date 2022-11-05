@@ -4,6 +4,7 @@ certifi==2022.9.24
 charset-normalizer==2.1.1
 Django==4.1.2
 django-bootstrap-v5==1.0.11
+django-countries==7.4.2
 idna==3.4
 langcodes==3.3.0
 mypy==0.971

@@ -4,8 +4,10 @@ from django.db import models
 from django.db import models
 
 class Genre(models.Model):
-    genres = models.TextField(null=True)
-    
+    name = models.CharField(max_length=200)
+    tmdb_id = models.PositiveSmallIntegerField(default=0)
+
     def __str__(self):
-        return self.genres
+        """String for representing the Model object."""
+        return f"{self.tmdb_id}: {self.name}"
 

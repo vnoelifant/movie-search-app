@@ -79,15 +79,17 @@ def movies_trending_week(request):
 
 def discover(request):
 
-    # Get a dictionary of available genres
-    genres = media_api.get_genres("/genre/movie/list")
+    # Create a dictionary of available genres
 
-    genre_list = request.GET.getlist("genre")
-    print("GENRE: ", genre_list)
+    # Retrieve genre fields from DB
 
-    # Get genre ID/s
-    genre_id = [genres.get(genre) for genre in genre_list]
-    print("GENRE ID: ", genre_id)
+    genre_names = request.GET.getlist("genre")
+    print("GENRE NAMES: ", genre_names)
+
+    genre_ids = Genre.objects.filter(
+        name__in=genre_names
+    ).values_list("id", flat=True)
+    print("GENRE IDS: ", genre_ids)
 
     sort_option = request.GET.getlist("sort")
     print("SORT BY: ", sort_option)
@@ -98,7 +100,11 @@ def discover(request):
     watch_region = request.GET.get("watch_region")
     print("WATCH REGION: ", region)
 
-    year = int(request.GET.get("year"))
+    year = request.GET.get("year")
+
+    if year:
+        year = int(year)
+
     print("YEAR: ", year, type(year))
 
     print("REQUEST: ", request.GET)
@@ -106,7 +112,7 @@ def discover(request):
         "/discover/movie",
         region=region,
         year=year,
-        genre_id=genre_id,
+        genre_ids=list(genre_ids),
         sort_option=sort_option,
         watch_region=watch_region,
     )

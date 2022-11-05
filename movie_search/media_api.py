@@ -70,7 +70,7 @@ def get_media_data(
     language=LANG_ENG,
     region=REGION_US,
     year=None,
-    genre_id=None,
+    genre_ids=None,
     sort_option=None,
     watch_region=None,
 ):
@@ -82,8 +82,8 @@ def get_media_data(
 
     params = {"api_key": API_KEY, "language": language, "region": region}
 
-    if genre_id is not None:
-        params.update({"with_genres": genre_id})
+    if genre_ids is not None:
+        params.update({"with_genres": genre_ids})
 
     if sort_option is not None:
         params.update({"sort_by": sort_option})

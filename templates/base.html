@@ -83,27 +83,27 @@
         <h4>Discover Media</h4>
         <!-- Navigation links in sidebar-->
         <form action="{% url 'discover' %}" method="get" class="d-flex">
-          <fieldset class="group"> 
-            
-            <legend>Genre</legend> 
+          <fieldset class="group">
+
+            <legend>Genre</legend>
             {% load genres %}
-            {% get_genres as genre_list %}
-            <ul class="checkbox"> 
-              {% for genre in genre_list %}
-              <li><input name="genre" type="checkbox" id="cb" value="{{genre}}" /><label for="cb">{{genre}}</label></li> 
+            {% get_genres as genre_names %}
+            <ul class="checkbox">
+              {% for genre in genre_names %}
+              <li><input name="genre" type="checkbox" id="cb" value="{{genre}}" /><label for="cb">{{genre}}</label></li>
               {% endfor %}
               <script src="{% static 'js/checkbox.js' %}"></script>
             </ul>
             <hr class="a">
-            
-            <legend>Provider</legend> 
-            <ul class="checkbox"> 
-              <li><input name="provider" type="checkbox" id="cb1" value="Netflix" /><label for="cb1">Netflix</label></li> 
-              <li><input name="provider" type="checkbox" id="cb2" value="Prime" /><label for="cb2">Amazon</label></li> 
-              <li><input name="provider" type="checkbox" id="cb3" value="Hulu" /><label for="cb3">Hulu</label></li>  
-            </ul> 
+
+            <legend>Provider</legend>
+            <ul class="checkbox">
+              <li><input name="provider" type="checkbox" id="cb1" value="Netflix" /><label for="cb1">Netflix</label></li>
+              <li><input name="provider" type="checkbox" id="cb2" value="Prime" /><label for="cb2">Amazon</label></li>
+              <li><input name="provider" type="checkbox" id="cb3" value="Hulu" /><label for="cb3">Hulu</label></li>
+            </ul>
             <hr class="a">
-            
+
             <legend>Region</legend>
               {% load countries %}
               {% get_countries as countries %}
@@ -125,12 +125,12 @@
               {% endfor %}
             </select>
           <hr class="a">
-            
+
             <legend>Release Year</legend>
             {% load years %}
             <select class="form-select year" name="year" id="year" >
               <option disabled="disabled" selected="selected">Select Option</option>
-              {% for year in 2023|range:"1940,-1" %} 
+              {% for year in 1940|year_range_desc %}
                   <option value="{{ year }}">{{ year }}</option>
               {% endfor %}
             </select>
@@ -140,7 +140,7 @@
             <input type="text" class="form-control" id="directorName" placeholder="Enter First and Last Name">
 
             <hr class="a">
-            
+
             <legend>Sort By</legend>
             <!-- The default is popularity descending -->
             <select class="form-select" multiple="multiple" size="10" name="sort" id="sortBy" >
@@ -158,13 +158,13 @@
               <option value="Vote Count Descending">Vote Count Descending</option>
             </select>
 
-          </fieldset>  
-          
+          </fieldset>
+
             <div>
             <button class="btn btn-dark" type="submit">Discover</button>
           </div>
         </form>
-        
+
       </div>
 
       <div class="col-10" id="movieWrapper" style="float: right;">
