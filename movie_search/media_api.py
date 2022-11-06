@@ -70,9 +70,10 @@ def get_media_data(
     language=LANG_ENG,
     region=REGION_US,
     year=None,
-    genre_ids=None,
-    sort_option=None,
+    with_genres=None,
+    sort_by=None,
     watch_region=None,
+    with_watch_providers=None,
 ):
     """This function returns a JSON object of tmdb media data"""
     print("Inside get_media_data functon!!!!!!!!!!!!")
@@ -82,14 +83,17 @@ def get_media_data(
 
     params = {"api_key": API_KEY, "language": language, "region": region}
 
-    if genre_ids is not None:
-        params.update({"with_genres": genre_ids})
+    if with_genres is not None:
+        params.update({"with_genres": with_genres})
 
-    if sort_option is not None:
-        params.update({"sort_by": sort_option})
+    if sort_by is not None:
+        params.update({"sort_by": sort_by})
 
     if watch_region is not None:
         params.update({"watch_region": watch_region})
+    
+    if with_watch_providers is not None:
+        params.update({"with_watch_providers": with_watch_providers})
 
     if year is not None:
         params.update({"primary_release_year": year})
@@ -165,3 +169,8 @@ def get_vote_sorted(endpoint, vote_count, year, sort_option, page=1):
     )
 
     return response.json()
+
+#pprint(get_media_data("/watch/providers/movie"))
+
+#with open("providers.json", "w") as provider_data:
+#    json.dump(get_media_data("/watch/providers/movie"), provider_data, indent=4, sort_keys=True)

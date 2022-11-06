@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from pprint import pprint
 
-from movie_search.models import Genre
+from movie_search.models import Genre, Provider
 from movie_search import media_api
 
 # Create your views here.
@@ -79,24 +79,28 @@ def movies_trending_week(request):
 
 def discover(request):
 
-    # Create a dictionary of available genres
-
-    # Retrieve genre fields from DB
-
     genre_names = request.GET.getlist("genre")
     print("GENRE NAMES: ", genre_names)
 
-    genre_ids = Genre.objects.filter(name__in=genre_names).values_list("id", flat=True)
-    print("GENRE IDS: ", genre_ids)
+    # Get genre IDs
+    with_genres = Genre.objects.filter(name__in=genre_names).values_list("tmdb_id", flat=True)
+    print("WITH GENRES: ", with_genres)
 
-    sort_option = request.GET.getlist("sort")
-    print("SORT BY: ", sort_option)
+    sort_by = request.GET.getlist("sort")
+    print("SORT BY: ", sort_by)
 
     region = request.GET.get("region")
     print("REGION: ", region)
 
     watch_region = request.GET.get("watch_region")
     print("WATCH REGION: ", region)
+
+    watch_provider_names = request.GET.getlist("providers")
+    print("WATCH PROVIDERS: ", watch_provider_names)
+
+    # Get Watch Provider IDs
+    with_watch_providers= Provider.objects.filter(name__in=watch_provider_names).values_list("provider_id", flat=True)
+    print("WITH WATCH PROVIDERS: ", with_watch_providers)
 
     year = request.GET.get("year")
 
@@ -110,9 +114,10 @@ def discover(request):
         "/discover/movie",
         region=region,
         year=year,
-        genre_ids=list(genre_ids),
-        sort_option=sort_option,
+        with_genres=list(with_genres),
+        sort_by=sort_by,
         watch_region=watch_region,
+        with_watch_providers=list(with_watch_providers)
     )
 
     context = {"data": data}
@@ -152,33 +157,23 @@ def media_search(request):
 
         url_path = "movie_detail" if type == "movie" else "tv_detail"
 
-        if choice == "general" and type == "movie":
+        if choice == "general":
 
-            movie_detail = media_api.get_media_detail(f"/movie/{media_id}")
-            print("MOVIE DETAIL: ", movie_detail)
+            media_detail = media_api.get_media_detail(f"/{type}/{media_id}")
+            print("MEDIA DETAIL: ", media_detail)
 
-            movie_videos = media_api.get_media_detail(f"/movie/{media_id}/videos")
-
-            context = {
-                "movie_detail": movie_detail,
-                "movie_videos": movie_videos,
-                "type": "movie",
-            }
-            return render(request, "movie_detail.html", context)
-
-        elif choice == "general" and type == "tv":
-
-            tv_detail = media_api.get_media_detail(f"/tv/{media_id}")
-            print("TV DETAIL: ", tv_detail)
-
-            tv_videos = media_api.get_media_detail(f"/tv/{media_id}/videos")
+            media_videos = media_api.get_media_detail(f"/{type}/{media_id}/videos")
+            recommendations = media_api.get_media_detail(f"/{type}/{media_id}/recommendations")
 
             context = {
-                "tv_detail": tv_detail,
-                "tv_videos": tv_videos,
-                "type": "tv",
+                f"{type}_detail": media_detail,
+                f"{type}_videos": media_videos,
+                "type": type,
+                "url_path": url_path,
+                "recommendations": recommendations,
             }
-            return render(request, "tv_detail.html", context)
+            return render(request, f"{type}_detail.html", context)
+
 
         else:
 

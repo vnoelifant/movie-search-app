@@ -69,6 +69,11 @@ ul.checkbox li {
     width: 200px;
     overflow: auto;
 }
+
+#providers {
+    width: 200px;
+    overflow: auto;
+}
   
 #directorName {
     width: 205px;
