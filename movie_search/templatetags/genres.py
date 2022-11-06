@@ -13,5 +13,5 @@ def get_genres():
     genre_names = Genre.objects.values_list('name', flat=True)
 
     print("Genre Names", genre_names)
-
+    
     return genre_names

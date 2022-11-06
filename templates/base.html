@@ -97,11 +97,13 @@
             <hr class="a">
 
             <legend>Provider</legend>
-            <ul class="checkbox">
-              <li><input name="provider" type="checkbox" id="cb1" value="Netflix" /><label for="cb1">Netflix</label></li>
-              <li><input name="provider" type="checkbox" id="cb2" value="Prime" /><label for="cb2">Amazon</label></li>
-              <li><input name="provider" type="checkbox" id="cb3" value="Hulu" /><label for="cb3">Hulu</label></li>
-            </ul>
+            {% load providers %}
+            {% get_providers as provider_names %}
+            <select class="form-select" multiple="multiple" size="7" name="providers" id="providers">
+              {% for provider in provider_names %}
+              <option value="{{provider}}">{{provider}}</option>
+              {% endfor %}
+            </select>
             <hr class="a">
 
             <legend>Region</legend>
