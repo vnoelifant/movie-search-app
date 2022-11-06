@@ -158,11 +158,14 @@ def media_search(request):
             print("MEDIA DETAIL: ", media_detail)
 
             media_videos = media_api.get_media_detail(f"/{type}/{media_id}/videos")
+            recommendations = media_api.get_media_detail(f"/{type}/{media_id}/recommendations")
 
             context = {
                 f"{type}_detail": media_detail,
                 f"{type}_videos": media_videos,
                 "type": type,
+                "url_path": url_path,
+                "recommendations": recommendations,
             }
             return render(request, f"{type}_detail.html", context)
 
