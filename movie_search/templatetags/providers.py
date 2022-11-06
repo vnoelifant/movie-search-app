@@ -8,9 +8,9 @@ register = template.Library()
 def get_providers():
 
     providers = Provider.objects.all()
-    print("Providers: ", providers)
+    # print("Providers: ", providers)
     provider_names = Provider.objects.values_list('name', flat=True)
 
-    print("Provider Names", provider_names)
+    # print("Provider Names", provider_names)
 
     return provider_names
