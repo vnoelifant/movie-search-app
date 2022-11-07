@@ -37,6 +37,21 @@ def get_media(
 
     return media
 
+def get_person(endpoint, text_query):
+    """This function returns a dictionary of person details based on a text query"""
+    url = f"{BASE_URL}{endpoint}"
+    params = {"api_key": API_KEY, "query": text_query}
+
+
+    response = requests.get(url, params=params)
+
+    print("Search endpoint: ", endpoint)
+    data = response.json()["results"]
+
+    person = {row["name"]: row["id"] for row in data}
+
+    return person
+
 
 def get_media_detail(endpoint, language=LANG_ENG):
 
@@ -69,11 +84,13 @@ def get_media_data(
     endpoint,
     language=LANG_ENG,
     region=REGION_US,
-    year=None,
+    primary_release_year=None,
     with_genres=None,
     sort_by=None,
     watch_region=None,
     with_watch_providers=None,
+    with_people=None,
+    with_crew=None,
 ):
     """This function returns a JSON object of tmdb media data"""
     print("Inside get_media_data functon!!!!!!!!!!!!")
@@ -95,8 +112,14 @@ def get_media_data(
     if with_watch_providers is not None:
         params.update({"with_watch_providers": with_watch_providers})
 
-    if year is not None:
-        params.update({"primary_release_year": year})
+    if primary_release_year is not None:
+        params.update({"primary_release_year": primary_release_year})
+
+    if with_people is not None:
+        params.update({"with_people": with_people})
+    
+    if with_crew is not None:
+        params.update({"with_crew": with_crew})
 
     print("Params: ", params)
 
@@ -106,7 +129,6 @@ def get_media_data(
 
 
 # Discover endpoint functions
-
 
 def get_recently_released(
     endpoint,
@@ -170,7 +192,34 @@ def get_vote_sorted(endpoint, vote_count, year, sort_option, page=1):
 
     return response.json()
 
+# Test Queries
+
 #pprint(get_media_data("/watch/providers/movie"))
 
 #with open("providers.json", "w") as provider_data:
 #    json.dump(get_media_data("/watch/providers/movie"), provider_data, indent=4, sort_keys=True)
+
+text_query = "Stanley Kubrick"
+text_query = text_query.lower()
+
+person = get_person("/search/person", text_query)
+
+print("Person: ",person)
+
+person = {person.lower(): idx for person, idx in person.items()}
+print("Person Dictionary: ", person)
+
+# Get person id based on person query
+person_id = person.get(text_query)
+print("PERSON ID", person_id)
+
+# person_credits = get_media_detail(f"/person/{person_id}/movie_credits")
+
+# with open("person_credits.json", "w") as person_data:
+#    json.dump(person_credits, person_data, indent=4, sort_keys=True)
+
+discover_name = get_media_data("/discover/movie",with_people=person_id)
+print("Discover by Name: ", discover_name)
+
+with open("discover.json", "w") as data:
+    json.dump(discover_name, data, indent=4, sort_keys=True)

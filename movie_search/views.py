@@ -86,6 +86,21 @@ def discover(request):
     with_genres = Genre.objects.filter(name__in=genre_names).values_list("tmdb_id", flat=True)
     print("WITH GENRES: ", with_genres)
 
+    person_name = request.GET.get("personName")
+    
+    person_name =  person_name.lower()
+
+    person = media_api.get_person("/search/person", person_name)
+
+    print("Person: ",person)
+
+    person = {person.lower(): idx for person, idx in person.items()}
+    print("Person Dictionary: ", person)
+    
+    # Get person id based on person query
+    with_people = person.get(person_name)
+    print("PERSON ID", with_people)
+
     sort_by = request.GET.getlist("sort")
     print("SORT BY: ", sort_by)
 
@@ -102,22 +117,23 @@ def discover(request):
     with_watch_providers= Provider.objects.filter(name__in=watch_provider_names).values_list("provider_id", flat=True)
     print("WITH WATCH PROVIDERS: ", with_watch_providers)
 
-    year = request.GET.get("year")
+    primary_release_year = request.GET.get("year")
 
-    if year:
-        year = int(year)
+    if primary_release_year:
+        primary_release_year = int(primary_release_year)
 
-    print("YEAR: ", year, type(year))
+    print("PRIMARY RELEASE YEAR: ", primary_release_year, type(primary_release_year))
 
     print("REQUEST: ", request.GET)
     data = media_api.get_media_data(
         "/discover/movie",
         region=region,
-        year=year,
+        primary_release_year=primary_release_year,
         with_genres=list(with_genres),
         sort_by=sort_by,
         watch_region=watch_region,
-        with_watch_providers=list(with_watch_providers)
+        with_watch_providers=list(with_watch_providers),
+        with_people=with_people
     )
 
     context = {"data": data}

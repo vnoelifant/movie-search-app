@@ -24,6 +24,10 @@ hr.a  {
 
 }
 
+.form-control.person {
+    width: 225px;
+}
+
 .form-select.country {
     width: 150px;
 }
