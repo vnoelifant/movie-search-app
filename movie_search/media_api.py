@@ -90,7 +90,6 @@ def get_media_data(
     watch_region=None,
     with_watch_providers=None,
     with_people=None,
-    with_crew=None,
 ):
     """This function returns a JSON object of tmdb media data"""
     print("Inside get_media_data functon!!!!!!!!!!!!")
@@ -117,9 +116,6 @@ def get_media_data(
 
     if with_people is not None:
         params.update({"with_people": with_people})
-    
-    if with_crew is not None:
-        params.update({"with_crew": with_crew})
 
     print("Params: ", params)
 
@@ -128,98 +124,15 @@ def get_media_data(
     return response.json()
 
 
-# Discover endpoint functions
-
-def get_recently_released(
-    endpoint,
-    date_min,
-    date_max,
-    region=REGION_US,
-):
-    """This function returns a JSON object of movies based on a region within a recent date range"""
-
-    url = f"{BASE_URL}{endpoint}"
-    params = params = {
-        "api_key": API_KEY,
-        "region": region,
-        "primary_release_date.gte": date_min,
-        "primary_release_date.lte": date_max,
-    }
-
-    response = requests.get(
-        url,
-        params=params,
-    )
-
-    return response.json()
 
 
-def get_year_genre(endpoint, year, genre_id, region=REGION_US):
-    """This function returns a JSON object of movies based on region, primary release year, and genre"""
-
-    url = f"{BASE_URL}{endpoint}"
-    params = {
-        "api_key": API_KEY,
-        "region": region,
-        "primary_release_year": year,
-        "with_genres": genre_id,
-    }
-
-    response = requests.get(
-        url,
-        params=params,
-    )
-
-    return response.json()
 
 
-def get_vote_sorted(endpoint, vote_count, year, sort_option, page=1):
-    """This function returns a JSON object of movies greater than vote count by year, sorted by selected sort option"""
 
-    url = f"{BASE_URL}{endpoint}"
-    params = {
-        "api_key": API_KEY,
-        "vote_count_gte": vote_count,
-        "year": year,
-        "sort_by": sort_option,
-        "page": page,
-    }
 
-    response = requests.get(
-        url,
-        params=params,
-    )
 
-    return response.json()
 
-# Test Queries
 
-#pprint(get_media_data("/watch/providers/movie"))
 
-#with open("providers.json", "w") as provider_data:
-#    json.dump(get_media_data("/watch/providers/movie"), provider_data, indent=4, sort_keys=True)
 
-text_query = "Stanley Kubrick"
-text_query = text_query.lower()
-
-person = get_person("/search/person", text_query)
-
-print("Person: ",person)
-
-person = {person.lower(): idx for person, idx in person.items()}
-print("Person Dictionary: ", person)
-
-# Get person id based on person query
-person_id = person.get(text_query)
-print("PERSON ID", person_id)
-
-# person_credits = get_media_detail(f"/person/{person_id}/movie_credits")
-
-# with open("person_credits.json", "w") as person_data:
-#    json.dump(person_credits, person_data, indent=4, sort_keys=True)
-
-discover_name = get_media_data("/discover/movie",with_people=person_id)
-print("Discover by Name: ", discover_name)
-
-with open("discover.json", "w") as data:
-    json.dump(discover_name, data, indent=4, sort_keys=True)
+#
