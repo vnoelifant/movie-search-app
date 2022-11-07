@@ -9,7 +9,7 @@ $('#selectionChoice').change(function(){
     }
 
     else if(selectedval == 'movie_credits'){
-      $('#searchForm').attr('placeholder','Enter Name to find credits!');
+      $('#searchForm').attr('placeholder','Enter name to find credits!');
      }
     
      else {
