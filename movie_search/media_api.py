@@ -107,7 +107,7 @@ def get_media_data(
 
     if watch_region is not None:
         params.update({"watch_region": watch_region})
-    
+
     if with_watch_providers is not None:
         params.update({"with_watch_providers": with_watch_providers})
 
