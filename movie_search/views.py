@@ -141,7 +141,7 @@ def discover(request):
     return render(request, "discover.html", context)
 
 
-def media_search(request):
+def search(request):
 
     query = request.GET.get("query")
     year = request.GET.get("year")
@@ -162,39 +162,18 @@ def media_search(request):
 
         print("QUERY: ", query)
 
-        # Get a dictionary of media details based on text query
-        media = media_api.get_media(f"/search/{type}", query, type, year=year)
+        if type == "person":
+            print("Choosing person")
+            person = media_api.get_person(f"/search/{type}", query)
+            person = {person.lower(): idx for person, idx in person.items()}
+            print("Person Dictionary: ", person)
+            # Get person id based on person query
+            person_id = person.get(query)
+            print("PERSON ID", person_id)
 
-        media = {media.lower(): idx for media, idx in media.items()}
+            url_path = "movie_detail" if choice == "movie_credits" else "tv_detail"
 
-        # Get media id based on selected media title
-        media_id = media.get(query)
-        print("MEDIA ID", media_id)
-
-        url_path = "movie_detail" if type == "movie" else "tv_detail"
-
-        if choice == "general":
-
-            media_detail = media_api.get_media_detail(f"/{type}/{media_id}")
-            print("MEDIA DETAIL: ", media_detail)
-
-            media_videos = media_api.get_media_detail(f"/{type}/{media_id}/videos")
-            recommendations = media_api.get_media_detail(f"/{type}/{media_id}/recommendations")
-
-            context = {
-                f"{type}_detail": media_detail,
-                f"{type}_videos": media_videos,
-                "type": type,
-                "url_path": url_path,
-                "recommendations": recommendations,
-            }
-            return render(request, f"{type}_detail.html", context)
-
-
-        else:
-
-            data = media_api.get_media_data(f"/{type}/{media_id}/{choice}")
-            # pprint("DATA: ", data)
+            data = media_api.get_media_data(f"/{type}/{person_id}/{choice}")
 
             context = {
                 "data": data,
@@ -203,7 +182,52 @@ def media_search(request):
                 "url_path": url_path,
             }
 
-            return render(request, "media_search.html", context)
+            return render(request, "person_search.html", context)
+
+
+        else:
+
+            # Get a dictionary of media details based on text query
+            media = media_api.get_media(f"/search/{type}", query, type, year=year)
+
+            media = {media.lower(): idx for media, idx in media.items()}
+
+            # Get media id based on selected media title
+            media_id = media.get(query)
+            print("MEDIA ID", media_id)
+
+            url_path = "movie_detail" if type == "movie" else "tv_detail"
+
+
+            if choice == "general":
+                print("Selected General")
+
+                media_detail = media_api.get_media_data(f"/{type}/{media_id}")
+                # print("MEDIA DETAIL: ", media_detail)
+
+                media_videos = media_api.get_media_data(f"/{type}/{media_id}/videos")
+                recommendations = media_api.get_media_data(f"/{type}/{media_id}/recommendations")
+
+                context = {
+                    f"{type}_detail": media_detail,
+                    f"{type}_videos": media_videos,
+                    "type": type,
+                    "url_path": url_path,
+                    "recommendations": recommendations,
+                }
+                return render(request, f"{type}_detail.html", context)
+
+            data = media_api.get_media_data(f"/{type}/{media_id}/{choice}")
+
+            print("Selected Recommended/Similar")
+            context = {
+                "data": data,
+                "type": type,
+                "choice": choice,
+                "url_path": url_path,
+            }
+
+        return render(request, "media_search.html", context)
 
 
 def movie_detail(request, obj_id):

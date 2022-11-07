@@ -19,7 +19,8 @@ urlpatterns = [
     path("tv_air/", views.tv_air, name="tv_air"),
     path("tv_air_today/", views.tv_air_today, name="tv_air_today"),
     path("tv/<int:obj_id>/", views.tv_detail, name="tv_detail"),
-    path("media_search/", views.media_search, name="media_search"),
-    path("error/", views.media_search, name="error"),
+    path("media_search/", views.search, name="media_search"),
+    path("person_search/", views.search, name="person_search"),
+    path("error/", views.search, name="error"),
     path("discover/movie/", views.discover, name="discover"),
 ]

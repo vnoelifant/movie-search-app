@@ -51,21 +51,22 @@
 
           <form action="{% url 'media_search' %}" method="get" class="d-flex">
             <select class="form-select mr-sm-2" name="type" class="mb-3">
-              <option disabled="disabled" selected="selected">Select Media</option>
+              <option disabled="disabled" selected="selected">Select Movie, TV, or Person</option>
               <option value="movie">Movies</option>
               <option value="tv">TV Shows</option>
+              <option value="person">Person</option>
             </select>
 
             <select class="form-select mr-sm-2" name="choice" id="selectionChoice" class="mb-3">
               <option disabled="disabled" selected="selected">Select Criteria</option>
-              <option value="general">General</option>
-              <option value="similar">Similar</option>
-              <option value="recommendations">Recommendation</option>
-              <option value="director">Director</option>
+              <option value="general">General Media Details</option>
+              <option value="similar">Similar Media</option>
+              <option value="recommendations">Recommended Media</option>
+              <option value="movie_credits">Person Movie Credits</option>
             </select>
 
             <input class="form-control me-2" name="query" type="text" aria-label="Search" id="searchForm">
-            <script src="{% static 'js/app.js' %}"></script>
+            <script src="{% static 'js/placeholder.js' %}"></script>
             <button class="btn btn-outline-success" id="userChoiceActionButton"  type="submit">Search</button>
 
           </form>
