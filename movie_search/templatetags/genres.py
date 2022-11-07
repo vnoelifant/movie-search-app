@@ -9,9 +9,9 @@ register = template.Library()
 def get_genres():
 
     genres = Genre.objects.all()
-    print("Genres: ", genres)
+    # print("Genres: ", genres)
     genre_names = Genre.objects.values_list('name', flat=True)
 
-    print("Genre Names", genre_names)
+    # print("Genre Names", genre_names)
     
     return genre_names

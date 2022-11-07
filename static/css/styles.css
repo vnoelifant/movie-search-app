@@ -24,6 +24,10 @@ hr.a  {
 
 }
 
+.form-control.person {
+    width: 225px;
+}
+
 .form-select.country {
     width: 150px;
 }
@@ -137,7 +141,7 @@ ul.checkbox li {
     background-color: #131213;
     color: #d6d6d6;
     border-radius: 5px;
-    width: 175px;
+    width: 250px;
     height: 45px;
 
 }

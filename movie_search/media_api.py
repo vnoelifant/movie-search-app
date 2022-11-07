@@ -37,6 +37,21 @@ def get_media(
 
     return media
 
+def get_person(endpoint, text_query):
+    """This function returns a dictionary of person details based on a text query"""
+    url = f"{BASE_URL}{endpoint}"
+    params = {"api_key": API_KEY, "query": text_query}
+
+
+    response = requests.get(url, params=params)
+
+    print("Search endpoint: ", endpoint)
+    data = response.json()["results"]
+
+    person = {row["name"]: row["id"] for row in data}
+
+    return person
+
 
 def get_media_detail(endpoint, language=LANG_ENG):
 
@@ -69,11 +84,12 @@ def get_media_data(
     endpoint,
     language=LANG_ENG,
     region=REGION_US,
-    year=None,
+    primary_release_year=None,
     with_genres=None,
     sort_by=None,
     watch_region=None,
     with_watch_providers=None,
+    with_people=None,
 ):
     """This function returns a JSON object of tmdb media data"""
     print("Inside get_media_data functon!!!!!!!!!!!!")
@@ -95,8 +111,11 @@ def get_media_data(
     if with_watch_providers is not None:
         params.update({"with_watch_providers": with_watch_providers})
 
-    if year is not None:
-        params.update({"primary_release_year": year})
+    if primary_release_year is not None:
+        params.update({"primary_release_year": primary_release_year})
+
+    if with_people is not None:
+        params.update({"with_people": with_people})
 
     print("Params: ", params)
 
@@ -105,72 +124,15 @@ def get_media_data(
     return response.json()
 
 
-# Discover endpoint functions
 
 
-def get_recently_released(
-    endpoint,
-    date_min,
-    date_max,
-    region=REGION_US,
-):
-    """This function returns a JSON object of movies based on a region within a recent date range"""
-
-    url = f"{BASE_URL}{endpoint}"
-    params = params = {
-        "api_key": API_KEY,
-        "region": region,
-        "primary_release_date.gte": date_min,
-        "primary_release_date.lte": date_max,
-    }
-
-    response = requests.get(
-        url,
-        params=params,
-    )
-
-    return response.json()
 
 
-def get_year_genre(endpoint, year, genre_id, region=REGION_US):
-    """This function returns a JSON object of movies based on region, primary release year, and genre"""
-
-    url = f"{BASE_URL}{endpoint}"
-    params = {
-        "api_key": API_KEY,
-        "region": region,
-        "primary_release_year": year,
-        "with_genres": genre_id,
-    }
-
-    response = requests.get(
-        url,
-        params=params,
-    )
-
-    return response.json()
 
 
-def get_vote_sorted(endpoint, vote_count, year, sort_option, page=1):
-    """This function returns a JSON object of movies greater than vote count by year, sorted by selected sort option"""
 
-    url = f"{BASE_URL}{endpoint}"
-    params = {
-        "api_key": API_KEY,
-        "vote_count_gte": vote_count,
-        "year": year,
-        "sort_by": sort_option,
-        "page": page,
-    }
 
-    response = requests.get(
-        url,
-        params=params,
-    )
 
-    return response.json()
 
-#pprint(get_media_data("/watch/providers/movie"))
 
-#with open("providers.json", "w") as provider_data:
-#    json.dump(get_media_data("/watch/providers/movie"), provider_data, indent=4, sort_keys=True)
+#

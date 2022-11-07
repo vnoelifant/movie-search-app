@@ -7,7 +7,12 @@ $('#selectionChoice').change(function(){
     else if(selectedval == 'similar'){
      $('#searchForm').attr('placeholder','Enter title to find similar content!');
     }
-    else {
+
+    else if(selectedval == 'movie_credits'){
+      $('#searchForm').attr('placeholder','Enter name to find credits!');
+     }
+    
+     else {
     $('#searchForm').attr('placeholder','Enter title for recommendations!');
     }    
  });
