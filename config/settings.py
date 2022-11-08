@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "bootstrap5",
     "movie_search.apps.MovieSearchConfig",
+    "django_countries",
 ]
 
 MIDDLEWARE = [

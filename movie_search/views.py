@@ -3,18 +3,17 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from pprint import pprint
 
+from movie_search.models import Genre, Provider
 from movie_search import media_api
-from movie_search.models import Search
 
 # Create your views here.
 def home(request):
+
     trending = media_api.get_media_data("/trending/all/day")
     # pprint("TRENDING: ", trending)
 
-    context = {
-        "trending": trending,
-    }
-    
+    context = {"trending": trending}
+
     return render(request, "home.html", context)
 
 
@@ -57,7 +56,7 @@ def movies_now_playing(request):
 def movies_upcoming(request):
 
     upcoming = media_api.get_media_data("/movie/upcoming")
-     # pprint("UPCOMING ", upcoming)
+    # pprint("UPCOMING ", upcoming)
 
     context = {
         "upcoming": upcoming,
@@ -78,7 +77,71 @@ def movies_trending_week(request):
     return render(request, "movies_trending.html", context)
 
 
-def media_similar(request):
+def discover(request):
+
+    genre_names = request.GET.getlist("genre")
+    print("GENRE NAMES: ", genre_names)
+
+    # Get genre IDs
+    with_genres = Genre.objects.filter(name__in=genre_names).values_list("tmdb_id", flat=True)
+    print("WITH GENRES: ", with_genres)
+
+    person_name = request.GET.get("personName")
+    
+    person_name =  person_name.lower()
+
+    person = media_api.get_person("/search/person", person_name)
+
+    print("Person: ",person)
+
+    person = {person.lower(): idx for person, idx in person.items()}
+    print("Person Dictionary: ", person)
+    
+    # Get person id based on person query
+    with_people = person.get(person_name)
+    print("PERSON ID", with_people)
+
+    sort_by = request.GET.getlist("sort")
+    print("SORT BY: ", sort_by)
+
+    region = request.GET.get("region")
+    print("REGION: ", region)
+
+    watch_region = request.GET.get("watch_region")
+    print("WATCH REGION: ", region)
+
+    watch_provider_names = request.GET.getlist("providers")
+    print("WATCH PROVIDERS: ", watch_provider_names)
+
+    # Get Watch Provider IDs
+    with_watch_providers= Provider.objects.filter(name__in=watch_provider_names).values_list("provider_id", flat=True)
+    print("WITH WATCH PROVIDERS: ", with_watch_providers)
+
+    primary_release_year = request.GET.get("year")
+
+    if primary_release_year:
+        primary_release_year = int(primary_release_year)
+
+    print("PRIMARY RELEASE YEAR: ", primary_release_year, type(primary_release_year))
+
+    print("REQUEST: ", request.GET)
+    data = media_api.get_media_data(
+        "/discover/movie",
+        region=region,
+        primary_release_year=primary_release_year,
+        with_genres=list(with_genres),
+        sort_by=sort_by,
+        watch_region=watch_region,
+        with_watch_providers=list(with_watch_providers),
+        with_people=with_people
+    )
+
+    context = {"data": data}
+
+    return render(request, "discover.html", context)
+
+
+def search(request):
 
     query = request.GET.get("query")
     year = request.GET.get("year")
@@ -99,36 +162,89 @@ def media_similar(request):
 
         print("QUERY: ", query)
 
-        # Get a dictionary of media details based on text query
-        media = media_api.get_media(f"/search/{type}", query, type, year=year)
+        if type == "person":
+            print("Choosing person")
+            person = media_api.get_person(f"/search/{type}", query)
+            person = {person.lower(): idx for person, idx in person.items()}
+            print("Person Dictionary: ", person)
+            # Get person id based on person query
+            person_id = person.get(query)
+            print("PERSON ID", person_id)
 
-        media = {media.lower(): idx for media, idx in media.items()}
+            url_path = "movie_detail" if choice == "movie_credits" else "tv_detail"
 
-        # Get media id based on selected media title
-        media_id = media.get(query)
+            data = media_api.get_media_data(f"/{type}/{person_id}/{choice}")
 
-        data = media_api.get_media_data(f"/{type}/{media_id}/{choice}")
-        # pprint("DATA: ", data)
+            context = {
+                "data": data,
+                "type": type,
+                "choice": choice,
+                "url_path": url_path,
+            }
 
-        context = {"data": data, "type": type, "choice": choice}
-
-        return render(request, "media_similar.html", context)
+            return render(request, "person_search.html", context)
 
 
-def movie_detail(request, movie_id):
+        else:
 
-    movie_detail = media_api.get_media_detail(f"/movie/{movie_id}")
+            # Get a dictionary of media details based on text query
+            media = media_api.get_media(f"/search/{type}", query, type, year=year)
+
+            media = {media.lower(): idx for media, idx in media.items()}
+
+            # Get media id based on selected media title
+            media_id = media.get(query)
+            print("MEDIA ID", media_id)
+
+            url_path = "movie_detail" if type == "movie" else "tv_detail"
+
+
+            if choice == "general":
+                print("Selected General")
+
+                media_detail = media_api.get_media_data(f"/{type}/{media_id}")
+                # print("MEDIA DETAIL: ", media_detail)
+
+                media_videos = media_api.get_media_data(f"/{type}/{media_id}/videos")
+                recommendations = media_api.get_media_data(f"/{type}/{media_id}/recommendations")
+
+                context = {
+                    f"{type}_detail": media_detail,
+                    f"{type}_videos": media_videos,
+                    "type": type,
+                    "url_path": url_path,
+                    "recommendations": recommendations,
+                }
+                return render(request, f"{type}_detail.html", context)
+
+            data = media_api.get_media_data(f"/{type}/{media_id}/{choice}")
+
+            print("Selected Recommended/Similar")
+            context = {
+                "data": data,
+                "type": type,
+                "choice": choice,
+                "url_path": url_path,
+            }
+
+        return render(request, "media_search.html", context)
+
+
+def movie_detail(request, obj_id):
+
+    movie_detail = media_api.get_media_detail(f"/movie/{obj_id}")
     # pprint("MOVIE DETAIL: ", movie_detail)
 
-    movie_videos = media_api.get_media_detail(f"/movie/{movie_id}/videos")
+    movie_videos = media_api.get_media_detail(f"/movie/{obj_id}/videos")
 
     context = {
         "movie_detail": movie_detail,
         "movie_videos": movie_videos,
-        "type": "movie"
+        "type": "movie",
     }
 
     return render(request, "movie_detail.html", context)
+
 
 def tv_popular(request):
 
@@ -153,6 +269,7 @@ def tv_top_rated(request):
 
     return render(request, "tv_top_rated.html", context)
 
+
 def tv_trending_week(request):
 
     trending = media_api.get_media_data("/trending/tv/week")
@@ -164,6 +281,7 @@ def tv_trending_week(request):
 
     return render(request, "tv_trending.html", context)
 
+
 def tv_air(request):
 
     tv_air = media_api.get_media_data("/tv/on_the_air")
@@ -173,6 +291,7 @@ def tv_air(request):
     }
 
     return render(request, "tv_air.html", context)
+
 
 def tv_air_today(request):
 
@@ -184,12 +303,13 @@ def tv_air_today(request):
 
     return render(request, "tv_air_today.html", context)
 
-def tv_detail(request, tv_id):
 
-    tv_detail = media_api.get_media_detail(f"/tv/{tv_id}")
+def tv_detail(request, obj_id):
+
+    tv_detail = media_api.get_media_detail(f"/tv/{obj_id}")
     # pprint("TV DETAIL: ", tv_detail)
 
-    tv_videos = media_api.get_media_detail(f"/tv/{tv_id}/videos")
+    tv_videos = media_api.get_media_detail(f"/tv/{obj_id}/videos")
 
     context = {
         "tv_detail": tv_detail,

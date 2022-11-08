@@ -9,11 +9,11 @@
   {% bootstrap_css %}
   {% bootstrap_javascript %}
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 </head>
 
 <body>
   {% bootstrap_messages %}
-
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid"></div>
       <a class="navbar-brand" href="{% url 'home' %}">Media Search</a>
@@ -35,7 +35,7 @@
               <li><a class="dropdown-item" href="{% url 'movies_top_rated' %}">Top Rated</a></li>
             </ul>
           </li>
-      
+
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Browse TV Shows
@@ -46,33 +46,137 @@
               <li><a class="dropdown-item" href="{% url 'tv_top_rated' %}">Top Rated</a></li>
               <li><a class="dropdown-item" href="{% url 'tv_air' %}">On Air</a></li>
               <li><a class="dropdown-item" href="{% url 'tv_air_today' %}">On Air Today</a></li>
-            </ul> 
+            </ul>
           </li>
-      
-          <form action="{% url 'media_similar' %}" method="get" class="d-flex">
+
+          <form action="{% url 'media_search' %}" method="get" class="d-flex">
             <select class="form-select mr-sm-2" name="type" class="mb-3">
-              <option value="">--Select Media--</option>
+              <option disabled="disabled" selected="selected">Select Movie, TV, or Person</option>
               <option value="movie">Movies</option>
               <option value="tv">TV Shows</option>
+              <option value="person">Person</option>
             </select>
 
-            <select class="form-select mr-sm-2" name="choice" class="mb-3">
-              <option value="">--Select Criteria--</option>
-              <option value="similar">Similar</option>
-              <option value="recommendations">Recommendation</option>
+            <select class="form-select mr-sm-2" name="choice" id="selectionChoice" class="mb-3">
+              <option disabled="disabled" selected="selected">Select Criteria</option>
+              <option value="general">General Media Details</option>
+              <option value="similar">Similar Media</option>
+              <option value="recommendations">Recommended Media</option>
+              <option value="movie_credits">Person Movie Credits</option>
             </select>
 
-            <input class="form-control me-2" name="query" type="text" placeholder="Enter title to find out what to watch next!!" aria-label="Search" id="searchForm">
-            <button class="btn btn-outline-success" type="submit">Search</button>
-        
+            <input class="form-control me-2" name="query" type="text" aria-label="Search" id="searchForm">
+            <script src="{% static 'js/placeholder.js' %}"></script>
+            <button class="btn btn-outline-success" id="userChoiceActionButton"  type="submit">Search</button>
+
           </form>
-          
+
         </ul>
       </div>
     </div>
   </nav>
 
-  {% block body %}{% endblock %}
+  <!-- This container contains the sidebar -->
+  <div class="container-fluid h-100">
+
+    <div class="row" id="rowMain">
+
+      <div class="col-2" id="sidebar">
+        <h4>Discover Media</h4>
+        <!-- Navigation links in sidebar-->
+        <form action="{% url 'discover' %}" method="get" class="d-flex">
+          <fieldset class="group">
+
+            <legend>Genre</legend>
+            {% load genres %}
+            {% get_genres as genre_names %}
+            <ul class="checkbox">
+              {% for genre in genre_names %}
+              <li><input name="genre" type="checkbox" id="cb" value="{{genre}}" /><label for="cb">{{genre}}</label></li>
+              {% endfor %}
+              <script src="{% static 'js/checkbox.js' %}"></script>
+            </ul>
+            <hr class="a">
+
+            <legend>Provider</legend>
+            {% load providers %}
+            {% get_providers as provider_names %}
+            <select class="form-select" multiple="multiple" size="7" name="providers" id="providers">
+              {% for provider in provider_names %}
+              <option value="{{provider}}">{{provider}}</option>
+              {% endfor %}
+            </select>
+            <hr class="a">
+
+            <legend>Region</legend>
+              {% load countries %}
+              {% get_countries as countries %}
+              <select class="form-select country" name="region" >
+                <option disabled="disabled" selected="selected">Select Option</option>
+                {% for country in countries %}
+                    <option value="{{ country.code }}">{{ country.name }}</option>
+                {% endfor %}
+              </select>
+            <hr class="a">
+
+            <legend>Watch Region</legend>
+            {% load countries %}
+            {% get_countries as countries %}
+            <select class="form-select country" name="watch_region" >
+              <option disabled="disabled" selected="selected">Select Option</option>
+              {% for country in countries %}
+                  <option value="{{ country.code }}">{{ country.name }}</option>
+              {% endfor %}
+            </select>
+          <hr class="a">
+
+            <legend>Release Year</legend>
+            {% load years %}
+            <select class="form-select year" name="year" id="year" >
+              <option disabled="disabled" selected="selected">Select Option</option>
+              {% for year in 1940|year_range_desc %}
+                  <option value="{{ year }}">{{ year }}</option>
+              {% endfor %}
+            </select>
+          <hr class="a">
+
+            <legend>Person</legend>
+            <input name="personName" type="text" class="form-control person" id="personName" placeholder="Enter First and Last Name">
+
+            <hr class="a">
+
+            <legend>Sort By</legend>
+            <!-- The default is popularity descending -->
+            <select class="form-select" multiple="multiple" size="10" name="sort" id="sortBy" >
+              <option value="Popularity Descending">Popularity Descending</option>
+              <option value="Popularity Ascending">Popularity Ascending</option>
+              <option value="Release Date Ascending">Release Date Ascending</option>
+              <option value="Release Date Descending">Release Date Descending</option>
+              <option value="Primary Release Date Ascending">Primary Release Date Ascending</option>
+              <option value="Primary Release Date Descending">Primary Release Date Descending</option>
+              <option value="Original Title Ascending">Original Title Ascending</option>
+              <option value="Original Title Descending">Original Title Descending</option>
+              <option value="Vote Average Ascending">Vote Average Ascending</option>
+              <option value="Vote Average Desending">Vote Average Descending</option>
+              <option value="Vote Count Ascending">Vote Count Ascending</option>
+              <option value="Vote Count Descending">Vote Count Descending</option>
+            </select>
+
+          </fieldset>
+
+            <div>
+            <button class="btn btn-dark" type="submit">Discover</button>
+          </div>
+        </form>
+
+      </div>
+
+      <div class="col-10" id="movieWrapper" style="float: right;">
+        {% block body %} {% endblock %}
+      </div>
+
+    </div><!-- end row -->
+  </div><!-- container-fluid -->
 
 </body>
 </html>

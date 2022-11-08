@@ -16,7 +16,9 @@ LANG_ENG = "en-US"
 REGION_US = COUNTRY_CODES.get("United States")
 
 
-def get_media(endpoint: str, text_query: str, type: str, year: int = None) -> dict[str, int]:
+def get_media(
+    endpoint: str, text_query: str, type: str, year: int = None
+) -> dict[str, int]:
     """This function returns a dictionary of media details based on a text query"""
     url = f"{BASE_URL}{endpoint}"
     params = {"api_key": API_KEY, "query": text_query}
@@ -26,14 +28,29 @@ def get_media(endpoint: str, text_query: str, type: str, year: int = None) -> di
 
     response = requests.get(url, params=params)
 
-    print("Endpoint: ", endpoint)
+    print("Search endpoint: ", endpoint)
     data = response.json()["results"]
 
-    title_key = "original_title" if type =="movie" else "original_name"
+    title_key = "original_title" if type == "movie" else "original_name"
 
     media = {row[title_key]: row["id"] for row in data}
 
     return media
+
+def get_person(endpoint, text_query):
+    """This function returns a dictionary of person details based on a text query"""
+    url = f"{BASE_URL}{endpoint}"
+    params = {"api_key": API_KEY, "query": text_query}
+
+
+    response = requests.get(url, params=params)
+
+    print("Search endpoint: ", endpoint)
+    data = response.json()["results"]
+
+    person = {row["name"]: row["id"] for row in data}
+
+    return person
 
 
 def get_media_detail(endpoint, language=LANG_ENG):
@@ -63,80 +80,59 @@ def get_genres(endpoint: str) -> dict[str, int]:
     return genres
 
 
-def get_media_data(endpoint, language=LANG_ENG, region=REGION_US):
+def get_media_data(
+    endpoint,
+    language=LANG_ENG,
+    region=REGION_US,
+    primary_release_year=None,
+    with_genres=None,
+    sort_by=None,
+    watch_region=None,
+    with_watch_providers=None,
+    with_people=None,
+):
     """This function returns a JSON object of tmdb media data"""
-
+    print("Inside get_media_data functon!!!!!!!!!!!!")
     url = f"{BASE_URL}{endpoint}"
 
     print("URL: ", url)
+
     params = {"api_key": API_KEY, "language": language, "region": region}
+
+    if with_genres is not None:
+        params.update({"with_genres": with_genres})
+
+    if sort_by is not None:
+        params.update({"sort_by": sort_by})
+
+    if watch_region is not None:
+        params.update({"watch_region": watch_region})
     
+    if with_watch_providers is not None:
+        params.update({"with_watch_providers": with_watch_providers})
+
+    if primary_release_year is not None:
+        params.update({"primary_release_year": primary_release_year})
+
+    if with_people is not None:
+        params.update({"with_people": with_people})
+
+    print("Params: ", params)
+
     response = requests.get(url, params=params)
 
     return response.json()
 
 
-# Discover endpoint functions
 
 
-def get_recently_released(
-    endpoint,
-    date_min,
-    date_max,
-    region=REGION_US,
-):
-    """This function returns a JSON object of movies based on a region within a recent date range"""
-
-    url = f"{BASE_URL}{endpoint}"
-    params = params = {
-        "api_key": API_KEY,
-        "region": region,
-        "primary_release_date.gte": date_min,
-        "primary_release_date.lte": date_max,
-    }
-
-    response = requests.get(
-        url,
-        params=params,
-    )
-
-    return response.json()
 
 
-def get_year_genre(endpoint, year, genre_id, region=REGION_US):
-    """This function returns a JSON object of movies based on region, primary release year, and genre"""
-
-    url = f"{BASE_URL}{endpoint}"
-    params = {
-        "api_key": API_KEY,
-        "region": region,
-        "primary_release_year": year,
-        "with_genres": genre_id,
-    }
-
-    response = requests.get(
-        url,
-        params=params,
-    )
-
-    return response.json()
 
 
-def get_vote_sorted(endpoint, vote_count, year, sort_option, page=1):
-    """This function returns a JSON object of movies greater than vote count by year, sorted by selected sort option"""
 
-    url = f"{BASE_URL}{endpoint}"
-    params = {
-        "api_key": API_KEY,
-        "vote_count_gte": vote_count,
-        "year": year,
-        "sort_by": sort_option,
-        "page": page,
-    }
 
-    response = requests.get(
-        url,
-        params=params,
-    )
 
-    return response.json()
+
+
+#

@@ -1,7 +1,92 @@
+html,
+body {
+    height: 100%;
+}
+
+h2 {
+
+    text-align: center;
+    
+}
+
+hr.a  {
+    border-top: 3px double black;
+    width: 210px;
+  }
+
+#sidebar {
+
+    background: linear-gradient(rgb(55, 155, 55), rgb(178, 178, 184));
+    text-align: center;
+    color: black;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    padding: 10px;
+
+}
+
+.form-control.person {
+    width: 225px;
+}
+
+.form-select.country {
+    width: 150px;
+}
+
+.form-select.year {
+    width: 200px;
+}
+
+fieldset.group  { 
+    margin: 0; 
+    padding: 0; 
+    margin-bottom: 1.25em; 
+    padding: .125em; 
+  } 
+  
+fieldset.group legend { 
+    margin: 0; 
+    padding: 0; 
+    font-weight: bold; 
+    margin-left: 20px; 
+    font-size: 100%; 
+    color: black; 
+} 
+  
+  
+ul.checkbox  { 
+    margin: 0; 
+    padding: 0; 
+    margin-left: 20px; 
+    list-style: none; 
+    /*column-count: 3;*/
+} 
+
+ul.checkbox li input { 
+    margin-right: .25em; 
+} 
+
+ul.checkbox li { 
+    border: 1px transparent solid; 
+} 
+
+#sortBy {
+    width: 200px;
+    overflow: auto;
+}
+
+#providers {
+    width: 200px;
+    overflow: auto;
+}
+  
+#directorName {
+    width: 205px;
+
+}
+
 #movieWrapper {
-    color: #1a1a1d;
-    background-color: #c7ded4;
-    margin-right: 100px;
+    color: #FFFFFF;
+    background-color: #070707;
     padding-top: 20px;
     padding-bottom: 20px;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -13,13 +98,13 @@
 
 #mediaInfo {
     color: #000000;
-    margin-left:550px; 
+    margin-left:550px;
     margin-top: -300px;
     min-height: 290px;
 }
 
 .col.mediaOverview {
-    color:black; 
+    color:black;
     margin-left: 30px;
     margin-right: 260px;
     font-size: medium
@@ -53,16 +138,16 @@
 
 .form-select.mr-sm-2 {
     padding-left: 5px;
-    background-color: #131213; 
+    background-color: #131213;
     color: #d6d6d6;
     border-radius: 5px;
-    width: 175px;
+    width: 250px;
     height: 45px;
 
 }
 
 #searchForm {
-    width: 400px;
+    width: 275px;
 }
 
 #movieCard {
