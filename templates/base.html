@@ -15,7 +15,6 @@
 <body>
   {% bootstrap_messages %}
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid"></div>
       <a class="navbar-brand" href="#">
         <img alt="Brand" src="{% static 'img/action.jpg' %}" class="logo">
       </a>
@@ -175,7 +174,7 @@
 
       </div>
 
-      <div class="col-10" id="movieWrapper" style="float: right;">
+      <div class="col-10 bg" id="movieWrapper" style="float: right;">
         {% block body %} {% endblock %}
       </div>
 
