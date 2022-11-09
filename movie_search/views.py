@@ -205,6 +205,8 @@ def search(request):
             if choice == "general":
                 print("Selected General")
 
+
+                # TODO: Cache this data to increase speed
                 media_detail = media_api.get_media_data(f"/{type}/{media_id}")
                 # print("MEDIA DETAIL: ", media_detail)
 

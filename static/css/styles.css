@@ -16,11 +16,14 @@ hr.a  {
 
 #sidebar {
 
-    background: linear-gradient(rgb(55, 155, 55), rgb(178, 178, 184));
+    background: linear-gradient(#9b1414, rgb(172, 124, 124));
     text-align: center;
     color: black;
+    -webkit-text-stroke: 1px #050505;
+    text-shadow: 0px 1px 1px #121212;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     padding: 10px;
+    font-size: 17px
 
 }
 
@@ -48,7 +51,7 @@ fieldset.group legend {
     padding: 0; 
     font-weight: bold; 
     margin-left: 20px; 
-    font-size: 100%; 
+    font-size: 22px; 
     color: black; 
 } 
   
@@ -171,8 +174,8 @@ ul.checkbox li {
 
 .logo {
     float:left;  
-    width: 150px;
-    height: 100px; 
+    width: 100px;
+    height: 80px; 
     opacity: 1;
     -webkit-animation: flash 1.5s;
     animation: flash 1.5s;
@@ -193,6 +196,21 @@ ul.checkbox li {
         opacity: 1;
     }
 }
+
+#userChoiceActionButton {
+    background-color: #9b1414 ;
+    color: #ffffff;
+    border-color: #e7e7e7;
+}
+
+#discoverButton {
+    background-color: black;
+    color: #ffffff;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+
+
 
 
 
