@@ -6,7 +6,7 @@ body {
 h2 {
 
     text-align: center;
-    
+
 }
 
 hr.a  {
@@ -39,32 +39,32 @@ hr.a  {
     width: 200px;
 }
 
-fieldset.group  { 
-    margin: 0; 
-    padding: 0; 
-    margin-bottom: 1.25em; 
-    padding: .125em; 
-  } 
-  
-fieldset.group legend { 
-    margin: 0; 
-    padding: 0; 
-    font-weight: bold; 
-    margin-left: 20px; 
-    font-size: 22px; 
-    color: black; 
-} 
-  
-  
-ul.checkbox  { 
-    margin: 0; 
-    padding: 0; 
-    margin-left: 50px; 
-    list-style: none; 
-    
-} 
+fieldset.group  {
+    margin: 0;
+    padding: 0;
+    margin-bottom: 1.25em;
+    padding: .125em;
+  }
 
-ul.checkbox li input { 
+fieldset.group legend {
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+    margin-left: 20px;
+    font-size: 22px;
+    color: black;
+}
+
+
+ul.checkbox  {
+    margin: 0;
+    padding: 0;
+    margin-left: 50px;
+    list-style: none;
+
+}
+
+ul.checkbox li input {
     display: block;
     padding-left: 15px;
     text-indent: -15px;
@@ -76,11 +76,11 @@ ul.checkbox li input {
     top: 20px;
     margin-left: -20px;
     margin-right: 10px;
-} 
+}
 
-ul.checkbox li { 
-    border: 1px transparent solid; 
-} 
+ul.checkbox li {
+    border: 1px transparent solid;
+}
 
 #sortBy {
     width: 200px;
@@ -91,7 +91,7 @@ ul.checkbox li {
     width: 200px;
     overflow: auto;
 }
-  
+
 #directorName {
     width: 205px;
 
@@ -173,9 +173,9 @@ ul.checkbox li {
 
 
 .logo {
-    float:left;  
+    float:left;
     width: 100px;
-    height: 80px; 
+    height: 80px;
     opacity: 1;
     -webkit-animation: flash 1.5s;
     animation: flash 1.5s;
@@ -209,13 +209,15 @@ ul.checkbox li {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
-
-
-
-
-
-
-
-
-
-
+#banner {
+  border: 1px solid #333;
+  height: 200px;
+  background-size: cover;
+  background-position: left;
+  background-repeat: repeat-y
+}
+#banner h2 {
+  color: #fff;
+  font-size: 200%;
+  padding-top: 80px;
+}
