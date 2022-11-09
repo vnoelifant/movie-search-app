@@ -56,13 +56,23 @@ fieldset.group legend {
 ul.checkbox  { 
     margin: 0; 
     padding: 0; 
-    margin-left: 20px; 
+    margin-left: 50px; 
     list-style: none; 
-    /*column-count: 3;*/
+    
 } 
 
 ul.checkbox li input { 
-    margin-right: .25em; 
+    display: block;
+    padding-left: 15px;
+    text-indent: -15px;
+    width: 15px;
+    height: 15px;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    top: 20px;
+    margin-left: -20px;
+    margin-right: 10px;
 } 
 
 ul.checkbox li { 
@@ -157,6 +167,33 @@ ul.checkbox li {
 #movieRow {
     margin-right: 20px; margin-left: 20px;
 }
+
+
+.logo {
+    float:left;  
+    width: 150px;
+    height: 100px; 
+    opacity: 1;
+    -webkit-animation: flash 1.5s;
+    animation: flash 1.5s;
+}
+@-webkit-keyframes flash {
+    0% {
+        opacity: .4;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes flash {
+    0% {
+        opacity: .4;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
 
 
 
