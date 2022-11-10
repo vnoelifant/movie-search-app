@@ -123,16 +123,8 @@ def get_media_data(
 
     return response.json()
 
+#pprint(get_media_data("/genre/tv/list"))
 
+with open("tv_providers.json", "w") as provider_data:
+    json.dump(get_media_data("/watch/providers/tv"), provider_data, indent=4, sort_keys=True)
 
-
-
-
-
-
-
-
-
-
-
-#

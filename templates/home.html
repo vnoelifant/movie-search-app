@@ -6,15 +6,32 @@
 {% block body %}
 
 <style>
-    .bg{
+    #banner {
         background-image: url("{% static 'img/movies-unsplash.jpg' %}");
-        background-size: contain, cover;
-        background-position: top;
-        background-repeat: no-repeat;
+        opacity: 1;
+        -webkit-animation: flash 1.5s;
+        animation: flash 1.5s;
+    }
+    @-webkit-keyframes flash {
+    0% {
+        opacity: .4;
+    }
+    100% {
+        opacity: 1;
+    }
+    }
+    @keyframes flash {
+    0% {
+        opacity: .4;
+    }
+    100% {
+        opacity: 1;
+    }
     }
 </style>
-
-    <h2>Trending of the Day</h2><br><br>
+    
+    <h2 class="x-sign">Trending of the Day</h2><br><br>
+    <script src="{% static 'js/text.js' %}"></script>
 
     <div class="row ten-columns" id="movieRow">
         {% for media in trending.results %}
