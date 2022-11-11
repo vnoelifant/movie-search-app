@@ -2,6 +2,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<title>{% block title %}{% endblock %}</title>
 	<meta charset="utf-8">
@@ -10,13 +11,17 @@
   {% bootstrap_javascript %}
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Gruppo|Bad Script|Kanit|Bai Jamjuree">
 </head>
 
 <body>
   {% bootstrap_messages %}
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid"></div>
-      <a class="navbar-brand" href="{% url 'home' %}">Media Search</a>
+      <a class="navbar-brand" href="#">
+        <img alt="Brand" src="{% static 'img/reel.png' %}" id="logo">
+      </a>
+
+      <a class="navbar-brand" id="navBarTitle" href="{% url 'home' %}">Media Search</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -76,103 +81,18 @@
     </div>
   </nav>
 
-  <!-- This container contains the sidebar -->
+  <div class="row" id="banner">
+    <h2>Sit back and enjoy watching something new!</h2>
+  </div>
+
   <div class="container-fluid h-100">
 
     <div class="row" id="rowMain">
-
-      <div class="col-2" id="sidebar">
-        <h4>Discover Media</h4>
-        <!-- Navigation links in sidebar-->
-        <form action="{% url 'discover' %}" method="get" class="d-flex">
-          <fieldset class="group">
-
-            <legend>Genre</legend>
-            {% load genres %}
-            {% get_genres as genre_names %}
-            <ul class="checkbox">
-              {% for genre in genre_names %}
-              <li><input name="genre" type="checkbox" id="cb" value="{{genre}}" /><label for="cb">{{genre}}</label></li>
-              {% endfor %}
-              <script src="{% static 'js/checkbox.js' %}"></script>
-            </ul>
-            <hr class="a">
-
-            <legend>Provider</legend>
-            {% load providers %}
-            {% get_providers as provider_names %}
-            <select class="form-select" multiple="multiple" size="7" name="providers" id="providers">
-              {% for provider in provider_names %}
-              <option value="{{provider}}">{{provider}}</option>
-              {% endfor %}
-            </select>
-            <hr class="a">
-
-            <legend>Region</legend>
-              {% load countries %}
-              {% get_countries as countries %}
-              <select class="form-select country" name="region" >
-                <option disabled="disabled" selected="selected">Select Option</option>
-                {% for country in countries %}
-                    <option value="{{ country.code }}">{{ country.name }}</option>
-                {% endfor %}
-              </select>
-            <hr class="a">
-
-            <legend>Watch Region</legend>
-            {% load countries %}
-            {% get_countries as countries %}
-            <select class="form-select country" name="watch_region" >
-              <option disabled="disabled" selected="selected">Select Option</option>
-              {% for country in countries %}
-                  <option value="{{ country.code }}">{{ country.name }}</option>
-              {% endfor %}
-            </select>
-          <hr class="a">
-
-            <legend>Release Year</legend>
-            {% load years %}
-            <select class="form-select year" name="year" id="year" >
-              <option disabled="disabled" selected="selected">Select Option</option>
-              {% for year in 1940|year_range_desc %}
-                  <option value="{{ year }}">{{ year }}</option>
-              {% endfor %}
-            </select>
-          <hr class="a">
-
-            <legend>Person</legend>
-            <input name="personName" type="text" class="form-control person" id="personName" placeholder="Enter First and Last Name">
-
-            <hr class="a">
-
-            <legend>Sort By</legend>
-            <!-- The default is popularity descending -->
-            <select class="form-select" multiple="multiple" size="10" name="sort" id="sortBy" >
-              <option value="Popularity Descending">Popularity Descending</option>
-              <option value="Popularity Ascending">Popularity Ascending</option>
-              <option value="Release Date Ascending">Release Date Ascending</option>
-              <option value="Release Date Descending">Release Date Descending</option>
-              <option value="Primary Release Date Ascending">Primary Release Date Ascending</option>
-              <option value="Primary Release Date Descending">Primary Release Date Descending</option>
-              <option value="Original Title Ascending">Original Title Ascending</option>
-              <option value="Original Title Descending">Original Title Descending</option>
-              <option value="Vote Average Ascending">Vote Average Ascending</option>
-              <option value="Vote Average Desending">Vote Average Descending</option>
-              <option value="Vote Count Ascending">Vote Count Ascending</option>
-              <option value="Vote Count Descending">Vote Count Descending</option>
-            </select>
-
-          </fieldset>
-
-            <div>
-            <button class="btn btn-dark" type="submit">Discover</button>
-          </div>
-        </form>
-
-      </div>
+      {% include "sidebar.html" %}
 
       <div class="col-10" id="movieWrapper" style="float: right;">
-        {% block body %} {% endblock %}
+        {% block body %}
+        {% endblock %}
       </div>
 
     </div><!-- end row -->

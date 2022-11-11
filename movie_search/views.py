@@ -87,19 +87,20 @@ def discover(request):
     print("WITH GENRES: ", with_genres)
 
     person_name = request.GET.get("personName")
-    
-    person_name =  person_name.lower()
 
-    person = media_api.get_person("/search/person", person_name)
+    if person_name:
+        person_name =  person_name.lower()
+        person = media_api.get_person("/search/person", person_name)
+        print("Person: ",person)
 
-    print("Person: ",person)
+        person = {person.lower(): idx for person, idx in person.items()}
+        print("Person Dictionary: ", person)
 
-    person = {person.lower(): idx for person, idx in person.items()}
-    print("Person Dictionary: ", person)
-    
-    # Get person id based on person query
-    with_people = person.get(person_name)
-    print("PERSON ID", with_people)
+        # Get person id based on person query
+        with_people = person.get(person_name)
+        print("PERSON ID", with_people)
+    else:
+        with_people = None
 
     sort_by = request.GET.getlist("sort")
     print("SORT BY: ", sort_by)
@@ -114,7 +115,9 @@ def discover(request):
     print("WATCH PROVIDERS: ", watch_provider_names)
 
     # Get Watch Provider IDs
-    with_watch_providers= Provider.objects.filter(name__in=watch_provider_names).values_list("provider_id", flat=True)
+    with_watch_providers= Provider.objects.filter(
+        name__in=watch_provider_names
+    ).values_list("provider_id", flat=True)
     print("WITH WATCH PROVIDERS: ", with_watch_providers)
 
     primary_release_year = request.GET.get("year")
@@ -202,6 +205,8 @@ def search(request):
             if choice == "general":
                 print("Selected General")
 
+
+                # TODO: Cache this data to increase speed
                 media_detail = media_api.get_media_data(f"/{type}/{media_id}")
                 # print("MEDIA DETAIL: ", media_detail)
 

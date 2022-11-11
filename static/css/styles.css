@@ -6,7 +6,9 @@ body {
 h2 {
 
     text-align: center;
+    font-family: Bai Jamjuree;
     
+
 }
 
 hr.a  {
@@ -16,11 +18,13 @@ hr.a  {
 
 #sidebar {
 
-    background: linear-gradient(rgb(55, 155, 55), rgb(178, 178, 184));
+    background: linear-gradient(#9b1414, rgb(172, 124, 124));
     text-align: center;
     color: black;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-family: Bai Jamjuree;
     padding: 10px;
+    font-weight: bold;
+    font-size: 17px
 
 }
 
@@ -36,38 +40,48 @@ hr.a  {
     width: 200px;
 }
 
-fieldset.group  { 
-    margin: 0; 
-    padding: 0; 
-    margin-bottom: 1.25em; 
-    padding: .125em; 
-  } 
-  
-fieldset.group legend { 
-    margin: 0; 
-    padding: 0; 
-    font-weight: bold; 
-    margin-left: 20px; 
-    font-size: 100%; 
-    color: black; 
-} 
-  
-  
-ul.checkbox  { 
-    margin: 0; 
-    padding: 0; 
-    margin-left: 20px; 
-    list-style: none; 
-    /*column-count: 3;*/
-} 
+fieldset.group  {
+    margin: 0;
+    padding: 0;
+    margin-bottom: 1.25em;
+    padding: .125em;
+  }
 
-ul.checkbox li input { 
-    margin-right: .25em; 
-} 
+fieldset.group legend {
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+    margin-left: 20px;
+    font-size: 22px;
+    color: black;
+}
 
-ul.checkbox li { 
-    border: 1px transparent solid; 
-} 
+
+ul.checkbox  {
+    margin: 0;
+    padding: 0;
+    margin-left: 50px;
+    list-style: none;
+
+}
+
+ul.checkbox li input {
+    display: block;
+    padding-left: 15px;
+    text-indent: -15px;
+    width: 15px;
+    height: 15px;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    top: 20px;
+    margin-left: -20px;
+    margin-right: 10px;
+}
+
+ul.checkbox li {
+    border: 1px transparent solid;
+}
 
 #sortBy {
     width: 200px;
@@ -78,7 +92,7 @@ ul.checkbox li {
     width: 200px;
     overflow: auto;
 }
-  
+
 #directorName {
     width: 205px;
 
@@ -101,6 +115,7 @@ ul.checkbox li {
     margin-left:550px;
     margin-top: -300px;
     min-height: 290px;
+
 }
 
 .col.mediaOverview {
@@ -158,9 +173,73 @@ ul.checkbox li {
     margin-right: 20px; margin-left: 20px;
 }
 
+#userChoiceActionButton {
+    background-color: #9b1414 ;
+    color: #ffffff;
+    border-color: #e7e7e7;
+}
+
+#discoverButton {
+    background-color: black;
+    color: #ffffff;
+    font-family: Bai Jamjuree;
+}
+
+#banner {
+  border: 1px solid #333;
+  height: 200px;
+  background-size: cover;
+  background-position: left;
+  background-repeat: repeat-y
+}
+#banner h2 {
+  color: #fff;
+  font-size: 50px;
+  padding-top: 80px;
+  color: rgb(250, 237, 239);
+  --color1: pink;
+  --color2: orangered;
+  --color3: red;
+  --color4: magenta;
+  font-family: Bad Script;
+  }
+
+.navbar {
+        font-family: Bai Jamjuree;
+      
+}
 
 
+#logo {
+    float:left;  
+    width: 60px;
+    height: 50px; 
+    background-color: transparent;
+}
 
 
+.x-sign {
+    --interval: 1s;
+    display: block;
+    text-shadow: 
+      0 0 10px var(--color1),
+      0 0 20px var(--color2),
+      0 0 40px var(--color3),
+      0 0 80px var(--color4);
+    will-change: filter, color;
+    filter: saturate(60%);
+    animation: flicker steps(100) var(--interval) 1s infinite;
+    color: lightpink;
+    --color1: pink;
+    --color2: orangered;
+    --color3: red;
+    --color4: magenta;
+    font-family: Gruppo;
+    font-size: 40px
+  }
 
+.btn {
+    font-family: Bai Jamjuree;
+    font-weight: bold;
 
+}

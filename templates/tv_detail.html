@@ -5,6 +5,31 @@
 
 {% block body %}
 
+<style>
+    #banner {
+        background-image: url("{% static 'img/movies-unsplash.jpg' %}");
+        opacity: 1;
+        -webkit-animation: flash 1.5s;
+        animation: flash 1.5s;
+    }
+    @-webkit-keyframes flash {
+    0% {
+        opacity: .4;
+    }
+    100% {
+        opacity: 1;
+    }
+    }
+    @keyframes flash {
+    0% {
+        opacity: .4;
+    }
+    100% {
+        opacity: 1;
+    }
+    }
+</style>
+
 <div class="container first" id="detailBc"> 
     
     <img src="https://image.tmdb.org/t/p/w500{{ tv_detail.backdrop_path }}" alt="..." style="border-radius:15px; margin-left: 30px; margin-top: 30px;" >

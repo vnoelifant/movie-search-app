@@ -107,7 +107,7 @@ def get_media_data(
 
     if watch_region is not None:
         params.update({"watch_region": watch_region})
-    
+
     if with_watch_providers is not None:
         params.update({"with_watch_providers": with_watch_providers})
 
@@ -123,16 +123,8 @@ def get_media_data(
 
     return response.json()
 
+#pprint(get_media_data("/genre/tv/list"))
 
+with open("tv_providers.json", "w") as provider_data:
+    json.dump(get_media_data("/watch/providers/tv"), provider_data, indent=4, sort_keys=True)
 
-
-
-
-
-
-
-
-
-
-
-#
