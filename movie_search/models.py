@@ -18,3 +18,12 @@ class Provider(models.Model):
     def __str__(self):
         """String for representing the Model object."""
         return f"{self.provider_id}: {self.name}"
+
+
+class Movie(models.Model):
+    tmdb_id = models.PositiveSmallIntegerField(default=0)
+    title = models.CharField(max_length=200)
+    genre = models.CharField(max_length=200)
+    tagline = models.CharField(max_length=500)
+    vote_count = models.PositiveSmallIntegerField(default=0)
+    # ...
