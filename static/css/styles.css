@@ -18,7 +18,7 @@ hr.a  {
 
 #sidebar {
 
-    background: linear-gradient(#9b1414, rgb(172, 124, 124));
+    background: linear-gradient(#d7d2d2,rgb(194, 23, 23), #c52727);
     text-align: center;
     color: black;
     font-family: Bai Jamjuree;
@@ -227,14 +227,14 @@ ul.checkbox li {
       0 0 40px var(--color3),
       0 0 80px var(--color4);
     will-change: filter, color;
-    filter: saturate(60%);
+    filter: saturate(45%);
     animation: flicker steps(100) var(--interval) 1s infinite;
-    color: lightpink;
-    --color1: pink;
-    --color2: orangered;
+    color: rgba(255, 255, 255, 0.801);
+    --color1: rgb(249, 203, 210);;
+    --color2: rgb(178, 27, 27);
     --color3: red;
-    --color4: magenta;
-    font-family: Gruppo;
+    --color4: rgb(128, 85, 85);
+    font-family: Krona One;
     font-size: 40px
   }
 
