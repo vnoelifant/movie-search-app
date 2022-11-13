@@ -16,15 +16,33 @@ hr.a  {
     width: 210px;
   }
 
-#sidebar {
+.sidebar  {
 
-    background: linear-gradient(#d7d2d2,rgb(194, 23, 23), #c52727);
+    background: linear-gradient(#d7d2d2,#b22020, #eb4c4c);
     text-align: center;
     color: black;
     font-family: Bai Jamjuree;
     padding: 10px;
     font-weight: bold;
-    font-size: 17px
+
+}
+
+.sidebar h3  {
+
+    font-size: 21px
+
+}
+
+
+#sidebarLegend {
+
+    font-size: 16px;
+
+}
+
+.sidebar fieldset {
+
+    font-size: 15px;
 
 }
 
@@ -206,9 +224,13 @@ ul.checkbox li {
 
 .navbar {
         font-family: Bai Jamjuree;
+        font-size: 15px;
       
 }
 
+#navBarTitle {
+    font-size: 20px;
+}
 
 #logo {
     float:left;  
@@ -233,9 +255,9 @@ ul.checkbox li {
     --color1: rgb(249, 203, 210);;
     --color2: rgb(178, 27, 27);
     --color3: red;
-    --color4: rgb(128, 85, 85);
+    --color4: rgb(137, 24, 24);
     font-family: Krona One;
-    font-size: 40px
+    font-size: 32px
   }
 
 .btn {

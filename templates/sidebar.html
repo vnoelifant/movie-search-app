@@ -1,11 +1,11 @@
 {% load static %}
-<div class="col-2" id="sidebar">
+<div class="col-2 sidebar">
   <h3>Discover Media</h4>
   <!-- Navigation links in sidebar-->
   <form action="{% url 'discover' %}" method="get" class="d-flex">
     <fieldset class="group">
 
-      <legend>Genre</legend>
+      <legend id="sidebarLegend">Genre</legend>
       {% load genres %}
       {% get_genres as genre_names %}
       <ul class="checkbox">
@@ -16,7 +16,7 @@
       </ul>
       <hr class="a">
 
-      <legend>Provider</legend>
+      <legend id="sidebarLegend">Provider</legend>
       {% load providers %}
       {% get_providers as provider_names %}
       <select class="form-select" multiple="multiple" size="7" name="providers" id="providers">
@@ -26,7 +26,7 @@
       </select>
       <hr class="a">
 
-      <legend>Region</legend>
+      <legend id="sidebarLegend">Region</legend>
         {% load countries %}
         {% get_countries as countries %}
         <select class="form-select country" name="region" >
@@ -37,7 +37,7 @@
         </select>
       <hr class="a">
 
-      <legend>Watch Region</legend>
+      <legend id="sidebarLegend">Watch Region</legend>
       {% load countries %}
       {% get_countries as countries %}
       <select class="form-select country" name="watch_region" >
@@ -48,7 +48,7 @@
       </select>
     <hr class="a">
 
-      <legend>Release Year</legend>
+      <legend id="sidebarLegend">Release Year</legend>
       {% load years %}
       <select class="form-select year" name="year" id="year" >
         <option disabled="disabled" selected="selected">Select Option</option>
@@ -58,12 +58,12 @@
       </select>
     <hr class="a">
 
-      <legend>Person</legend>
+      <legend id="sidebarLegend">Person</legend>
       <input name="personName" type="text" class="form-control person" id="personName" placeholder="Enter First and Last Name">
 
       <hr class="a">
 
-      <legend>Sort By</legend>
+      <legend id="sidebarLegend">Sort By</legend>
       <!-- The default is popularity descending -->
       <select class="form-select" multiple="multiple" size="10" name="sort" id="sortBy" >
         <option value="Popularity Descending">Popularity Descending</option>
