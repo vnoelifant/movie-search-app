@@ -18,7 +18,7 @@ hr.a  {
 
 .sidebar  {
 
-    background: linear-gradient(#d7d2d2,#b22020, #eb4c4c);
+    background: linear-gradient(#d7d2d2,#b22020, #cf0d0d);
     text-align: center;
     color: black;
     font-family: Bai Jamjuree;
@@ -230,6 +230,10 @@ ul.checkbox li {
 
 #navBarTitle {
     font-size: 20px;
+}
+
+#navbarDarkDropdownMenuLink {
+    font-size: 17px;
 }
 
 #logo {
