@@ -5,6 +5,8 @@ from pprint import pprint
 
 from movie_search.models import Genre, Provider
 from movie_search import media_api
+from .models import Movie
+
 
 # Create your views here.
 def home(request):
@@ -235,11 +237,74 @@ def search(request):
         return render(request, "media_search.html", context)
 
 
+"""
+(Pdb) pp movie_detail
+{'adult': False,
+ 'backdrop_path': '/8sMmAmN2x7mBiNKEX2o0aOTozEB.jpg',
+ 'belongs_to_collection': {'backdrop_path': '/1Jj7Frjjbewb6Q6dl6YXhL3kuvL.jpg',
+                           'id': 529892,
+                           'name': 'Black Panther Collection',
+                           'poster_path': '/uVnN6KnfDuHiC8rsVsSc7kk0WRD.jpg'},
+ 'budget': 250000000,
+ 'genres': [{'id': 28, 'name': 'Action'},
+            {'id': 12, 'name': 'Adventure'},
+            {'id': 878, 'name': 'Science Fiction'}],
+ 'homepage': 'https://wakandaforevertickets.com',
+ 'id': 505642,
+ 'imdb_id': 'tt9114286',
+ 'original_language': 'en',
+ 'original_title': 'Black Panther: Wakanda Forever',
+ 'overview': 'Queen Ramonda, Shuri, M’Baku, Okoye and the Dora Milaje fight to '
+             'protect their nation from intervening world powers in the wake '
+             'of King T’Challa’s death. As the Wakandans strive to embrace '
+             'their next chapter, the heroes must band together with the help '
+             'of War Dog Nakia and Everett Ross and forge a new path for the '
+             'kingdom of Wakanda.',
+ 'popularity': 1674.481,
+ 'poster_path': '/sv1xJUazXeYqALzczSZ3O6nkH75.jpg',
+ 'production_companies': [{'id': 420,
+                           'logo_path': '/hUzeosd33nzE5MCNsZxCGEKTXaQ.png',
+                           'name': 'Marvel Studios',
+                           'origin_country': 'US'},
+                          {'id': 176762,
+                           'logo_path': None,
+                           'name': 'Kevin Feige Productions',
+                           'origin_country': 'US'}],
+ 'production_countries': [{'iso_3166_1': 'US',
+                           'name': 'United States of America'}],
+ 'release_date': '2022-11-09',
+ 'revenue': 0,
+ 'runtime': 162,
+ 'spoken_languages': [{'english_name': 'English',
+                       'iso_639_1': 'en',
+                       'name': 'English'}],
+ 'status': 'Released',
+ 'tagline': 'Forever.',
+ 'title': 'Black Panther: Wakanda Forever',
+ 'video': False,
+ 'vote_average': 7.648,
+ 'vote_count': 172}
+ """
+
 def movie_detail(request, obj_id):
+    try:
+        movie_detail = Movie.objects.get(tmdb_id=obj_id)
+    except Movie.DoesNotExist:
+        # call only happens if movie not in db
+        movie_from_api = media_api.get_media_detail(f"/movie/{obj_id}")
+        genres = [
+            row["name"] for row in movie_from_api["genres"]
+        ]
+        movie_detail = Movie.objects.create(
+            tmdb_id=obj_id,
+            title=movie_from_api["title"],
+            genre=", ".join(genres),
+            tagline=...,
+            # all columns (yet to be added)
+        )
 
-    movie_detail = media_api.get_media_detail(f"/movie/{obj_id}")
-    # pprint("MOVIE DETAIL: ", movie_detail)
-
+    # TODO: you could also cache those in
+    # a related Video model
     movie_videos = media_api.get_media_detail(f"/movie/{obj_id}/videos")
 
     context = {
