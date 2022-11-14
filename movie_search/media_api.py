@@ -7,6 +7,8 @@ import requests
 import pycountry
 from dotenv import load_dotenv
 
+from utils import dump_movie_data_to_json
+
 load_dotenv()
 
 API_KEY = os.getenv("PROJECT_API_KEY")
@@ -20,84 +22,51 @@ def get_media(
     endpoint: str, text_query: str, type: str, year: int = None
 ) -> dict[str, int]:
     """This function returns a dictionary of media details based on a text query"""
-    url = f"{BASE_URL}{endpoint}"
-    params = {"api_key": API_KEY, "query": text_query}
-
-    if year is not None:
-        params.update({"year": year})
-
-    response = requests.get(url, params=params)
-
-    print("Search endpoint: ", endpoint)
-    data = response.json()["results"]
-
+    response_json = get_media_data(endpoint, query=text_query)
+    data = response_json["results"]
     title_key = "original_title" if type == "movie" else "original_name"
-
     media = {row[title_key]: row["id"] for row in data}
-
     return media
+
 
 def get_person(endpoint, text_query):
     """This function returns a dictionary of person details based on a text query"""
-    url = f"{BASE_URL}{endpoint}"
-    params = {"api_key": API_KEY, "query": text_query}
-
-
-    response = requests.get(url, params=params)
-
-    print("Search endpoint: ", endpoint)
-    data = response.json()["results"]
-
+    response_json = get_media_data(endpoint, query=text_query)
+    data = response_json["results"]
     person = {row["name"]: row["id"] for row in data}
-
     return person
-
-
-def get_media_detail(endpoint, language=LANG_ENG):
-
-    url = f"{BASE_URL}{endpoint}"
-
-    params = {
-        "api_key": API_KEY,
-        "language": language,
-    }
-
-    response = requests.get(url, params=params)
-
-    return response.json()
 
 
 def get_genres(endpoint: str) -> dict[str, int]:
     """This function returns a dictionary of movie genres"""
-
-    url = f"{BASE_URL}{endpoint}"
-    params = {"api_key": API_KEY}
-
-    response = requests.get(url, params=params)
-
-    genres = {row["name"]: row["id"] for row in response.json()["genres"]}
-
+    response_json = get_media_data(endpoint)
+    genres = {
+        row["name"]: row["id"] for row in response_json["genres"]
+    }
     return genres
 
 
 def get_media_data(
     endpoint,
     language=LANG_ENG,
-    region=REGION_US,
+    region=None,
     primary_release_year=None,
     with_genres=None,
     sort_by=None,
     watch_region=None,
     with_watch_providers=None,
     with_people=None,
+    query=None,
 ):
     """This function returns a JSON object of tmdb media data"""
-    print("Inside get_media_data functon!!!!!!!!!!!!")
     url = f"{BASE_URL}{endpoint}"
 
     print("URL: ", url)
 
-    params = {"api_key": API_KEY, "language": language, "region": region}
+    params = {"api_key": API_KEY, "language": language}
+
+    if region is not None:
+        params.update({"region": region})
 
     if with_genres is not None:
         params.update({"with_genres": with_genres})
@@ -117,14 +86,16 @@ def get_media_data(
     if with_people is not None:
         params.update({"with_people": with_people})
 
+    if query is not None:
+        params.update({"query": query})
+
     print("Params: ", params)
 
     response = requests.get(url, params=params)
 
     return response.json()
 
-#pprint(get_media_data("/genre/tv/list"))
-
-with open("tv_providers.json", "w") as provider_data:
-    json.dump(get_media_data("/watch/providers/tv"), provider_data, indent=4, sort_keys=True)
+if __name__ == "__main__":
+    data = get_media_data("/watch/providers/tv")
+    dump_movie_data_to_json("output.json", data)
 
