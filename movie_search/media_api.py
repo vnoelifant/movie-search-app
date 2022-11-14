@@ -7,8 +7,6 @@ import requests
 import pycountry
 from dotenv import load_dotenv
 
-from utils import dump_movie_data_to_json
-
 load_dotenv()
 
 API_KEY = os.getenv("PROJECT_API_KEY")
