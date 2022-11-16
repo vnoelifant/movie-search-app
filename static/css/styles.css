@@ -29,14 +29,16 @@ hr.a  {
 
 .sidebar h3  {
 
-    font-size: 21px
+    font-size: 20px;
+    font-weight: bold;
 
 }
 
 
 #sidebarLegend {
 
-    font-size: 16px;
+    font-size: 18px;
+    font-weight: bold;
 
 }
 
