@@ -1,4 +1,4 @@
-# movie-search-app
+# Wonder Watch - Media Finder
 
 ## Overview
 An app that helps you determine what movie to watch next based on various filters. 
