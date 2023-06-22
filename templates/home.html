@@ -33,7 +33,7 @@
     <h2 class="x-sign">Trending of the Day</h2><br><br>
     <script src="{% static 'js/text.js' %}"></script>
 
-    <div class="row ten-columns" id="movieRow">
+    <div class="row" id="movieRow">
         {% for media in trending.results %}
             <div class="card" id="movieCard">
                 {% if media.poster_path %}

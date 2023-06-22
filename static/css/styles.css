@@ -29,14 +29,16 @@ hr.a  {
 
 .sidebar h3  {
 
-    font-size: 21px
+    font-size: 20px;
+    font-weight: bold;
 
 }
 
 
 #sidebarLegend {
 
-    font-size: 16px;
+    font-size: 18px;
+    font-weight: bold;
 
 }
 
@@ -261,7 +263,7 @@ ul.checkbox li {
     --color3: red;
     --color4: rgb(137, 24, 24);
     font-family: Play;
-    font-size: 32px
+    font-size: 37px
   }
 
 .btn {
