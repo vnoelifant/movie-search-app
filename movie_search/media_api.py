@@ -59,8 +59,6 @@ def get_media_data(
     """This function returns a JSON object of tmdb media data"""
     url = f"{BASE_URL}{endpoint}"
 
-    print("URL: ", url)
-
     params = {"api_key": API_KEY, "language": language}
 
     if region is not None:
@@ -86,8 +84,6 @@ def get_media_data(
 
     if query is not None:
         params.update({"query": query})
-
-    print("Params: ", params)
 
     response = requests.get(url, params=params)
 
