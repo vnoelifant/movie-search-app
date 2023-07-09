@@ -91,9 +91,9 @@ def get_media_data(
 
 def main():
     from utils import dump_movie_data_to_json
-    data = get_media_data("/watch/providers/tv")
+    data = get_media_data("/movie/153/recommendations") 
     print("Dumping data to json file")
-    dump_movie_data_to_json("output.json", data)
+    dump_movie_data_to_json("recommendations.json", data)
 
 if __name__ == "__main__":
     main()
