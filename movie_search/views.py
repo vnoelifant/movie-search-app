@@ -248,9 +248,12 @@ def movie_detail(request, obj_id):
 
     movie_videos = media_api.get_media_data(f"/movie/{obj_id}/videos")
 
+    recommendations = media_api.get_media_data(f"/{movie}/{obj_id}/recommendations")
+
     context = {
         "movie_detail": movie_detail,
         "movie_videos": movie_videos,
+        "recommendations": recommendations,
         "type": "movie",
     }
 
