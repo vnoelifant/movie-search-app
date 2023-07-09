@@ -2,7 +2,7 @@
     {
       "model": "movie_search.Provider",
       "fields": {
-        "name": "Apple iTunes",
+        "name": "Apple TV",
         "provider_id": 2
       }
     },
