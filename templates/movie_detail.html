@@ -37,7 +37,7 @@
     <div class="col mov-info" id="mediaInfo" >
         <h2> {{ movie_detail.title }}</h2>
         <h5><b>Genre:</b></h5>
-        {% for genre in movie_detail.genres %}
+        {% for genre in movie_detail.genres.all %}
             <h8>{{genre.name}} |</h8> 
         {% endfor %}
         <h4><b>{{ movie_detail.tagline }}</b></h4>
