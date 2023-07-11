@@ -37,7 +37,9 @@
     <div class="col mov-info" id="mediaInfo" >
         <h2> {{ movie_detail.title }}</h2>
         <h5><b>Genre:</b></h5>
-        <h8>{{movie_detail.genres}} </h8> 
+        {% for genre in movie_detail.genres %}
+            <h8>{{genre.name}} |</h8> 
+        {% endfor %}
         <h4><b>{{ movie_detail.tagline }}</b></h4>
         <h4>Total Votes: <b>{{movie_detail.vote_count}}</b> | Vote Score: <b>{{ movie_detail.vote_average }}</b> | Popularity: <b>{{movie_detail.popularity}}</b></h4>
         <h4>Release Date: <b>{{ movie_detail.release_date }}</b></h4> 
