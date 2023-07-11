@@ -89,7 +89,7 @@ def discover(request):
     print("GENRE NAMES: ", genre_names)
 
     # Get genre IDs
-    with_genres = Genre.objects.filter(name__in=genre_names).values_list("tmdb_id", flat=True)
+    with_genres = Genre.objects.filter(name__in=genre_names).values_list("genre_id", flat=True)
     print("WITH GENRES: ", with_genres)
 
     person_name = request.GET.get("personName")
