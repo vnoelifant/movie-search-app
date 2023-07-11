@@ -9,7 +9,7 @@ class Genre(models.Model):
 
     def __str__(self):
         """String for representing the Model object."""
-        return f"{self.movie_id}: {self.name}"
+        return f"{self.genre_id}: {self.name}"
 
     class Meta:
         verbose_name_plural = "genres"
