@@ -291,6 +291,8 @@ def movie_detail(request, obj_id):
         
         movie_detail.genres.add(*movie_genres)
 
+        # movie_detail.save()
+
         movie_videos = media_api.get_media_data(f"/movie/{obj_id}/videos")
 
         # TODO: you could also cache those in
