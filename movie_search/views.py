@@ -5,6 +5,7 @@ from pprint import pprint
 
 from movie_search.models import Genre, Provider
 from movie_search import media_api
+from .models import Movie
 
 # Create your views here.
 def home(request):
@@ -240,23 +241,80 @@ def search(request):
 
         return render(request, "media_search.html", context)
 
+def get_movie_genres(movie):
+    
+    movie_genres = []
+
+    genres = movie.get("genres")
+
+    if genres is not None:
+        for row in genres:
+            genre, inserted = Genre.objects.get_or_create(
+                name=row.get("name", ""),
+                genre_id=row.get("id", ""),
+            )
+            movie_genres.append(genre)
+    
+    return movie_genres
 
 def movie_detail(request, obj_id):
 
-    movie_detail = media_api.get_media_data(f"/movie/{obj_id}")
-    # pprint("MOVIE DETAIL: ", movie_detail)
+    try:
+        movie_detail = Movie.objects.get(movie_id=obj_id)
+        context = {
+            "movie_detail": movie_detail,
+        }
+    
+    except Movie.DoesNotExist:
+        # call only happens if movie not in db
+        movie_from_api = media_api.get_media_data(f"/movie/{obj_id}")
+        
+        movie_detail = Movie.objects.create(
+            movie_id=obj_id,
+            title=movie_from_api.get("title", ""),
+            backdrop_path=movie_from_api.get("backdrop_path", ""),
+            tagline=movie_from_api.get("tagline", ""),
+            vote_count=movie_from_api.get("vote_count", 0),
+            vote_average=movie_from_api.get("vote_average", 0),
+            popularity=movie_from_api.get("popularity", 0),
+            release_date=movie_from_api.get("release_data", ""),
+            runtime=movie_from_api.get("runtime", 0),
+            production_company=movie_from_api.get("production_company", ""),
+            overview=movie_from_api.get("overview", ""),
+            budget=movie_from_api.get("budget", 0),
+            revenue=movie_from_api.get("revenue", 0),
+            homepage=movie_from_api.get("homepage", ""),
+        )
 
-    movie_videos = media_api.get_media_data(f"/movie/{obj_id}/videos")
+        # Get matching themes from M2M relationship
+        movie_genres = get_movie_genres(movie_from_api)
+        
+        movie_detail.genres.add(*movie_genres)
 
-    recommendations = media_api.get_media_data(f"/{movie}/{obj_id}/recommendations")
+        movie_videos = media_api.get_media_data(f"/movie/{obj_id}/videos")
 
-    context = {
-        "movie_detail": movie_detail,
-        "movie_videos": movie_videos,
-        "recommendations": recommendations,
-        "type": "movie",
-    }
+        # TODO: you could also cache those in
+        # a related Video model
+        
+        # Get matching videos from foreign key relationship to Video model
+        # movie_videos = get_movie_videos(movie_from_api)
+        
+        # movie_detail.videos.add(*movie_videos)
+        # movie_detail.videos = ','.join(get_movie_videos(movie_from_api))
 
+        print(movie_detail)
+
+        # TODO: Maybe cache recommended movies as well?
+        recommendations = media_api.get_media_data(f"/movie/{obj_id}/recommendations")
+
+        context = {
+            "movie_detail": movie_detail,
+            "movie_videos": movie_videos,
+            "recommendations": recommendations,
+            "type": "movie",
+        }
+
+        
     return render(request, "movie_detail.html", context)
 
 
