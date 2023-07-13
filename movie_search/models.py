@@ -8,7 +8,6 @@ class Genre(models.Model):
     genre_id = models.PositiveSmallIntegerField(default=0)
 
     def __str__(self):
-        """String for representing the Model object."""
         return f"{self.genre_id}: {self.name}"
 
     class Meta:
@@ -19,7 +18,6 @@ class Provider(models.Model):
     provider_id = models.PositiveSmallIntegerField(default=0)
 
     def __str__(self):
-        """String for representing the Model object."""
         return f"{self.provider_id}: {self.name}"
 
 
@@ -29,7 +27,6 @@ class Video(models.Model):
     key =  models.CharField(max_length=200)
 
     def __str__(self):
-        """String for representing the Model object."""
         return f"{self.name}: {self.key}"
 
 class Movie(models.Model):
@@ -51,5 +48,4 @@ class Movie(models.Model):
     videos = models.ForeignKey(Video, on_delete=models.CASCADE,null=True, blank=True)
 
     def __str__(self):
-        """String for representing the Model object."""
         return f"{self.movie_id}: {self.title}"
