@@ -2,6 +2,7 @@ import requests
 from django.shortcuts import render
 from django.http import HttpResponse
 from pprint import pprint
+from movie_search.decorators import timing
 
 from movie_search.models import Genre, Provider
 from movie_search import media_api
@@ -241,6 +242,7 @@ def search(request):
 
         return render(request, "media_search.html", context)
 
+@timing
 def get_movie_genres(movie):
     
     movie_genres = []
@@ -249,11 +251,9 @@ def get_movie_genres(movie):
 
     if genres is not None:
         for row in genres:
-            genre, inserted = Genre.objects.get_or_create(
-                name=row.get("name", ""),
-                genre_id=row.get("id", ""),
-            )
+            genre = Genre(name=row.get("name", ""),genre_id=row.get("id", ""),)
             movie_genres.append(genre)
+        Genre.objects.bulk_create(movie_genres)
     
     return movie_genres
 
