@@ -72,7 +72,7 @@ def movies_upcoming(request):
 def movies_trending_week(request):
 
      return _get_movie_or_tv_trending(request, "movie")
-    
+
 
 def _get_movie_or_tv_trending(request, type_):
 
@@ -244,7 +244,7 @@ def search(request):
 
 @timing
 def get_movie_genres(movie):
-    
+
     movie_genres = []
 
     genres = movie.get("genres")
@@ -254,21 +254,22 @@ def get_movie_genres(movie):
             genre = Genre(name=row.get("name", ""),genre_id=row.get("id", ""),)
             movie_genres.append(genre)
         Genre.objects.bulk_create(movie_genres)
-    
+
     return movie_genres
 
 def movie_detail(request, obj_id):
-
     try:
         movie_detail = Movie.objects.get(movie_id=obj_id)
+        # TODO: upon retrieval cache you also need
+        # movie_videos and recommendations
         context = {
             "movie_detail": movie_detail,
         }
-    
+
     except Movie.DoesNotExist:
         # call only happens if movie not in db
         movie_from_api = media_api.get_media_data(f"/movie/{obj_id}")
-        
+
         movie_detail = Movie.objects.create(
             movie_id=obj_id,
             title=movie_from_api.get("title", ""),
@@ -287,8 +288,9 @@ def movie_detail(request, obj_id):
         )
 
         # Get matching themes from M2M relationship
+        breakpoint()
         movie_genres = get_movie_genres(movie_from_api)
-        
+
         movie_detail.genres.add(*movie_genres)
 
         # movie_detail.save()
@@ -297,10 +299,10 @@ def movie_detail(request, obj_id):
 
         # TODO: you could also cache those in
         # a related Video model
-        
+
         # Get matching videos from foreign key relationship to Video model
         # movie_videos = get_movie_videos(movie_from_api)
-        
+
         # movie_detail.videos.add(*movie_videos)
         # movie_detail.videos = ','.join(get_movie_videos(movie_from_api))
 
@@ -316,7 +318,7 @@ def movie_detail(request, obj_id):
             "type": "movie",
         }
 
-        
+
     return render(request, "movie_detail.html", context)
 
 
