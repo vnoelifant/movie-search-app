@@ -59,8 +59,6 @@ def get_media_data(
     """This function returns a JSON object of tmdb media data"""
     url = f"{BASE_URL}{endpoint}"
 
-    print("URL: ", url)
-
     params = {"api_key": API_KEY, "language": language}
 
     if region is not None:
@@ -87,17 +85,15 @@ def get_media_data(
     if query is not None:
         params.update({"query": query})
 
-    print("Params: ", params)
-
     response = requests.get(url, params=params)
 
     return response.json()
 
 def main():
     from utils import dump_movie_data_to_json
-    data = get_media_data("/watch/providers/tv")
+    data = get_media_data("/movie/153/recommendations") 
     print("Dumping data to json file")
-    dump_movie_data_to_json("output.json", data)
+    dump_movie_data_to_json("recommendations.json", data)
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,26 @@
+-i https://pypi.org/simple
+asgiref==3.7.2; python_version >= '3.7'
+beautifulsoup4==4.12.2; python_version >= '3.6'
+black==23.7.0
+certifi==2023.5.7; python_version >= '3.6'
+charset-normalizer==3.2.0; python_version >= '3.7'
+click==8.1.4; python_version >= '3.7'
+django==4.2.3
+django-bootstrap-v5==1.0.11
+django-countries==7.5.1
+idna==3.4; python_version >= '3.5'
+langcodes==3.3.0
+mypy-extensions==1.0.0; python_version >= '3.5'
+packaging==23.1; python_version >= '3.7'
+pathspec==0.11.1; python_version >= '3.7'
+platformdirs==3.8.1; python_version >= '3.7'
+pycountry==22.3.5
+python-decouple==3.8
+python-dotenv==1.0.0
+requests==2.31.0
+setuptools==68.0.0; python_version >= '3.7'
+soupsieve==2.4.1; python_version >= '3.7'
+sqlparse==0.4.4; python_version >= '3.5'
+tomli==2.0.1; python_version < '3.11'
+typing-extensions==4.7.1; python_version < '3.10'
+urllib3==2.0.3; python_version >= '3.7'

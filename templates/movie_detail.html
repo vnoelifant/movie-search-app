@@ -30,19 +30,19 @@
     }
 </style>
 
-<div class="container first" id="detailBc"> 
-    
+<div class="container first" id="detailBc">
+
     <img src="https://image.tmdb.org/t/p/w500{{ movie_detail.backdrop_path }}" alt="..." style="border-radius:15px; margin-left: 30px; margin-top: 30px;" >
-    
+
     <div class="col mov-info" id="mediaInfo" >
         <h2> {{ movie_detail.title }}</h2>
         <h5><b>Genre:</b></h5>
-        {% for genre in movie_detail.genres %}
-            <h8>{{genre.name}} |</h8> 
+        {% for genre in movie_detail.genres.all %}
+            <h8>{{genre.name}} |</h8>
         {% endfor %}
         <h4><b>{{ movie_detail.tagline }}</b></h4>
         <h4>Total Votes: <b>{{movie_detail.vote_count}}</b> | Vote Score: <b>{{ movie_detail.vote_average }}</b> | Popularity: <b>{{movie_detail.popularity}}</b></h4>
-        <h4>Release Date: <b>{{ movie_detail.release_date }}</b></h4> 
+        <h4>Release Date: <b>{{ movie_detail.release_date }}</b></h4>
         <h4>Duration: <b>{{ movie_detail.runtime }} minutes</b></h4>
         <h4>Production Companies:</h4>
         {% for company in movie_detail.production_companies %}
@@ -64,21 +64,21 @@
             <a href={{movie_detail.homepage}} id="detailHome">{{movie_detail.homepage}}</a>
         {% else %}
             <p>No homepage available.</p>
-        {% endif %} 
+        {% endif %}
     </div>
 
     <div class="trailer" id="trailer"><h2>Trailer and Short Videos</h2></div>
-    
+
     <div class="scrolling-wrapper" id="trailerScroll">
         {% for vid in movie_videos.results%}
             <div class="col-lg-6">
                 <div class="embed-responsive embed-responsive-16by9" id="trailerResults">
                     <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/{{ vid.key }}"></iframe>
                 </div>
-            </div>    
+            </div>
         {% endfor %}
     </div>
-    
+
     <div class="rcm" style="color:black; margin-left: 30px; font-weight: bold;"><h2>Recommended Movies</h2></div>
         <div class="row" id="movieRow">
             {% for rec in recommendations.results %}
@@ -88,8 +88,8 @@
                     {% else %}
                         <img src="{% static 'img/no_img.png' %}"  alt="...">
                     {% endif %}
-                    <a href="{% url url_path obj_id=rec.id  %}" class="btn btn-dark">View Details</a>
-                </div> 
+                    <a href="{% url "movie_detail" obj_id=rec.id  %}" class="btn btn-dark">View Details</a>
+                </div>
             {% endfor %}
         </div>
     </div>
