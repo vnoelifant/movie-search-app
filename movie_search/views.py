@@ -281,8 +281,7 @@ def get_movie_genres(movie):
 def movie_detail(request, obj_id):
     try:
         movie_detail = Movie.objects.get(movie_id=obj_id)
-        # TODO: upon retrieval cache you also need
-        # movie_videos and recommendations
+        # TODO: upon retrieval cache you also need movie_videos and recommendations
         context = {
             "movie_detail": movie_detail,
         }

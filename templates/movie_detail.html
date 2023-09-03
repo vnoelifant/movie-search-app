@@ -88,7 +88,7 @@
                     {% else %}
                         <img src="{% static 'img/no_img.png' %}"  alt="...">
                     {% endif %}
-                    <a href="{% url "movie_detail" obj_id=rec.id  %}" class="btn btn-dark">View Details</a>
+                    <a href="{% url 'movie_detail' obj_id=rec.id  %}" class="btn btn-dark">View Details</a>
                 </div>
             {% endfor %}
         </div>
@@ -96,3 +96,4 @@
 </div>
 
 {% endblock %}
+
