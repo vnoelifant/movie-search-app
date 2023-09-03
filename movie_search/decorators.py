@@ -1,5 +1,5 @@
 from functools import wraps
-from time import time, sleep
+from time import sleep, time
 
 
 def timing(f):

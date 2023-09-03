@@ -1,15 +1,12 @@
-import os
 import json
-from pprint import pprint
+import os
 from functools import partial
+from pprint import pprint
 
-import requests
 import pycountry
-from dotenv import load_dotenv
+import requests
+from django.conf import settings
 
-load_dotenv()
-
-API_KEY = os.getenv("PROJECT_API_KEY")
 BASE_URL = "https://api.themoviedb.org/3"
 COUNTRY_CODES = {country.name: country.alpha_2 for country in pycountry.countries}
 LANG_ENG = "en-US"
@@ -59,7 +56,7 @@ def get_media_data(
     """This function returns a JSON object of tmdb media data"""
     url = f"{BASE_URL}{endpoint}"
 
-    params = {"api_key": API_KEY, "language": language}
+    params = {"api_key": settings.TMDB_API_KEY, "language": language}
 
     if region is not None:
         params.update({"region": region})

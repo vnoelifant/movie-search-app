@@ -1,12 +1,15 @@
-import requests
-from django.shortcuts import render
-from django.http import HttpResponse
 from pprint import pprint
-from movie_search.decorators import timing
 
-from movie_search.models import Genre, Provider
+import requests
+from django.http import HttpResponse
+from django.shortcuts import render
+
 from movie_search import media_api
+from movie_search.decorators import timing
+from movie_search.models import Genre, Provider
+
 from .models import Movie
+
 
 # Create your views here.
 def home(request):
