@@ -330,10 +330,18 @@ def movie_detail(request, obj_id):
             homepage=movie_from_api.get("homepage", ""),
         )
 
-        # Get matching themes from M2M relationship
-        movie_genres = get_movie_genres(movie_from_api)
+        movie_detail.save()
+        
+        genres = movie_from_api.get("genres")
 
-        movie_detail.genres.add(*movie_genres)
+        if genres is not None:
+
+            # Get matching themes from M2M relationship
+            movie_genres = get_movie_genres(movie_from_api)
+
+            movie_detail.genres.add(*movie_genres)
+
+        movie_detail.save()
 
         movie_videos = media_api.get_media_data(f"/movie/{obj_id}/videos")
 
@@ -347,6 +355,8 @@ def movie_detail(request, obj_id):
 
         # TODO: Maybe cache recommended movies as well?
         recommendations = media_api.get_media_data(f"/movie/{obj_id}/recommendations")
+
+        movie_detail.save()
 
         context = {
             "movie_detail": movie_detail,
