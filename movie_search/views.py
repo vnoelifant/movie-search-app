@@ -293,7 +293,6 @@ def movie_detail(request, obj_id):
         if genres is not None:
             # Get matching themes from M2M relationship
             movie_genres = get_movie_genres(genres)
-
             movie_detail.genres.add(*movie_genres)
 
             movie_detail.save()
