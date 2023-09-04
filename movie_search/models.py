@@ -3,7 +3,7 @@ from django.db import models
 
 
 class Genre(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, null=True, blank=True)
     genre_id = models.PositiveSmallIntegerField(default=0)
 
     def __str__(self):
@@ -13,7 +13,7 @@ class Genre(models.Model):
         verbose_name_plural = "genres"
 
 class Provider(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, null=True, blank=True)
     provider_id = models.PositiveSmallIntegerField(default=0)
 
     def __str__(self):
@@ -22,8 +22,8 @@ class Provider(models.Model):
 
 class Video(models.Model):
    
-    name = models.CharField(max_length=200)
-    key =  models.CharField(max_length=200)
+    name = models.CharField(max_length=200, null=True, blank=True)
+    key =  models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
         return f"{self.name}: {self.key}"
@@ -47,7 +47,7 @@ class Movie(models.Model):
     budget = models.IntegerField(default=0, null=True, blank=True)
     revenue = models.IntegerField(default=0, null=True, blank=True)
     homepage = models.CharField(max_length=200, null=True, blank=True)
-    video = models.ForeignKey(Video, on_delete=models.CASCADE,null=True, blank=True)
+    video = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.movie_id}: {self.title}"

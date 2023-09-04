@@ -277,11 +277,34 @@ def get_movie_genres(movie):
 
     return movie_genres
 
+def get_movie_videos(movie):
+    movie_videos = []
+
+    videos = movie.get("videos")
+
+    #YouTubue's embed URL
+    embed_url = "https://www.youtube.com/embed/"
+
+    if videos is not None:
+        for row in videos:
+            video = Video(
+                name=row.get("name", ""),
+                key=row.get("id", ""),
+            )
+
+            final_video_url = embed_url + key
+            final_video = f"<div class='embed-responsive embed-responsive-16by9'> <iframe class='embed-responsive-item' style='height: 400px; width:800px; margin-left:50px' src={final_video_url}></iframe> </div>"
+            movie_videos.append(final_video)
+        Video.objects.bulk_create(movie_videos)
+
+    return movie_videos
+
 
 def movie_detail(request, obj_id):
     try:
         movie_detail = Movie.objects.get(movie_id=obj_id)
         # TODO: upon retrieval cache you also need movie_videos and recommendations
+        
         context = {
             "movie_detail": movie_detail,
         }
@@ -289,8 +312,8 @@ def movie_detail(request, obj_id):
     except Movie.DoesNotExist:
         # call only happens if movie not in db
         movie_from_api = media_api.get_media_data(f"/movie/{obj_id}")
-
-        movie_detail = Movie.objects.create(
+        print(movie_from_api)
+        movie_detail, created = Movie.objects.get_or_create(
             movie_id=obj_id,
             title=movie_from_api.get("title", ""),
             backdrop_path=movie_from_api.get("backdrop_path", ""),
@@ -312,8 +335,6 @@ def movie_detail(request, obj_id):
 
         movie_detail.genres.add(*movie_genres)
 
-        # movie_detail.save()
-
         movie_videos = media_api.get_media_data(f"/movie/{obj_id}/videos")
 
         # TODO: you could also cache those in a related Video model
@@ -323,8 +344,6 @@ def movie_detail(request, obj_id):
 
         # movie_detail.videos.add(*movie_videos)
         # movie_detail.videos = ','.join(get_movie_videos(movie_from_api))
-
-        print(movie_detail)
 
         # TODO: Maybe cache recommended movies as well?
         recommendations = media_api.get_media_data(f"/movie/{obj_id}/recommendations")
