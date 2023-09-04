@@ -269,6 +269,8 @@ def movie_detail(request, obj_id):
         # call only happens if movie not in db
         movie_from_api = media_api.get_media_data(f"/movie/{obj_id}")
         print(movie_from_api)
+        genres = movie_from_api.get("genres")
+        
         movie_detail, created = Movie.objects.get_or_create(
             movie_id=obj_id,
             title=movie_from_api.get("title", ""),
@@ -286,7 +288,7 @@ def movie_detail(request, obj_id):
             homepage=movie_from_api.get("homepage", ""),
         )
 
-        genres = movie_from_api.get("genres")
+        movie_detail.save()
 
         if genres is not None:
             # Get matching themes from M2M relationship
@@ -294,7 +296,7 @@ def movie_detail(request, obj_id):
 
             movie_detail.genres.add(*movie_genres)
 
-        movie_detail.save()
+            movie_detail.save()
 
         movie_videos = media_api.get_media_data(f"/movie/{obj_id}/videos")
 
