@@ -151,7 +151,7 @@ def discover(request):
     return render(request, "discover.html", context)
 
 
-def get_general_context(type, media_id, url_path):
+def get_search_general(type, media_id, url_path):
     # TODO: Cache this data to increase speed
     media_detail = media_api.get_media_data(f"/{type}/{media_id}")
     # print("MEDIA DETAIL: ", media_detail)
@@ -168,7 +168,7 @@ def get_general_context(type, media_id, url_path):
     }
 
 
-def get_similar_or_rec_context(type, media_id, choice, url_path):
+def get_search_sim_or_rec(type, media_id, choice, url_path):
     data = media_api.get_media_data(f"/{type}/{media_id}/{choice}")
 
     return {
@@ -179,7 +179,7 @@ def get_similar_or_rec_context(type, media_id, choice, url_path):
     }
 
 
-def get_media_search_response(request, type, query, year, choice):
+def get_search_media_response(request, type, query, year, choice):
     # Get a dictionary of media details based on text query
     media = media_api.get_media(f"/search/{type}", query, type, year=year)
 
@@ -193,14 +193,14 @@ def get_media_search_response(request, type, query, year, choice):
 
     if choice != "general":
         print("Getting Recommended/Similar Search Context")
-        similar_or_rec_context = get_similar_or_rec_context(
+        similar_or_rec_context = get_search_sim_or_rec(
             type, media_id, choice, url_path
         )
 
         return render(request, "media_search.html", similar_or_rec_context)
 
     print("Getting General Media Detail Search Context")
-    general_context = get_general_context(type, media_id, url_path)
+    general_context = get_search_general(type, media_id, url_path)
     return render(request, f"{type}_detail.html", general_context)
 
 
@@ -222,20 +222,20 @@ def search(request):
     print("QUERY: ", query)
 
     if type != "person":
-        media_search_response = get_media_search_response(
+        search_media_response = get_search_media_response(
             request=request, type=type, query=query, year=year, choice=choice
         )
 
-        return media_search_response
+        return search_media_response
 
-    person_search_response = get_person_search_response(
+    search_person_response = get_search_person_response(
         request=request, type=type, query=query, choice=choice
     )
 
-    return person_search_response
+    return search_person_response
 
 
-def get_person_context(type, query, choice):
+def get_search_person(type, query, choice):
     person = media_api.get_person(f"/search/{type}", query)
     person = {person.lower(): idx for person, idx in person.items()}
     print("Person Dictionary: ", person)
@@ -255,9 +255,9 @@ def get_person_context(type, query, choice):
     }
 
 
-def get_person_search_response(request, type, query, choice):
+def get_search_person_response(request, type, query, choice):
     print("Getting Person Search Context")
-    person_context = get_person_context(type=type, query=query, choice=choice)
+    person_context = get_search_person(type=type, query=query, choice=choice)
     return render(request, "person_search.html", person_context)
 
 
