@@ -8,7 +8,7 @@ from movie_search import media_api
 from movie_search.decorators import timing
 from movie_search.models import Genre, Provider
 
-from .models import Movie
+from .models import Movie, Video
 
 
 # Create your views here.
@@ -129,9 +129,10 @@ def discover(request):
     if primary_release_year:
         primary_release_year = int(primary_release_year)
 
-    print(
-        "PRIMARY RELEASE YEAR: ", primary_release_year, media_type(primary_release_year)
-    )
+    # TODO: media_type is not defined
+    # print(
+    #    "PRIMARY RELEASE YEAR: ", primary_release_year, media_type(primary_release_year)
+    # )
 
     print("REQUEST: ", request.GET)
     data = media_api.get_media_data(
@@ -247,6 +248,8 @@ def get_movie_videos(videos):
             key=row.get("id", ""),
         )
 
+        # TODO: key was not defined, is it this? ->
+        key = row.get("id", "")
         final_video_url = embed_url + key
         final_video = f"<div class='embed-responsive embed-responsive-16by9'> <iframe class='embed-responsive-item' style='height: 400px; width:800px; margin-left:50px' src={final_video_url}></iframe> </div>"
         movie_videos.append(final_video)
@@ -268,7 +271,7 @@ def movie_detail(request, obj_id):
         movie_from_api = media_api.get_media_data(f"/movie/{obj_id}")
         print(movie_from_api)
         genres = movie_from_api.get("genres")
-        
+
         movie_detail, created = Movie.objects.get_or_create(
             movie_id=obj_id,
             title=movie_from_api.get("title", ""),
