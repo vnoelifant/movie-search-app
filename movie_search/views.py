@@ -235,27 +235,20 @@ def get_movie_genres(genres):
     return movie_genres
 
 
-def get_movie_videos(videos):
+def get_movie_videos(obj_id):
     # TODO: Review logic and update as needed
+    videos = media_api.get_media_data(f"/movie/{obj_id}/videos")
     movie_videos = []
 
-    # YouTubue's embed URL
-    embed_url = "https://www.youtube.com/embed/"
-
     for row in videos:
-        video, inserted = Video(
+        video, inserted = Video.objects.get_or_create(
             name=row.get("name", ""),
-            key=row.get("id", ""),
+            key=row.get("key,""),
         )
 
-        # TODO: key was not defined, is it this? ->
-        key = row.get("id", "")
-        final_video_url = embed_url + key
-        final_video = f"<div class='embed-responsive embed-responsive-16by9'> <iframe class='embed-responsive-item' style='height: 400px; width:800px; margin-left:50px' src={final_video_url}></iframe> </div>"
-        movie_videos.append(final_video)
+        movie_videos.append(video)
 
     return movie_videos
-
 
 def movie_detail(request, obj_id):
     try:
@@ -294,15 +287,10 @@ def movie_detail(request, obj_id):
             movie_genres =  get_movie_genres(genres)
             movie_detail.genres.add(*movie_genres)
 
-        movie_videos = media_api.get_media_data(f"/movie/{obj_id}/videos")
-
-        # TODO: you could also cache those in a related Video model
-
-        # Get matching videos from foreign key relationship to Video model
-        # movie_videos = get_movie_videos(movie_from_api)
-
-        # movie_detail.videos.add(*movie_videos)
-        # movie_detail.videos = ','.join(get_movie_videos(movie_from_api))
+        if video is not None:
+            # Get matching videos from M2M relationship based on tmdb id
+            movie_videos = media_api.get_media_data(f"/movie/{obj_id}/videos")
+            movie_detail.video.add(*movie_videos)
 
         # TODO: Maybe cache recommended movies as well?
         recommendations = media_api.get_media_data(f"/movie/{obj_id}/recommendations")
@@ -311,7 +299,6 @@ def movie_detail(request, obj_id):
             "movie_detail": movie_detail,
             "movie_videos": movie_videos,
             "recommendations": recommendations,
-            "type": "movie",
         }
 
     return render(request, "movie_detail.html", context)
