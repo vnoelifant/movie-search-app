@@ -14,10 +14,7 @@ from .models import Movie
 # Create your views here.
 def home(request):
     trending = media_api.get_media_data("/trending/all/day")
-    # pprint("TRENDING: ", trending)
-
     context = {"trending": trending}
-
     return render(request, "home.html", context)
 
 
@@ -238,6 +235,7 @@ def get_movie_genres(genres):
 
 
 def get_movie_videos(videos):
+    # TODO: Review logic and update as needed
     movie_videos = []
 
     # YouTubue's embed URL
@@ -288,14 +286,10 @@ def movie_detail(request, obj_id):
             homepage=movie_from_api.get("homepage", ""),
         )
 
-        movie_detail.save()
-
         if genres is not None:
             # Get matching themes from M2M relationship
-            movie_genres = get_movie_genres(genres)
+            movie_genres =  get_movie_genres(genres)
             movie_detail.genres.add(*movie_genres)
-
-            movie_detail.save()
 
         movie_videos = media_api.get_media_data(f"/movie/{obj_id}/videos")
 
