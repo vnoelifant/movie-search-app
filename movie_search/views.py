@@ -6,9 +6,8 @@ from django.shortcuts import render
 
 from movie_search import media_api
 from movie_search.decorators import timing
-from movie_search.models import Genre, Provider
 
-from .models import Movie, Video
+from .models import Movie, Video, Genre, Provider, Recommendation
 
 
 # Create your views here.
@@ -46,7 +45,6 @@ def _get_movie_or_tv_top(request, media_type_):
 
 def movies_now_playing(request):
     now_playing = media_api.get_media_data("/movie/now_playing")
-    # pprint("NOW PLAYING: ", now_playing)
 
     context = {
         "now_playing": now_playing,
@@ -57,7 +55,6 @@ def movies_now_playing(request):
 
 def movies_upcoming(request):
     upcoming = media_api.get_media_data("/movie/upcoming")
-    # pprint("UPCOMING ", upcoming)
 
     context = {
         "upcoming": upcoming,
@@ -228,7 +225,7 @@ def get_movie_genres(genres):
     for row in genres:
         genre, inserted = Genre.objects.get_or_create(
             name=row.get("name", ""),
-            genre_id=row.get("id", ""),
+            genre_id=row.get("id", 0),
         )
         movie_genres.append(genre)
 
@@ -236,24 +233,42 @@ def get_movie_genres(genres):
 
 
 def get_movie_videos(obj_id):
-    # TODO: Review logic and update as needed
     videos = media_api.get_media_data(f"/movie/{obj_id}/videos")
     movie_videos = []
 
-    for row in videos:
+    video_response = videos.get("results")
+
+    for row in video_response:
         video, inserted = Video.objects.get_or_create(
             name=row.get("name", ""),
-            key=row.get("key,""),
+            key=row.get("key",""),
         )
 
         movie_videos.append(video)
 
     return movie_videos
 
+def get_movie_recs(obj_id):
+    recs = media_api.get_media_data(f"/movie/{obj_id}/recommendations")
+    movie_recs = []
+
+    recs_response = recs.get("results")
+
+    for row in recs_response:
+        rec, inserted = Recommendation.objects.get_or_create(
+            movie_id=row.get("id", 0),
+            poster_path=row.get("poster_path",""),
+        )
+
+        movie_recs.append(rec)
+
+    return movie_recs
+
+
 def movie_detail(request, obj_id):
     try:
+        print("movie exists in DB")
         movie_detail = Movie.objects.get(movie_id=obj_id)
-        # TODO: upon retrieval cache you also need movie_videos and recommendations
 
         context = {
             "movie_detail": movie_detail,
@@ -261,8 +276,8 @@ def movie_detail(request, obj_id):
 
     except Movie.DoesNotExist:
         # call only happens if movie not in db
+        print("movie not in DB")
         movie_from_api = media_api.get_media_data(f"/movie/{obj_id}")
-        print(movie_from_api)
         genres = movie_from_api.get("genres")
 
         movie_detail, created = Movie.objects.get_or_create(
@@ -287,18 +302,14 @@ def movie_detail(request, obj_id):
             movie_genres =  get_movie_genres(genres)
             movie_detail.genres.add(*movie_genres)
 
-        if video is not None:
-            # Get matching videos from M2M relationship based on tmdb id
-            movie_videos = media_api.get_media_data(f"/movie/{obj_id}/videos")
-            movie_detail.video.add(*movie_videos)
-
-        # TODO: Maybe cache recommended movies as well?
-        recommendations = media_api.get_media_data(f"/movie/{obj_id}/recommendations")
+        movie_videos = get_movie_videos(obj_id)
+        movie_detail.video.add(*movie_videos)
+    
+        movie_recs = get_movie_recs(obj_id)
+        movie_detail.recommendation.add(*movie_recs)
 
         context = {
             "movie_detail": movie_detail,
-            "movie_videos": movie_videos,
-            "recommendations": recommendations,
         }
 
     return render(request, "movie_detail.html", context)

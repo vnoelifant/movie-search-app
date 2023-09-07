@@ -70,7 +70,7 @@
     <div class="trailer" id="trailer"><h2>Trailer and Short Videos</h2></div>
 
     <div class="scrolling-wrapper" id="trailerScroll">
-        {% for vid in movie_detail.videos.all%}
+        {% for vid in movie_detail.video.all%}
             <div class="col-lg-6">
                 <div class="embed-responsive embed-responsive-16by9" id="trailerResults">
                     <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/{{ vid.key }}"></iframe>
@@ -81,7 +81,7 @@
 
     <div class="rcm" style="color:black; margin-left: 30px; font-weight: bold;"><h2>Recommended Movies</h2></div>
         <div class="row" id="movieRow">
-            {% for rec in recommendations.results %}
+            {% for rec in movie_detail.recommendation.all %}
                 <div class="card" id="movieCard">
                     {% if rec.poster_path %}
                         <img src="https://image.tmdb.org/t/p/w500{{ rec.poster_path }}" class="card-img-top" alt="...">
