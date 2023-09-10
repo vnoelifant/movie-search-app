@@ -232,20 +232,18 @@ def get_movie_genres(genres):
     return movie_genres
 
 
-def get_movie_videos(obj_id):
-    videos = media_api.get_media_data(f"/movie/{obj_id}/videos")
-    movie_videos = []
+def get_movie_videos(movie_obj):
+    videos = media_api.get_media_data(f"/movie/{movie_obj.movie_id}/videos")
 
     video_response = videos.get("results")
 
     for row in video_response:
         video, inserted = Video.objects.get_or_create(
+            movie = movie_obj,
             name=row.get("name", ""),
             key=row.get("key",""),
         )
-
-        movie_videos.append(video)
-
+    movie_videos = Video.objects.filter(movie_id=movie_obj.id)
     return movie_videos
 
 def get_movie_recs(obj_id):
@@ -267,8 +265,8 @@ def get_movie_recs(obj_id):
 
 def movie_detail(request, obj_id):
     try:
-        print("movie exists in DB")
         movie_detail = Movie.objects.get(movie_id=obj_id)
+        print("movie exists in DB")
 
         context = {
             "movie_detail": movie_detail,
@@ -302,14 +300,14 @@ def movie_detail(request, obj_id):
             movie_genres =  get_movie_genres(genres)
             movie_detail.genres.add(*movie_genres)
 
-        movie_videos = get_movie_videos(obj_id)
-        movie_detail.video.add(*movie_videos)
+        movie_videos = get_movie_videos(movie_detail)
     
         movie_recs = get_movie_recs(obj_id)
         movie_detail.recommendation.add(*movie_recs)
 
         context = {
             "movie_detail": movie_detail,
+            "movie_videos": movie_videos,
         }
 
     return render(request, "movie_detail.html", context)
