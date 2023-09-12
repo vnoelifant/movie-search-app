@@ -266,15 +266,9 @@ def get_movie_recs(obj_id):
 def movie_detail(request, obj_id):
     try:
         movie_detail = Movie.objects.get(movie_id=obj_id)
-        print("movie exists in DB")
-
-        context = {
-            "movie_detail": movie_detail,
-        }
+        movie_videos = Video.objects.filter(movie_id=movie_detail.id)
 
     except Movie.DoesNotExist:
-        # call only happens if movie not in db
-        print("movie not in DB")
         movie_from_api = media_api.get_media_data(f"/movie/{obj_id}")
         genres = movie_from_api.get("genres")
 
@@ -305,10 +299,10 @@ def movie_detail(request, obj_id):
         movie_recs = get_movie_recs(obj_id)
         movie_detail.recommendation.add(*movie_recs)
 
-        context = {
-            "movie_detail": movie_detail,
-            "movie_videos": movie_videos,
-        }
+    context = {
+        "movie_detail": movie_detail,
+        "movie_videos": movie_videos,
+    }
 
     return render(request, "movie_detail.html", context)
 
