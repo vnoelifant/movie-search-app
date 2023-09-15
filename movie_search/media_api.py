@@ -13,15 +13,15 @@ LANG_ENG = "en-US"
 REGION_US = COUNTRY_CODES.get("United States")
 
 
-def get_media(
-    endpoint: str, text_query: str, type: str, year: int = None
+def get_movie(
+    endpoint: str, text_query: str, year: int = None
 ) -> dict[str, int]:
     """This function returns a dictionary of media details based on a text query"""
     response_json = get_media_data(endpoint, query=text_query)
     data = response_json["results"]
-    title_key = "original_title" if type == "movie" else "original_name"
-    media = {row[title_key]: row["id"] for row in data}
-    return media
+    title_key = "original_title" 
+    movie = {row[title_key]: row["id"] for row in data}
+    return movie
 
 
 def get_person(endpoint, text_query):
