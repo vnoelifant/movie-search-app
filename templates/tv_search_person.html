@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Person Search{% endblock %}
+
+{% block body %}
+
+<style>
+    #banner {
+        background-image: url("{% static 'img/movies-unsplash.jpg' %}");
+        opacity: 1;
+        -webkit-animation: flash 1.5s;
+        animation: flash 1.5s;
+    }
+    @-webkit-keyframes flash {
+    0% {
+        opacity: .4;
+    }
+    100% {
+        opacity: 1;
+    }
+    }
+    @keyframes flash {
+    0% {
+        opacity: .4;
+    }
+    100% {
+        opacity: 1;
+    }
+    }
+</style>
+
+<div class="container-fluid text-center" id="movieWrapper">
+
+    <h2 class="x-sign">TV Credits</h2><br><br>
+
+    <div class="row" id="movieRow">
+        {% if person.crew %}
+            {% for tv in person.crew %}
+                <div class="card" id="movieCard">
+                    {% if tv.poster_path %}
+                        <img src="https://image.tmdb.org/t/p/w500{{ tv.poster_path }}" class="card-img-top" alt="...">
+                    {% else %}
+                        <img src="{% static 'img/no_img.png' %}" alt="...">
+                    {% endif %}
+                    <a href="{% url 'tv_detail' tv_id=tv.id  %}" class="btn btn-dark">View Details</a>
+                </div>
+            {% endfor %}
+        {% if person.cast %}
+            {% for tv in person.cast %}
+                <div class="card" id="movieCard">
+                    {% if tv.poster_path %}
+                        <img src="https://image.tmdb.org/t/p/w500{{ tv.poster_path }}" class="card-img-top" alt="...">
+                    {% else %}
+                        <img src="{% static 'img/no_img.png' %}" alt="...">
+                    {% endif %}
+                    <a href="{% url 'tv_detail' tv_id=tv.id  %}" class="btn btn-dark">View Details</a>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
