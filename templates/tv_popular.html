@@ -34,7 +34,7 @@
     <h2 class="x-sign">Popular TV Shows</h2><br><br>
 
     <div class="row " id="movieRow">
-        {% for tv in popular.results %}
+        {% for tv in media_list_type.results %}
             <div class="card" id="movieCard">
                 <img src="https://image.tmdb.org/t/p/w500{{ tv.poster_path }}" class="card-img-top" alt="...">
                 <a href="{% url 'tv_detail' tv_id=tv.id  %}" class="btn btn-dark">View Details</a>
