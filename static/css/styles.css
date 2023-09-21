@@ -19,6 +19,31 @@ hr.a  {
     width: 210px;
   }
 
+#banner {
+    background-image: url("../img/movies-unsplash.jpg");
+    opacity: 1;
+    -webkit-animation: flash 1.5s;
+    animation: flash 1.5s;
+}
+
+@-webkit-keyframes flash {
+    0% {
+        opacity: .4;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes flash {
+    0% {
+        opacity: .4;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
 .sidebar  {
 
     background: linear-gradient(#d7d2d2,#b22020, #cf0d0d);

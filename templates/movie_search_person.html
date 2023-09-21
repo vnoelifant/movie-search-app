@@ -5,31 +5,6 @@
 
 {% block body %}
 
-<style>
-    #banner {
-        background-image: url("{% static 'img/movies-unsplash.jpg' %}");
-        opacity: 1;
-        -webkit-animation: flash 1.5s;
-        animation: flash 1.5s;
-    }
-    @-webkit-keyframes flash {
-    0% {
-        opacity: .4;
-    }
-    100% {
-        opacity: 1;
-    }
-    }
-    @keyframes flash {
-    0% {
-        opacity: .4;
-    }
-    100% {
-        opacity: 1;
-    }
-    }
-</style>
-
 <div class="container-fluid text-center" id="movieWrapper">
 
     <h2 class="x-sign">Movie Credits</h2><br><br>
