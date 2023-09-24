@@ -5,30 +5,29 @@ from pprint import pprint
 
 import pycountry
 import requests
+import json
 from django.conf import settings
 
 BASE_URL = "https://api.themoviedb.org/3"
 LANG_ENG = "en-US"
 
-def get_data_from_endpoint(endpoint, **kwargs):
-    """This function returns a JSON object of tmdb media data"""
-    url = f"{BASE_URL}{endpoint}"
 
+def get_data_from_endpoint(endpoint, **kwargs):
+    """This function returns a JSON object of tmdb media data."""
+    url = f"{BASE_URL}{endpoint}"
     params = {"api_key": settings.TMDB_API_KEY, "language": LANG_ENG}
     params.update(kwargs)
 
     response = requests.get(url, params=params)
+    response.raise_for_status()  # Raise an exception for HTTP errors
+    print(json.dumps(response.json(), indent=4, sort_keys=True))
     return response.json()
 
-def get_movie(endpoint: str, text_query: str) -> dict[str, int]:
-    """"Returns a dictionary of media details based on a text query"""
+
+def get_data_by_query(
+    endpoint: str, text_query: str, result_key: str
+) -> dict[str, int]:
+    """Returns a dictionary of details based on a text query."""
     response_json = get_data_from_endpoint(endpoint, query=text_query)
     data = response_json["results"]
-    return {row["original_title"]: row["id"] for row in data}
-
-def get_person(endpoint, text_query):
-    """Returns a dictionary of person details based on a text query"""
-    response_json = get_data_from_endpoint(endpoint, query=text_query)
-    data = response_json["results"]
-    return {row["name"]: row["id"] for row in data}
-
+    return {row[result_key]: row["id"] for row in data}

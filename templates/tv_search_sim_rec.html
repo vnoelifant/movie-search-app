@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Movie Search{% endblock %}
+{% block title %}TV Search{% endblock %}
 
 {% block body %}
 
@@ -10,14 +10,14 @@
     <h2 class="x-sign">Results: {{choice|title}} </h2><br><br>
 
     <div class="row" id="movieRow">
-        {% for movie in movie.results %}
+        {% for tv in tv.results %}
             <div class="card" id="movieCard">
-                {% if movie.poster_path %}
-                    <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" class="card-img-top" alt="...">
+                {% if tv.poster_path %}
+                    <img src="https://image.tmdb.org/t/p/w500{{ tv.poster_path }}" class="card-img-top" alt="...">
                 {% else %}
                     <img src="{% static 'img/no_img.png' %}" alt="...">
                 {% endif %}
-                <a href="{% url 'movie_detail' movie_id=movie.id  %}" class="btn btn-dark">View Details</a>
+                <a href="{% url 'tv_detail' tv_id=tv.id  %}" class="btn btn-dark">View Details</a>
             </div>
         {% endfor %}
     </div>

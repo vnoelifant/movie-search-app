@@ -5,6 +5,10 @@
 
 {% block body %}
 
+{% if message %}
+    <p>{{ message }}</p>
+{% else %}
+
 <div class="container-fluid text-center" id="movieWrapper">
 
     <h2 class="x-sign">Movie Credits</h2><br><br>
@@ -38,4 +42,5 @@
     </div>
 </div>
 
+{% endif %}
 {% endblock %}
