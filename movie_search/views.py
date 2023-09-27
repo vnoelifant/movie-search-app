@@ -74,7 +74,7 @@ def tv_air_today(request):
 
 def tv_detail(request, tv_id):
     tv_detail = movies.fetch_data_from_api(f"/tv/{tv_id}")
-    tv_videos = movies_api.fetch_data_from_api(f"/tv/{tv_id}/videos")
+    tv_videos = movies.fetch_data_from_api(f"/tv/{tv_id}/videos")
 
     context = {
         "tv_detail": tv_detail,

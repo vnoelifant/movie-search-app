@@ -20,48 +20,53 @@ def get_movie_detail(movie_id):
         movie_detail = Movie.objects.get(movie_id=movie_id)
         movie_videos = Video.objects.filter(movie_id=movie_detail.id)
     except Movie.DoesNotExist:
-        movie_from_api = tmdb_api.get_data_from_endpoint(f"/movie/{movie_id}")
-        genres = movie_from_api.get("genres")
-
-        movie_detail, created = Movie.objects.get_or_create(
-            movie_id=movie_id,
-            title=movie_from_api.get("title", ""),
-            backdrop_path=movie_from_api.get("backdrop_path", ""),
-            tagline=movie_from_api.get("tagline", ""),
-            vote_count=movie_from_api.get("vote_count", 0),
-            vote_average=movie_from_api.get("vote_average", 0),
-            popularity=movie_from_api.get("popularity", 0),
-            release_date=movie_from_api.get("release_data", ""),
-            runtime=movie_from_api.get("runtime", 0),
-            production_company=movie_from_api.get("production_company", ""),
-            overview=movie_from_api.get("overview", ""),
-            budget=movie_from_api.get("budget", 0),
-            revenue=movie_from_api.get("revenue", 0),
-            homepage=movie_from_api.get("homepage", ""),
-        )
-
-        if genres is not None:
-            # Get matching themes from M2M relationship
-            movie_genres = get_movie_genres(genres)
-            movie_detail.genres.add(*movie_genres)
-
-        movie_videos = get_movie_videos(movie_detail)
-
-        movie_recs = get_movie_recs(movie_id)
-        movie_detail.recommendation.add(*movie_recs)
-
+        movie_detail, movie_videos = fetch_and_store_movie_from_api(movie_id)
     context = {
         "movie_detail": movie_detail,
         "movie_videos": movie_videos,
     }
-
     return context
 
-def get_movie_genres(genres):
+def fetch_and_store_movie_from_api(movie_id):
+    movie_data = tmdb_api.get_data_from_endpoint(f"/movie/{movie_id}")
+    movie_detail = store_movie_data(movie_data)
+    movie_videos = store_movie_videos(movie_detail)
+    return movie_detail, movie_videos
+
+def store_movie_data(data):
+    genres = data.get("genres")
+    movie_detail, created = Movie.objects.get_or_create(
+        movie_id=data.get("id", 0),
+        title=data.get("title", ""),
+        backdrop_path=data.get("backdrop_path", ""),
+        tagline=data.get("tagline", ""),
+        vote_count=data.get("vote_count", 0),
+        vote_average=data.get("vote_average", 0),
+        popularity=data.get("popularity", 0),
+        release_date=data.get("release_date", ""),
+        runtime=data.get("runtime", 0),
+        production_company=data.get("production_company", ""),
+        overview=data.get("overview", ""),
+        budget=data.get("budget", 0),
+        revenue=data.get("revenue", 0),
+        homepage=data.get("homepage", ""),
+    )
+    if genres is not None:
+        movie_genres = store_movie_genres(genres)
+    
+    movie_detail.genres.add(*movie_genres)
+    
+    movie_recommendations = store_movie_recommendations(movie_id)
+    movie_detail.recommendation.add(*movie_recommendations)
+    
+    return movie_detail 
+
+
+def store_movie_genres(genres):
     movie_genres = []
 
     for row in genres:
-        genre, inserted = Genre.objects.get_or_create(
+        genre, created = Genre.objects.get_or_create(
             name=row.get("name", ""),
             genre_id=row.get("id", 0),
         )
@@ -70,36 +75,27 @@ def get_movie_genres(genres):
     return movie_genres
 
 
-def get_movie_videos(movie_obj):
-    videos = tmdb_api.get_data_from_endpoint(f"/movie/{movie_obj.movie_id}/videos")
-
-    video_response = videos.get("results")
-
-    for row in video_response:
-        video, inserted = Video.objects.get_or_create(
+def store_movie_videos(movie_obj):
+    video_data = tmdb_api.get_data_from_endpoint(f"/movie/{movie_obj.movie_id}/videos")
+    for video_data in videos_data.get("results", []):
+        Video.objects.get_or_create(
             movie=movie_obj,
-            name=row.get("name", ""),
-            key=row.get("key", ""),
+            name=video_data.get("name", ""),
+            key=video_data.get("key", ""),
         )
-    movie_videos = Video.objects.filter(movie_id=movie_obj.id)
-    return movie_videos
+    return Video.objects.filter(movie_id=movie_obj.id)
+    
+def store_movie_recommendations(movie_id):
+    recommendations_data = tmdb_api.get_data_from_endpoint(f"/movie/{movie_id}/recommendations")
+    movie_recommendations = []
 
-
-def get_movie_recs(movie_id):
-    recs = tmdb_api.get_data_from_endpoint(f"/movie/{movie_id}/recommendations")
-    movie_recs = []
-
-    recs_response = recs.get("results")
-
-    for row in recs_response:
-        rec, inserted = Recommendation.objects.get_or_create(
-            movie_id=row.get("id", 0),
-            poster_path=row.get("poster_path", ""),
+    for rec_data in recommendations_data.get("results",[]):
+        recommmendation, created = Recommendation.objects.get_or_create(
+            movie_id=rec_data.get("id", 0),
+            poster_path=rec_data.get("poster_path", ""),
         )
-
-        movie_recs.append(rec)
-
-    return movie_recs
+        movie_recommendations.append(recommendation)
+    return movie_recommendations
 
 def get_genres_from_discover(genre_names):
     genres =  Genre.objects.filter(name__in=genre_names).values_list(
