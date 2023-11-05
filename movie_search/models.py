@@ -1,6 +1,11 @@
 # Create your models here.
 from django.db import models
+from django.contrib.auth.models import AbstractUser
+from django.conf import settings
 
+class CustomUser(AbstractUser):
+    # Add additional fields here if you need
+    pass
 
 class Genre(models.Model):
     name = models.CharField(max_length=200, null=True, blank=True, unique=True)
@@ -66,3 +71,17 @@ class Video(models.Model):
 
     class Meta:
         verbose_name_plural = "videos"
+
+class Favorite(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('user', 'movie')
+        verbose_name_plural = 'favorites'
+
+    def __str__(self):
+        return f"{self.user.username} - {self.movie.title}"
+
+
+

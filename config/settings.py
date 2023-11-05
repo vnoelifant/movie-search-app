@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     "django_countries",
 ]
 
+AUTH_USER_MODEL = "movie_search.CustomUser"  # new
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
