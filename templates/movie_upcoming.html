@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Popular Movies{% endblock %}
+{% block title %}Upcoming Movies{% endblock %}
 
 {% block body %}
 
 <div class="container-fluid text-center" id="movieWrapper">
-    <h2 class="x-sign">Popular Movies</h2><br><br>
+    <h2 class="x-sign">Upcoming Movies</h2><br><br>
 
-    <div class="row " id="movieRow">
+    <div class="row" id="movieRow">
         {% for movie in media_list_type.results %}
             <div class="card" id="movieCard">
                 <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" class="card-img-top" alt="...">

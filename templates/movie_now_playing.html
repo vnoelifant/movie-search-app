@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Popular Movies{% endblock %}
+{% block title %}Movies Playing{% endblock %}
 
 {% block body %}
 
 <div class="container-fluid text-center" id="movieWrapper">
-    <h2 class="x-sign">Popular Movies</h2><br><br>
+    <h2 class="x-sign">Movies Now Playing</h2><br><br>
 
     <div class="row " id="movieRow">
         {% for movie in media_list_type.results %}

@@ -1,15 +1,16 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Discovered Movies{% endblock %}
+{% block title %}Movie Search{% endblock %}
 
 {% block body %}
 
 <div class="container-fluid text-center" id="movieWrapper">
-    <h2 class="x-sign"> Discovered Movies</h2><br><br>
 
-    <div class="row " id="movieRow">
-        {% for movie in data.results %}
+    <h2 class="x-sign">Results: {{choice|title}} </h2><br><br>
+
+    <div class="row" id="movieRow">
+        {% for movie in movie.results %}
             <div class="card" id="movieCard">
                 {% if movie.poster_path %}
                     <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" class="card-img-top" alt="...">

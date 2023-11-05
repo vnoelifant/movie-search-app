@@ -1,5 +1,7 @@
 import json
+
 from django import template
+
 from movie_search.models import Genre
 
 register = template.Library()

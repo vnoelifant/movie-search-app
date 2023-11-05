@@ -1,3 +1,6 @@
+@import "https://unpkg.com/open-props";
+@import "https://unpkg.com/open-props/normalize.min.css";
+
 html,
 body {
     height: 100%;
@@ -15,6 +18,31 @@ hr.a  {
     border-top: 3px double black;
     width: 210px;
   }
+
+#banner {
+    background-image: url("../img/movies-unsplash.jpg");
+    opacity: 1;
+    -webkit-animation: flash 1.5s;
+    animation: flash 1.5s;
+}
+
+@-webkit-keyframes flash {
+    0% {
+        opacity: .4;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes flash {
+    0% {
+        opacity: .4;
+    }
+    100% {
+        opacity: 1;
+    }
+}
 
 .sidebar  {
 
@@ -146,6 +174,7 @@ ul.checkbox li {
 
 }
 
+
 #trailer {
     color:black;
     margin-left: 30px;
@@ -155,16 +184,16 @@ ul.checkbox li {
 
 
 #trailerScroll {
-    margin-left:30px;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    white-space: nowrap;
-
+    display: grid;
+    overflow-x: auto;
+    grid-auto-flow: column;
+    grid-auto-columns: 21%;
+    overscroll-behavior-inline: contain;
 }
 
 #trailerResults {
     margin-bottom: 20px;
-    margin-right: 120px
+    margin-right: 120px;
 }
 
 #detailHome {
