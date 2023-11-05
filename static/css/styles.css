@@ -19,6 +19,11 @@ hr.a  {
     width: 210px;
   }
 
+.favorites-form {
+    display: inline-block;
+    margin-left: 20px;
+}
+
 #banner {
     background-image: url("../img/movies-unsplash.jpg");
     opacity: 1;
