@@ -20,4 +20,8 @@ urlpatterns = [
     path("media_search/", views.search, name="media_search"),
     path("error/", views.search, name="error"),
     path("discover/movie/", views.discover, name="discover"),
+    path('favorites/add/<int:movie_id>/', views.add_to_favorites, name='add_to_favorites'),
+    path('favorites/', views.favorites_list, name='favorites_list'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
 ]

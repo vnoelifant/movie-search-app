@@ -7,16 +7,50 @@ from django.shortcuts import render
 from movie_search import media
 from movie_search.decorators import timing
 
-from .models import Movie, Video, Genre, Provider, Recommendation
-
+from .models import Movie, Video, Genre, Provider, Recommendation, Favorite
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 # Create your views here.
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')  # Redirect to a homepage or dashboard
+        else:
+            # Return an 'invalid login' error message.
+            return render(request, 'login.html', {'error': 'Invalid username or password.'})
+    else:
+        # User is accessing the login page via GET request.
+        return render(request, 'login.html')
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('home'))  # Redirect to home page after logout
 
 
 def home(request):
     trending = media.fetch_data_from_api("/trending/all/day")
     context = {"trending": trending}
     return render(request, "home.html", context)
+
+@login_required
+def add_to_favorites(request, movie_id):
+    movie = get_object_or_404(Movie, pk=movie_id)
+    Favorite.objects.get_or_create(user=request.user, movie=movie)
+    return redirect('favorites_list')
+
+@login_required
+def favorites_list(request):
+    favorites = Favorite.objects.filter(user=request.user).select_related('movie')
+    return render(request, 'favorites_list.html', {'favorites': favorites})
 
 
 def _get_media_list(request, media_type, media_list_type, template_name):
