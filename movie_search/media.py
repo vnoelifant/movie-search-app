@@ -56,7 +56,7 @@ def store_movie_data(data):
     
     movie_detail.genres.add(*movie_genres)
     
-    movie_recommendations = store_movie_recommendations(movie_id)
+    movie_recommendations = store_movie_recommendations(movie_detail.movie_id)
     movie_detail.recommendation.add(*movie_recommendations)
     
     return movie_detail 
