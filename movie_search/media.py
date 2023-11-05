@@ -77,7 +77,7 @@ def store_movie_genres(genres):
 
 def store_movie_videos(movie_obj):
     video_data = tmdb_api.get_data_from_endpoint(f"/movie/{movie_obj.movie_id}/videos")
-    for video_data in videos_data.get("results", []):
+    for video_data in video_data.get("results", []):
         Video.objects.get_or_create(
             movie=movie_obj,
             name=video_data.get("name", ""),
@@ -90,7 +90,7 @@ def store_movie_recommendations(movie_id):
     movie_recommendations = []
 
     for rec_data in recommendations_data.get("results",[]):
-        recommmendation, created = Recommendation.objects.get_or_create(
+        recommendation, created = Recommendation.objects.get_or_create(
             movie_id=rec_data.get("id", 0),
             poster_path=rec_data.get("poster_path", ""),
         )
