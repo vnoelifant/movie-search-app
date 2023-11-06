@@ -7,31 +7,20 @@ def fetch_data_from_api(endpoint, **kwargs):
     """A common method to fetch data from media API"""
     return tmdb_api.get_data_from_endpoint(endpoint, **kwargs)
 
-def fetch_data_by_query(endpoint, text_query, results_key):
+def fetch_api_data_by_query(endpoint, text_query, results_key):
     """A common method to fetch data by query from media API"""
     return tmdb_api.get_data_by_query(endpoint, text_query, results_key)
 
-def fetch_id_from_query(data_dict, query):
+def lookup_id_in_data_by_query(data_dict, query):
     """A common method to fetch media ID from data by query"""
     return {item.lower(): idx for item, idx in data_dict.items()}.get(query)
 
-def get_movie(movie_id):
-    try:
-        movie = Movie.objects.get(movie_id=movie_id)
-        movie_videos = Video.objects.filter(pk=movie.id)
-    except Movie.DoesNotExist:
-        movie, movie_videos = fetch_and_store_movie_from_api(movie_id)
-    context = {
-        "movie": movie,
-        "movie_videos": movie_videos,
-    }
-    return context
 
 def fetch_and_store_movie_from_api(movie_id):
     movie_data = tmdb_api.get_data_from_endpoint(f"/movie/{movie_id}")
     movie = store_movie_data(movie_data)
-    movie_videos = store_movie_videos(movie)
-    return movie, movie_videos
+    videos = store_movie_videos(movie)
+    return movie, videos
 
 def store_movie_data(data):
     genres = data.get("genres")
