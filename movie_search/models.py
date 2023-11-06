@@ -72,13 +72,13 @@ class Video(models.Model):
     class Meta:
         verbose_name_plural = "videos"
 
-class Favorite(models.Model):
+class WatchList(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ('user', 'movie')
-        verbose_name_plural = 'favorites'
+        verbose_name_plural = 'watchlist'
 
     def __str__(self):
         return f"{self.user.username} - {self.movie.title}"

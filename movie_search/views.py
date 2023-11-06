@@ -7,7 +7,7 @@ from django.shortcuts import render
 from movie_search import media
 from movie_search.decorators import timing
 
-from .models import Movie, Video, Genre, Provider, Recommendation, Favorite
+from .models import Movie, Video, Genre, Provider, Recommendation, WatchList
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
@@ -42,15 +42,15 @@ def home(request):
     return render(request, "home.html", context)
 
 @login_required
-def add_to_favorites(request, movie_id):
+def add_to_watch_list(request, movie_id):
     movie = get_object_or_404(Movie, pk=movie_id)
-    Favorite.objects.get_or_create(user=request.user, movie=movie)
-    return redirect('favorites_list')
+    WatchList.objects.get_or_create(user=request.user, movie=movie)
+    return redirect('watch_list')
 
 @login_required
-def favorites_list(request):
-    favorites = Favorite.objects.filter(user=request.user).select_related('movie')
-    return render(request, 'favorites_list.html', {'favorites': favorites})
+def watch_list(request):
+    watch_list = WatchList.objects.filter(user=request.user).select_related('movie')
+    return render(request, 'watch_list.html', {'watch_list': watch_list})
 
 
 def _get_media_list(request, media_type, media_list_type, template_name):
@@ -80,9 +80,9 @@ def movies_trending_week(request):
     return _get_media_list(request, "movie", "trending/week", "movie_trending.html")
 
 
-def movie_detail(request, movie_id):
-    context = media.get_movie_detail(movie_id)
-    return render(request, "movie_detail.html", context)
+def movie(request, movie_id):
+    context = media.get_movie(movie_id)
+    return render(request, "movie.html", context)
 
 
 # Common TV Views
@@ -214,13 +214,13 @@ def handle_movie_search(request, query, choice):
     movie = media.fetch_data_by_query(f"/search/movie", query, "original_title")
     movie_id = media.fetch_id_from_query(movie, query)
     if choice == "general":
-        return render_movie_detail(request, movie_id)
+        return render_movie(request, movie_id)
     return render_movie_sim_or_rec(request, movie_id, choice)
 
 
-def render_movie_detail(request, movie_id):
-    movie_detail = media.get_movie_detail(movie_id)
-    return render(request, "movie_detail.html", movie_detail)
+def render_movie(request, movie_id):
+    movie = media.get_movie(movie_id)
+    return render(request, "movie.html", movie)
 
 
 def render_movie_sim_or_rec(request, movie_id, choice):
