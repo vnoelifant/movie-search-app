@@ -68,7 +68,7 @@
         <div class="row" id="movieRow">
             {% for movie in movie.recommendation.all %}
                 <div class="card" id="movieCard">
-                    {% if rec.poster_path %}
+                    {% if movie.poster_path %}
                         <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" class="card-img-top" alt="...">
                     {% else %}
                         <img src="{% static 'img/no_img.png' %}"  alt="...">
