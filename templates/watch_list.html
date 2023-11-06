@@ -1,0 +1,9 @@
+{% block body %}
+  <h2>My Watch List</h2>
+  <ul>
+    {% for watchlist_movie in watch_list %}
+      <li>{{ watchlist_movie.movie.title }}</li>
+      <!-- Add more movie details as needed -->
+    {% endfor %}
+  </ul>
+{% endblock %}
