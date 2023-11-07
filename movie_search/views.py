@@ -62,8 +62,6 @@ def get_movie_from_db_or_api(movie_id):
     except Movie.DoesNotExist:
         # If the movie does not exist, use media.py to fetch from the API and store in the database
         movie, videos = media.fetch_and_store_movie_from_api(movie_id)
-        # ... also fetch and store other related objects like recommendations if needed ...
-    
     return movie, videos
 
 
