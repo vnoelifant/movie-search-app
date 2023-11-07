@@ -56,9 +56,8 @@ def get_movie_from_db_or_api(movie_id):
     # Check if the movie exists in the database
     try:
         movie = Movie.objects.get(movie_id=movie_id)
-        # If the movie exists, fetch related objects like videos and recommendations if necessary
+        # If the movie exists, fetch related objects 
         videos = Video.objects.filter(movie=movie)
-        # ... fetch other related objects like recommendations if needed ...
     except Movie.DoesNotExist:
         # If the movie does not exist, use media.py to fetch from the API and store in the database
         movie, videos = media.fetch_and_store_movie_from_api(movie_id)
