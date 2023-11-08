@@ -160,7 +160,7 @@ ul.checkbox li {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
-#detailBc {
+#mediaBgColor {
     background-color: #ffffff;
 }
 
@@ -179,7 +179,7 @@ ul.checkbox li {
     margin-left: 30px;
     margin-top: 70px;
   }
-  
+
 
 .col.mediaOverview {
     color:black;
