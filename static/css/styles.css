@@ -9,9 +9,10 @@ body {
 h2 {
 
     text-align: center;
-    font-family: Bai Jamjuree;
+    line-height: 1.2; 
+    padding: 0.5em 0; 
+    margin: 0; 
     
-
 }
 
 hr.a  {
@@ -160,7 +161,7 @@ ul.checkbox li {
 }
 
 #detailBc {
-    background-color: #c4e4e8;
+    background-color: #ffffff;
 }
 
 #mediaInfo {
@@ -292,13 +293,17 @@ ul.checkbox li {
     filter: saturate(45%);
     animation: flicker steps(100) var(--interval) 1s infinite;
     color: rgba(255, 255, 255, 0.801);
-    --color1: rgb(249, 203, 210);;
+    --color1: rgb(249, 203, 210);
     --color2: rgb(178, 27, 27);
     --color3: red;
     --color4: rgb(137, 24, 24);
     font-family: Play;
-    font-size: 37px
-  }
+    font-size: 37px;
+    text-align: center; /* Center the text within the block */
+    margin-left: auto; /* Center the block element horizontally */
+    margin-right: auto; /* Center the block element horizontally */
+    padding: 0; /* Remove any default padding */
+}
 
 .btn {
     font-family: Bai Jamjuree;
