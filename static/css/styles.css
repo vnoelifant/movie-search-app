@@ -202,14 +202,20 @@ ul.checkbox li {
     display: grid;
     overflow-x: auto;
     grid-auto-flow: column;
-    grid-auto-columns: 21%;
+    grid-auto-columns: minmax(auto, 1fr); /* Adjusted to fit content and margin */
     overscroll-behavior-inline: contain;
+}
+
+#trailerScroll .embed-responsive {
+    margin: 1em; /* Increased margin */
+    display: block; /* Ensure it's treated as a block-level element */
 }
 
 #trailerResults {
     margin-bottom: 20px;
     margin-right: 120px;
 }
+
 
 #detailHome {
     color:black;
