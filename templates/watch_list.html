@@ -2,8 +2,14 @@
   <h2>My Watch List</h2>
   <ul>
     {% for watchlist_movie in watch_list %}
-      <li>{{ watchlist_movie.movie.title }}</li>
+      <li>
+        {{ watchlist_movie.movie.title }}
       <!-- Add more movie details as needed -->
+        <form action="{% url 'remove_from_watch_list' watchlist_movie.movie.id %}" method="post" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit">Remove</button>
+        </form>
+      </li>
     {% endfor %}
   </ul>
 {% endblock %}

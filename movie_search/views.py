@@ -47,6 +47,13 @@ def add_to_watch_list(request, movie_id):
     WatchList.objects.get_or_create(user=request.user, movie=movie)
     return redirect('watch_list')
 
+
+@login_required
+def remove_from_watch_list(request, movie_id):
+    movie_in_watchlist = get_object_or_404(WatchList, user=request.user, movie_id=movie_id)
+    movie_in_watchlist.delete()
+    return redirect('watch_list')
+
 @login_required
 def watch_list(request):
     watch_list = WatchList.objects.filter(user=request.user).select_related('movie')

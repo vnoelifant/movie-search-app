@@ -21,6 +21,7 @@ urlpatterns = [
     path("error/", views.search, name="error"),
     path("discover/movie/", views.discover, name="discover"),
     path('watch_list/add/<int:movie_id>/', views.add_to_watch_list, name='add_to_watch_list'),
+     path('watch_list/remove/<int:movie_id>/', views.remove_from_watch_list, name='remove_from_watch_list'),
     path('watch_list/', views.watch_list, name='watch_list'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
