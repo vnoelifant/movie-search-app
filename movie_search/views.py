@@ -7,10 +7,33 @@ from django.shortcuts import render
 from movie_search import media
 from movie_search.decorators import timing
 
-from .models import Movie, Video, Genre, Provider, Recommendation
-
+from .models import Movie, Video, Genre, Provider, Recommendation, WatchList
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 # Create your views here.
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')  # Redirect to a homepage or dashboard
+        else:
+            # Return an 'invalid login' error message.
+            return render(request, 'login.html', {'error': 'Invalid username or password.'})
+    else:
+        # User is accessing the login page via GET request.
+        return render(request, 'login.html')
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('home'))  # Redirect to home page after logout
 
 
 def home(request):
@@ -18,10 +41,40 @@ def home(request):
     context = {"trending": trending}
     return render(request, "home.html", context)
 
+@login_required
+def add_to_watch_list(request, movie_id):
+    movie = get_object_or_404(Movie, pk=movie_id)
+    WatchList.objects.get_or_create(user=request.user, movie=movie)
+    return redirect('watch_list')
+
+
+@login_required
+def remove_from_watch_list(request, movie_id):
+    movie_in_watchlist = get_object_or_404(WatchList, user=request.user, movie_id=movie_id)
+    movie_in_watchlist.delete()
+    return redirect('watch_list')
+
+@login_required
+def watch_list(request):
+    watch_list = WatchList.objects.filter(user=request.user).select_related('movie')
+    return render(request, 'watch_list.html', {'watch_list': watch_list})
+
+def get_movie_from_db_or_api(movie_id):
+    # Check if the movie exists in the database
+    try:
+        movie = Movie.objects.get(movie_id=movie_id)
+        # If the movie exists, fetch related objects 
+        videos = Video.objects.filter(movie=movie)
+    except Movie.DoesNotExist:
+        # If the movie does not exist, use media.py to fetch from the API and store in the database
+        movie, videos = media.fetch_and_store_movie_from_api(movie_id)
+    return movie, videos
+
 
 def _get_media_list(request, media_type, media_list_type, template_name):
-    data = media.fetch_data_from_api(f"/{media_type}/{media_list_type}")
+    data = media.fetch_data_from_api(f"/{media_type}/{media_list_type}") 
     context = {media_list_type: data}
+    
     return render(request, template_name, context)
 
 
@@ -35,20 +88,24 @@ def movies_top_rated(request):
 
 
 def movies_now_playing(request):
-    return _get_media_list(request, "movie", "now_playing", "movies_now_playing.html")
+    return _get_media_list(request, "movie", "now_playing", "movie_now_playing.html")
 
 
 def movies_upcoming(request):
-    return _get_media_list(request, "movie", "upcoming", "movies_upcoming.html")
+    return _get_media_list(request, "movie", "upcoming", "movie_upcoming.html")
 
 
 def movies_trending_week(request):
-    return _get_media_list(request, "movie", "trending/week", "movie_trending.html")
+    return _get_media_list(request, "trending/movie", "week", "movie_trending.html")
 
 
-def movie_detail(request, movie_id):
-    context = media.get_movie_detail(movie_id)
-    return render(request, "movie_detail.html", context)
+def movie(request, movie_id):
+    movie, videos = get_movie_from_db_or_api(movie_id)
+    context = {
+        'movie': movie,
+        'videos': videos,
+    }
+    return render(request, "movie.html", context)
 
 
 # Common TV Views
@@ -110,8 +167,8 @@ def process_movie_discover_request(request):
 
     # Process person
     person_name = request.GET.get("personName")
-    person = media.fetch_data_by_query("/search/person", person_name, "name")
-    person_id = media.fetch_id_from_query(person, person_name) if person_name else None
+    person = media.fetch_api_data_by_query("/search/person", person_name, "name")
+    person_id = media.lookup_id_in_data_by_query(person, person_name) if person_name else None
 
     # Other parameters
     sort_options = request.GET.getlist("sort")
@@ -149,8 +206,8 @@ def search(request):
 
 
 def handle_person_search(request, query, choice):
-    person = media.fetch_data_by_query(f"/search/person", query, "name")
-    person_id = media.fetch_id_from_query(person, query)
+    person = media.fetch_api_data_by_query(f"/search/person", query, "name")
+    person_id = media.lookup_id_in_data_by_query(person, query)
 
     if choice == "movie_credits":
         return render_person_movie_credits(request, person_id)
@@ -177,16 +234,20 @@ def render_person_tv_credits(request, person_id):
 
 
 def handle_movie_search(request, query, choice):
-    movie = media.fetch_data_by_query(f"/search/movie", query, "original_title")
-    movie_id = media.fetch_id_from_query(movie, query)
+    movie = media.fetch_api_data_by_query(f"/search/movie", query, "original_title")
+    movie_id = media.lookup_id_in_data_by_query(movie, query)
     if choice == "general":
-        return render_movie_detail(request, movie_id)
+        return render_movie(request, movie_id)
     return render_movie_sim_or_rec(request, movie_id, choice)
 
 
-def render_movie_detail(request, movie_id):
-    movie_detail = media.get_movie_detail(movie_id)
-    return render(request, "movie_detail.html", movie_detail)
+def render_movie(request, movie_id):
+    movie, videos = get_movie_from_db_or_api(movie_id)
+    context = {
+        'movie': movie,
+        'videos': videos,
+    }
+    return render(request, "movie.html", context)
 
 
 def render_movie_sim_or_rec(request, movie_id, choice):
@@ -197,8 +258,8 @@ def render_movie_sim_or_rec(request, movie_id, choice):
 
 
 def handle_tv_search(request, query, choice):
-    tv = media.fetch_data_by_query(f"/search/tv", query, "original_name")
-    tv_id = media.fetch_id_from_query(tv, query)
+    tv = media.fetch_api_data_by_query(f"/search/tv", query, "original_name")
+    tv_id = media.lookup_id_in_data_by_query(tv, query)
 
     if choice == "general":
         return render_tv_detail(request, tv_id)

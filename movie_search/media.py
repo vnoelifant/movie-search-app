@@ -7,35 +7,24 @@ def fetch_data_from_api(endpoint, **kwargs):
     """A common method to fetch data from media API"""
     return tmdb_api.get_data_from_endpoint(endpoint, **kwargs)
 
-def fetch_data_by_query(endpoint, text_query, results_key):
+def fetch_api_data_by_query(endpoint, text_query, results_key):
     """A common method to fetch data by query from media API"""
     return tmdb_api.get_data_by_query(endpoint, text_query, results_key)
 
-def fetch_id_from_query(data_dict, query):
+def lookup_id_in_data_by_query(data_dict, query):
     """A common method to fetch media ID from data by query"""
     return {item.lower(): idx for item, idx in data_dict.items()}.get(query)
 
-def get_movie_detail(movie_id):
-    try:
-        movie_detail = Movie.objects.get(movie_id=movie_id)
-        movie_videos = Video.objects.filter(movie_id=movie_detail.id)
-    except Movie.DoesNotExist:
-        movie_detail, movie_videos = fetch_and_store_movie_from_api(movie_id)
-    context = {
-        "movie_detail": movie_detail,
-        "movie_videos": movie_videos,
-    }
-    return context
 
 def fetch_and_store_movie_from_api(movie_id):
     movie_data = tmdb_api.get_data_from_endpoint(f"/movie/{movie_id}")
-    movie_detail = store_movie_data(movie_data)
-    movie_videos = store_movie_videos(movie_detail)
-    return movie_detail, movie_videos
+    movie = store_movie_data(movie_data)
+    videos = store_movie_videos(movie)
+    return movie, videos
 
 def store_movie_data(data):
     genres = data.get("genres")
-    movie_detail, created = Movie.objects.get_or_create(
+    movie, created = Movie.objects.get_or_create(
         movie_id=data.get("id", 0),
         title=data.get("title", ""),
         backdrop_path=data.get("backdrop_path", ""),
@@ -54,12 +43,12 @@ def store_movie_data(data):
     if genres is not None:
         movie_genres = store_movie_genres(genres)
     
-    movie_detail.genres.add(*movie_genres)
+    movie.genres.add(*movie_genres)
     
-    movie_recommendations = store_movie_recommendations(movie_detail.movie_id)
-    movie_detail.recommendation.add(*movie_recommendations)
+    movie_recommendations = store_movie_recommendations(movie.movie_id)
+    movie.recommendation.add(*movie_recommendations)
     
-    return movie_detail 
+    return movie 
 
 
 def store_movie_genres(genres):

@@ -9,15 +9,21 @@ body {
 h2 {
 
     text-align: center;
-    font-family: Bai Jamjuree;
+    line-height: 1.2; 
+    padding: 0.5em 0; 
+    margin: 0; 
     
-
 }
 
 hr.a  {
     border-top: 3px double black;
     width: 210px;
   }
+
+.watchlist-form {
+    display: inline-block;
+    margin-left: 20px;
+}
 
 #banner {
     background-image: url("../img/movies-unsplash.jpg");
@@ -46,7 +52,7 @@ hr.a  {
 
 .sidebar  {
 
-    background: linear-gradient(#d7d2d2,#b22020, #cf0d0d);
+    background: linear-gradient(#ffffff, #c0c0c0 25%, #d88585 40%, #a52a2a);
     text-align: center;
     color: black;
     font-family: Bai Jamjuree;
@@ -154,17 +160,26 @@ ul.checkbox li {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
-#detailBc {
-    background-color: #c4e4e8;
+#mediaBgColor {
+    background-color: #ffffff;
 }
 
 #mediaInfo {
     color: #000000;
     margin-left:550px;
-    margin-top: -300px;
+    margin-top: -275px;
     min-height: 290px;
 
 }
+
+#movieBackdrop {
+    position: relative;
+    top: 40px;
+    border-radius: 15px;
+    margin-left: 30px;
+    margin-top: 70px;
+  }
+
 
 .col.mediaOverview {
     color:black;
@@ -187,14 +202,20 @@ ul.checkbox li {
     display: grid;
     overflow-x: auto;
     grid-auto-flow: column;
-    grid-auto-columns: 21%;
+    grid-auto-columns: minmax(auto, 1fr); /* Adjusted to fit content and margin */
     overscroll-behavior-inline: contain;
+}
+
+#trailerScroll .embed-responsive {
+    margin: 1em; /* Increased margin */
+    display: block; /* Ensure it's treated as a block-level element */
 }
 
 #trailerResults {
     margin-bottom: 20px;
     margin-right: 120px;
 }
+
 
 #detailHome {
     color:black;
@@ -243,7 +264,7 @@ ul.checkbox li {
 }
 #banner h2 {
   color: #fff;
-  font-size: 50px;
+  font-size: 55px;
   padding-top: 80px;
   color: rgb(250, 237, 239);
   --color1: pink;
@@ -279,21 +300,25 @@ ul.checkbox li {
     --interval: 1s;
     display: block;
     text-shadow: 
-      0 0 10px var(--color1),
-      0 0 20px var(--color2),
-      0 0 40px var(--color3),
-      0 0 80px var(--color4);
+      0 0 5px var(--color1),
+      0 0 10px var(--color2),
+      0 0 20px var(--color3),
+      0 0 40px var(--color4);
     will-change: filter, color;
     filter: saturate(45%);
     animation: flicker steps(100) var(--interval) 1s infinite;
-    color: rgba(255, 255, 255, 0.801);
-    --color1: rgb(249, 203, 210);;
+    color: rgba(255, 255, 255, 1);
+    --color1: rgb(249, 203, 210);
     --color2: rgb(178, 27, 27);
     --color3: red;
     --color4: rgb(137, 24, 24);
     font-family: Play;
-    font-size: 37px
-  }
+    font-size: 45px;
+    text-align: center; /* Center the text within the block */
+    margin-left: auto; /* Center the block element horizontally */
+    margin-right: auto; /* Center the block element horizontally */
+    padding: 0; /* Remove any default padding */
+}
 
 .btn {
     font-family: Bai Jamjuree;
