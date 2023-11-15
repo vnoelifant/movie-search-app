@@ -8,11 +8,13 @@ import requests
 import json
 from django.conf import settings
 
+
 class TMDBApi:
-    def __init__(self, base_url="https://api.themoviedb.org/3"):
-        self.api_key = settings.TMDB_API_KEY  # Accessing API key from Django settings
-        self.base_url = base_url
-        self.language = "en-US"
+
+    def __init__(self):
+        self.base_url = settings.TMDB_API_URL
+        self.api_key = settings.TMDB_API_KEY
+        self.language = settings.TMDB_API_LANG
 
     def get_data_from_endpoint(self, endpoint, **kwargs):
         url = f"{self.base_url}{endpoint}"

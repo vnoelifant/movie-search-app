@@ -31,6 +31,8 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = ["*"]
 
 TMDB_API_KEY = config("PROJECT_API_KEY", "")
+TMDB_API_URL = config("TMDB_API_URL", "https://api.themoviedb.org/3")
+TMDB_API_LANG = config("TMDB_API_LANG", "en-US")
 
 # Application definition
 
@@ -46,7 +48,7 @@ INSTALLED_APPS = [
     "django_countries",
 ]
 
-AUTH_USER_MODEL = "movie_search.CustomUser"  
+AUTH_USER_MODEL = "movie_search.CustomUser"
 
 LOGIN_URL = 'login'
 
