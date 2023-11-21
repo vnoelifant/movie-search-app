@@ -57,7 +57,7 @@ def remove_from_watch_list(request, movie_id):
 @login_required
 def watch_list(request):
     watch_list = WatchList.objects.filter(user=request.user).select_related('movie')
-    return render(request, 'watch_list.html', {'watch_list': watch_list})
+    return render(request, 'watch_list.htmld', {'watch_list': watch_list})
 
 def get_movie_from_db_or_api(movie_id):
     # Check if the movie exists in the database
