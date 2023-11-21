@@ -1,5 +1,5 @@
 from movie_search import tmdb_api
-from .models import Movie, Video, Genre, Provider, Recommendation
+from .models import Movie, MovieVideo, MovieGenre, MovieProvider, MovieRecommendation
 
 
 
@@ -55,7 +55,7 @@ def store_movie_genres(genres):
     movie_genres = []
 
     for row in genres:
-        genre, created = Genre.objects.get_or_create(
+        genre, created = MovieGenre.objects.get_or_create(
             name=row.get("name", ""),
             genre_id=row.get("id", 0),
         )
@@ -67,19 +67,19 @@ def store_movie_genres(genres):
 def store_movie_videos(movie_obj):
     video_data = tmdb_api.get_data_from_endpoint(f"/movie/{movie_obj.movie_id}/videos")
     for video_data in video_data.get("results", []):
-        Video.objects.get_or_create(
+        MovieVideo.objects.get_or_create(
             movie=movie_obj,
             name=video_data.get("name", ""),
             key=video_data.get("key", ""),
         )
-    return Video.objects.filter(movie_id=movie_obj.id)
+    return MovieVideo.objects.filter(movie_id=movie_obj.id)
     
 def store_movie_recommendations(movie_id):
     recommendations_data = tmdb_api.get_data_from_endpoint(f"/movie/{movie_id}/recommendations")
     movie_recommendations = []
 
     for rec_data in recommendations_data.get("results",[]):
-        recommendation, created = Recommendation.objects.get_or_create(
+        recommendation, created = MovieRecommendation.objects.get_or_create(
             movie_id=rec_data.get("id", 0),
             poster_path=rec_data.get("poster_path", ""),
         )
@@ -87,13 +87,13 @@ def store_movie_recommendations(movie_id):
     return movie_recommendations
 
 def get_genres_from_discover(genre_names):
-    genres =  Genre.objects.filter(name__in=genre_names).values_list(
+    genres =  MovieGenre.objects.filter(name__in=genre_names).values_list(
         "genre_id", flat=True
     )
     return genres
 
 def get_providers_from_discover(watch_provider_names):
-    providers = Provider.objects.filter(name__in=watch_provider_names).values_list(
+    providers = MovieProvider.objects.filter(name__in=watch_provider_names).values_list(
         "provider_id", flat=True
     )
     return providers

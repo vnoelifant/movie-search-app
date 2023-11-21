@@ -7,7 +7,7 @@ from django.shortcuts import render
 from movie_search import media
 from movie_search.decorators import timing
 
-from .models import Movie, Video, Genre, Provider, Recommendation, WatchList
+from .models import Movie, MovieVideo, MovieGenre, MovieProvider, MovieRecommendation, MovieWatchList
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
@@ -56,18 +56,18 @@ def remove_from_watch_list(request, movie_id):
 
 @login_required
 def watch_list(request):
-    watch_list = WatchList.objects.filter(user=request.user).select_related('movie')
+    watch_list = MovieWatchList.objects.filter(user=request.user).select_related('movie')
     return render(request, 'watch_list.htmld', {'watch_list': watch_list})
 
-def get_movie_from_db_or_api(movie_id):
+def get_movie_from_db_or_api(tmdb_id):
     # Check if the movie exists in the database
     try:
-        movie = Movie.objects.get(movie_id=movie_id)
+        movie = Movie.objects.get(tmdb_id=tmdb_id)
         # If the movie exists, fetch related objects 
-        videos = Video.objects.filter(movie=movie)
+        videos = MovieVideo.objects.filter(movie=movie)
     except Movie.DoesNotExist:
         # If the movie does not exist, use media.py to fetch from the API and store in the database
-        movie, videos = media.fetch_and_store_movie_from_api(movie_id)
+        movie, videos = media.fetch_and_store_movie_from_api(tmdb_id)
     return movie, videos
 
 
@@ -99,8 +99,8 @@ def movies_trending_week(request):
     return _get_media_list(request, "trending/movie", "week", "movie_trending.html")
 
 
-def movie(request, movie_id):
-    movie, videos = get_movie_from_db_or_api(movie_id)
+def movie(request, tmdb_id):
+    movie, videos = get_movie_from_db_or_api(tmdb_id)
     context = {
         'movie': movie,
         'videos': videos,
@@ -235,14 +235,14 @@ def render_person_tv_credits(request, person_id):
 
 def handle_movie_search(request, query, choice):
     movie = media.fetch_api_data_by_query(f"/search/movie", query, "original_title")
-    movie_id = media.lookup_id_in_data_by_query(movie, query)
+    tmdb_id = media.lookup_id_in_data_by_query(movie, query)
     if choice == "general":
-        return render_movie(request, movie_id)
-    return render_movie_sim_or_rec(request, movie_id, choice)
+        return render_movie(request, tmdb_id)
+    return render_movie_sim_or_rec(request, tmdb_id, choice)
 
 
-def render_movie(request, movie_id):
-    movie, videos = get_movie_from_db_or_api(movie_id)
+def render_movie(request, tmdb_id):
+    movie, videos = get_movie_from_db_or_api(tmdb_id)
     context = {
         'movie': movie,
         'videos': videos,
@@ -250,8 +250,8 @@ def render_movie(request, movie_id):
     return render(request, "movie.html", context)
 
 
-def render_movie_sim_or_rec(request, movie_id, choice):
-    movie = media.fetch_data_from_api(f"/movie/{movie_id}/{choice}")
+def render_movie_sim_or_rec(request, tmdb_id, choice):
+    movie = media.fetch_data_from_api(f"/movie/{tmdb_id}/{choice}")
     return render(
         request, "movie_search_sim_rec.html", {"movie": movie, "choice": choice}
     )
