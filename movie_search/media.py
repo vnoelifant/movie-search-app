@@ -1,15 +1,15 @@
 from movie_search import tmdb_api
 from .models import Movie, MovieVideo, MovieGenre, MovieProvider, MovieRecommendation
 
-
+tmdb_api_obj = tmdb_api.TMDBApi()
 
 def fetch_data_from_api(endpoint, **kwargs):
     """A common method to fetch data from media API"""
-    return tmdb_api.get_data_from_endpoint(endpoint, **kwargs)
+    return tmdb_api_obj.get_data_from_endpoint(endpoint, **kwargs)
 
 def fetch_api_data_by_query(endpoint, text_query, results_key):
     """A common method to fetch data by query from media API"""
-    return tmdb_api.get_data_by_query(endpoint, text_query, results_key)
+    return tmdb_api_obj.get_data_by_query(endpoint, text_query, results_key)
 
 def lookup_id_in_data_by_query(data_dict, query):
     """A common method to fetch media ID from data by query"""
@@ -17,7 +17,7 @@ def lookup_id_in_data_by_query(data_dict, query):
 
 
 def fetch_and_store_movie_from_api(movie_id):
-    movie_data = tmdb_api.get_data_from_endpoint(f"/movie/{movie_id}")
+    movie_data = tmdb_api_obj.get_data_from_endpoint(f"/movie/{movie_id}")
     movie = store_movie_data(movie_data)
     videos = store_movie_videos(movie)
     return movie, videos
@@ -65,7 +65,7 @@ def store_movie_genres(genres):
 
 
 def store_movie_videos(movie_obj):
-    video_data = tmdb_api.get_data_from_endpoint(f"/movie/{movie_obj.movie_id}/videos")
+    video_data = tmdb_api_obj.get_data_from_endpoint(f"/movie/{movie_obj.movie_id}/videos")
     for video_data in video_data.get("results", []):
         MovieVideo.objects.get_or_create(
             movie=movie_obj,
@@ -75,7 +75,7 @@ def store_movie_videos(movie_obj):
     return MovieVideo.objects.filter(movie_id=movie_obj.id)
     
 def store_movie_recommendations(movie_id):
-    recommendations_data = tmdb_api.get_data_from_endpoint(f"/movie/{movie_id}/recommendations")
+    recommendations_data = tmdb_api_obj.get_data_from_endpoint(f"/movie/{movie_id}/recommendations")
     movie_recommendations = []
 
     for rec_data in recommendations_data.get("results",[]):
@@ -101,7 +101,7 @@ def get_providers_from_discover(watch_provider_names):
 def get_movie_discover_data(
      genres, person_id, sort_options, region, watch_region, providers, year
 ):
-    return tmdb_api.get_data_from_endpoint(
+    return tmdb_api_obj.get_data_from_endpoint(
         "/discover/movie",
         region=region,
         primary_release_year=year,

@@ -7,12 +7,33 @@ class CustomUser(AbstractUser):
     # Add additional fields here if you need
     pass
 
+class MovieGenre(models.Model):
+    name = models.CharField(max_length=200, null=True, blank=True, unique=True)
+    genre_id = models.PositiveSmallIntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.genre_id}: {self.name}"
+
+    class Meta:
+        verbose_name_plural = "movie genres"
+
+
+class MovieRecommendation(models.Model):
+    tmdb_id = models.PositiveSmallIntegerField(default=0)
+    poster_path = models.CharField(max_length=200, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.tmdb_id}: {self.poster_path}"
+
+    class Meta:
+        verbose_name_plural = "movie recommendations"
+
 
 class Movie(models.Model):
     tmdb_id = models.PositiveSmallIntegerField(default=0)
     title = models.CharField(max_length=200, null=True, blank=True)
     backdrop_path = models.CharField(max_length=200, null=True, blank=True)
-    genres = models.ManyToManyField(Genre, related_name="movies", blank=True)
+    genres = models.ManyToManyField(MovieGenre, related_name="movies", blank=True)
     tagline = models.CharField(max_length=200, null=True, blank=True)
     vote_count = models.PositiveSmallIntegerField(default=0)
     vote_average = models.FloatField(default=0)
@@ -31,16 +52,6 @@ class Movie(models.Model):
     def __str__(self):
         return f"{self.tmdb_id}: {self.title}"
 
-class MovieGenre(models.Model):
-    name = models.CharField(max_length=200, null=True, blank=True, unique=True)
-    genre_id = models.PositiveSmallIntegerField(default=0)
-
-    def __str__(self):
-        return f"{self.genre_id}: {self.name}"
-
-    class Meta:
-        verbose_name_plural = "movie genres"
-
 
 class MovieProvider(models.Model):
     name = models.CharField(max_length=200, null=True, blank=True)
@@ -48,17 +59,6 @@ class MovieProvider(models.Model):
 
     def __str__(self):
         return f"{self.provider_id}: {self.name}"
-
-
-class MovieRecommendation(models.Model):
-    tmdb_id = models.PositiveSmallIntegerField(default=0)
-    poster_path = models.CharField(max_length=200, null=True, blank=True)
-
-    def __str__(self):
-        return f"{self.tmdb_id}: {self.poster_path}"
-
-    class Meta:
-        verbose_name_plural = "movie recommendations"
 
 
 class MovieVideo(models.Model):
@@ -83,12 +83,32 @@ class MovieWatchList(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.movie.title}"
 
+class TVSeriesGenre(models.Model):
+    name = models.CharField(max_length=200, null=True, blank=True, unique=True)
+    genre_id = models.PositiveSmallIntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.genre_id}: {self.name}"
+
+    class Meta:
+        verbose_name_plural = "tv series genres"
+
+class TVSeriesRecommendation(models.Model):
+    tmdb_id = models.PositiveSmallIntegerField(default=0)
+    poster_path = models.CharField(max_length=200, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.tmdb_id}: {self.poster_path}"
+
+    class Meta:
+        verbose_name_plural = "tv series recommendations"
+
 
 class TVSeries(models.Model):
     tmdb_id = models.PositiveSmallIntegerField(default=0)
     name = models.CharField(max_length=200, null=True, blank=True)
     backdrop_path = models.CharField(max_length=200, null=True, blank=True)
-    genres = models.ManyToManyField(Genre, related_name="movies", blank=True)
+    genres = models.ManyToManyField(TVSeriesGenre, related_name="tvseries", blank=True)
     tagline = models.CharField(max_length=200, null=True, blank=True)
     vote_count = models.PositiveSmallIntegerField(default=0)
     vote_average = models.FloatField(default=0)
@@ -107,15 +127,6 @@ class TVSeries(models.Model):
     def __str__(self):
         return f"{self.tmdb_id}: {self.title}"
 
-class TVSeriesGenre(models.Model):
-    name = models.CharField(max_length=200, null=True, blank=True, unique=True)
-    genre_id = models.PositiveSmallIntegerField(default=0)
-
-    def __str__(self):
-        return f"{self.genre_id}: {self.name}"
-
-    class Meta:
-        verbose_name_plural = "tv series genres"
 
 
 class TVSeriesProvider(models.Model):
@@ -125,18 +136,9 @@ class TVSeriesProvider(models.Model):
     def __str__(self):
         return f"{self.provider_id}: {self.name}"
 
-class TVSeriesRecommendation(models.Model):
-    tmdb_id = models.PositiveSmallIntegerField(default=0)
-    poster_path = models.CharField(max_length=200, null=True, blank=True)
-
-    def __str__(self):
-        return f"{self.tmdb_id}: {self.poster_path}"
-
-    class Meta:
-        verbose_name_plural = "tv series recommendations"
 
 class TVSeriesVideo(models.Model):
-    tv = models.ForeignKey(Movie, on_delete=models.CASCADE, null=True, blank=True)
+    tvseries = models.ForeignKey(TVSeries, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=200, null=True, blank=True)
     key = models.CharField(max_length=200, null=True, blank=True)
 
@@ -148,10 +150,10 @@ class TVSeriesVideo(models.Model):
 
 class TVSeriesWatchList(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    tvseries = models.ForeignKey(TVSeries, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ('user', 'movie')
+        unique_together = ('user', 'tvseries')
         verbose_name_plural = 'movie watchlist'
 
     def __str__(self):
