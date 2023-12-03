@@ -1,0 +1,74 @@
+[
+    {
+      "model": "movie_search.TVSeriesProvider",
+      "fields": {
+        "name": "Apple TV",
+        "provider_id": 2
+      }
+    },
+    {
+      "model": "movie_search.TVSeriesProvider",
+      "fields": {
+        "name": "Hulu",
+        "provider_id": 15
+      }
+    },
+    {
+        "model": "movie_search.TVSeriesProvider",
+        "fields": {
+          "name": "Netflix",
+          "provider_id": 8
+        }
+      },
+      {
+        "model": "movie_search.TVSeriesProvider",
+        "fields": {
+          "name": "Amazon Video",
+          "provider_id": 10
+        }
+      },
+      {
+        "model": "movie_search.TVSeriesProvider",
+        "fields": {
+          "name": "Amazon Prime Video",
+          "provider_id": 9
+        }
+      },
+      {
+        "model": "movie_search.TVSeriesProvider",
+        "fields": {
+          "name": "HBO Max",
+          "provider_id": 384
+        }
+      },
+      {
+        "model": "movie_search.TVSeriesProvider",
+        "fields": {
+          "name": "HBO Max Free",
+          "provider_id": 616
+        }
+      },
+      {
+        "model": "movie_search.TVSeriesProvider",
+        "fields": {
+          "name": "Disney Plus",
+          "provider_id": 337
+        }
+      },
+
+      {
+        "model": "movie_search.TVSeriesProvider",
+        "fields": {
+          "name": "Peacock",
+          "provider_id": 386
+        }
+      },
+
+      {
+        "model": "movie_search.TVSeriesProvider",
+        "fields": {
+          "name": "Peacock Premium",
+          "provider_id": 387
+        }
+      }
+]

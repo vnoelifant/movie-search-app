@@ -28,3 +28,5 @@ class TMDBApi:
         response_json = self.get_data_from_endpoint(endpoint, query=text_query)
         data = response_json["results"]
         return {row[result_key]: row["id"] for row in data}
+
+
