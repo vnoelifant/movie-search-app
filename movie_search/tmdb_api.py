@@ -11,10 +11,10 @@ from django.conf import settings
 
 class TMDBApi:
 
-    def __init__(self):
+    def __init__(self, language = None):
         self.base_url = settings.TMDB_API_URL
         self.api_key = settings.TMDB_API_KEY
-        self.language = settings.TMDB_API_LANG
+        self.language = language or settings.TMDB_API_LANG
 
     def get_data_from_endpoint(self, endpoint, **kwargs):
         url = f"{self.base_url}{endpoint}"

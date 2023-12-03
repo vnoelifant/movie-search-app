@@ -7,7 +7,19 @@ from django.shortcuts import render
 from movie_search import media
 from movie_search.decorators import timing
 
-from .models import Movie, MovieVideo, MovieGenre, MovieProvider, MovieRecommendation, MovieWatchList
+from .models import (
+    Movie,
+    MovieVideo,
+    MovieGenre,
+    MovieProvider,
+    MovieRecommendation,
+    MovieWatchList,
+    TVSeries,
+    TVSeriesVideo,
+    TVSeriesGenre,
+    TVSeriesProvider,
+    TVSeriesRecommendation,
+)
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
@@ -16,24 +28,28 @@ from django.urls import reverse
 
 # Create your views here.
 
+
 def login_view(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('home')  # Redirect to a homepage or dashboard
+            return redirect("home")  # Redirect to a homepage or dashboard
         else:
             # Return an 'invalid login' error message.
-            return render(request, 'login.html', {'error': 'Invalid username or password.'})
+            return render(
+                request, "login.html", {"error": "Invalid username or password."}
+            )
     else:
         # User is accessing the login page via GET request.
-        return render(request, 'login.html')
+        return render(request, "login.html")
+
 
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect(reverse('home'))  # Redirect to home page after logout
+    return HttpResponseRedirect(reverse("home"))  # Redirect to home page after logout
 
 
 def home(request):
@@ -41,29 +57,36 @@ def home(request):
     context = {"trending": trending}
     return render(request, "home.html", context)
 
+
 @login_required
 def add_to_watch_list(request, movie_id):
     movie = get_object_or_404(Movie, pk=movie_id)
     WatchList.objects.get_or_create(user=request.user, movie=movie)
-    return redirect('watch_list')
+    return redirect("watch_list")
 
 
 @login_required
 def remove_from_watch_list(request, movie_id):
-    movie_in_watchlist = get_object_or_404(WatchList, user=request.user, movie_id=movie_id)
+    movie_in_watchlist = get_object_or_404(
+        WatchList, user=request.user, movie_id=movie_id
+    )
     movie_in_watchlist.delete()
-    return redirect('watch_list')
+    return redirect("watch_list")
+
 
 @login_required
 def watch_list(request):
-    watch_list = MovieWatchList.objects.filter(user=request.user).select_related('movie')
-    return render(request, 'watch_list.htmld', {'watch_list': watch_list})
+    watch_list = MovieWatchList.objects.filter(user=request.user).select_related(
+        "movie"
+    )
+    return render(request, "watch_list.htmld", {"watch_list": watch_list})
+
 
 def get_movie_from_db_or_api(tmdb_id):
     # Check if the movie exists in the database
     try:
         movie = Movie.objects.get(tmdb_id=tmdb_id)
-        # If the movie exists, fetch related objects 
+        # If the movie exists, fetch related objects
         videos = MovieVideo.objects.filter(movie=movie)
     except Movie.DoesNotExist:
         # If the movie does not exist, use media.py to fetch from the API and store in the database
@@ -71,10 +94,22 @@ def get_movie_from_db_or_api(tmdb_id):
     return movie, videos
 
 
+def get_tv_from_db_or_api(tmdb_id):
+    # Check if the tv exists in the database
+    try:
+        tv = TVSeries.objects.get(tmdb_id=tmdb_id)
+        # If the movie exists, fetch related objects
+        videos = TVSeriesVideo.objects.filter(movie=movie)
+    except TVSeries.DoesNotExist:
+        # If the movie does not exist, use media.py to fetch from the API and store in the database
+        tv, videos = media.fetch_and_store_tv_from_api(tmdb_id)
+    return tv, videos
+
+
 def _get_media_list(request, media_type, media_list_type, template_name):
-    data = media.fetch_data_from_api(f"/{media_type}/{media_list_type}") 
+    data = media.fetch_data_from_api(f"/{media_type}/{media_list_type}")
     context = {media_list_type: data}
-    
+
     return render(request, template_name, context)
 
 
@@ -102,10 +137,18 @@ def movies_trending_week(request):
 def movie(request, tmdb_id):
     movie, videos = get_movie_from_db_or_api(tmdb_id)
     context = {
-        'movie': movie,
-        'videos': videos,
+        "movie": movie,
+        "videos": videos,
     }
     return render(request, "movie.html", context)
+
+def tv(request, tmdb_id):
+    tv, videos = get_tv_from_db_or_api(tmdb_id)
+    context = {
+        "tv": tv,
+        "videos": videos,
+    }
+    return render(request, "tv.html", context)
 
 
 # Common TV Views
@@ -168,7 +211,9 @@ def process_movie_discover_request(request):
     # Process person
     person_name = request.GET.get("personName")
     person = media.fetch_api_data_by_query("/search/person", person_name, "name")
-    person_id = media.lookup_id_in_data_by_query(person, person_name) if person_name else None
+    person_id = (
+        media.lookup_id_in_data_by_query(person, person_name) if person_name else None
+    )
 
     # Other parameters
     sort_options = request.GET.getlist("sort")
@@ -244,8 +289,8 @@ def handle_movie_search(request, query, choice):
 def render_movie(request, tmdb_id):
     movie, videos = get_movie_from_db_or_api(tmdb_id)
     context = {
-        'movie': movie,
-        'videos': videos,
+        "movie": movie,
+        "videos": videos,
     }
     return render(request, "movie.html", context)
 

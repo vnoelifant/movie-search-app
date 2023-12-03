@@ -1,77 +1,9 @@
 from abc import ABC, abstractmethod
-from .models import Movie, MovieVideo, MovieGenre, MovieProvider, MovieRecommendation, TVSeries, TVSeriesGenre, TVSeriesProvuder, TVSeriesRecommendation
+from .models import Movie, MovieVideo, MovieGenre, MovieProvider, MovieRecommendation, \
+     TVSeries, TVSeriesGenre, TVSeriesProvuder, TVSeriesRecommendation
 from .tmdb_api import TMDBApi()
 
 tmdb_api_obj = TMDBApi()
-
-"""
-# Base service  for shared functionality
-class MediaService:
-
-    def init(self, api_client):
-        self.api_client = api_client
-
-
-    def fetch_data_from_api(self, endpoint, **kwargs):
-        return self.api_client.get_data_from_endpoint(endpoint, **kwargs)
-
-
-    # ... other shared methods ...
-
-# Abstract base class for media strategies
-class MediaStrategy(ABC, MediaService):
-    @abstractmethod
-    def store_in_database(self, data):
-        pass
-
-# Concrete strategy for Movies
-class MovieStrategy(MediaStrategy):
-    def store_in_database(self, data):
-
-        # ... movie-specific storage logic ...
-        pass
-
-
-class TVSeriesStrategy(MediaStrategy):
-
-    def store_in_database(self, data):
-
-        # ... TV-show-specific storage logic ...
-
-
-# Context manager to utilize the strategies
-
-class MediaContext:
-
-    def init(self, strategy: MediaStrategy):
-
-        self._strategy = strategy
-
-
-    def fetch_and_store(self, identifier):
-
-        data = self._strategy.fetch_data_from_api(identifier)
-
-        return self._strategy.store_in_database(data)
-
-
-# Helper function to select the appropriate strategy
-
-def get_media_strategy(media_type, api_client):
-
-    if media_type == 'movie':
-
-        return MovieStrategy(api_client)
-
-    elif media_type == 'tv':
-
-        return TVSeriesStrategy(api_client)
-
-    else:
-
-        raise ValueError(f"Media type {media_type} is not supported.")
-
-"""
 
 def fetch_data_from_api(endpoint, **kwargs):
     """A common method to fetch data from media API"""
@@ -85,9 +17,22 @@ def lookup_id_in_data_by_query(data_dict, query):
     """A common method to fetch media ID from data by query"""
     return {item.lower(): idx for item, idx in data_dict.items()}.get(query)
 
+class MediaService(ABC):
+    @abstractmethod
+    def fetch_from_api(self, tmdb_id):
+        pass
+    
+    @abstractmethod
+    def store_data(self, data):
+        pass
+
+    @abstractmethod
+    def get_discover_data(self, **kwargs):
+        pass
+
 
 def fetch_and_store_movie_from_api(tmdb_id):
-    movie_data = tmdb_api_obj.get_data_from_endpoint(f"/movie/{movie_id}")
+    movie_data = tmdb_api_obj.get_data_from_endpoint(f"/movie/{tmdb_id}")
     movie = store_movie_data(movie_data)
     videos = store_movie_videos(movie)
     return movie, videos
@@ -115,7 +60,7 @@ def store_movie_data(data):
     
     movie.genres.add(*movie_genres)
     
-    movie_recommendations = store_movie_recommendations(movie.movie_id)
+    movie_recommendations = store_movie_recommendations(movie.tmdb_id)
     movie.recommendation.add(*movie_recommendations)
     
     return movie 
@@ -135,7 +80,7 @@ def store_movie_genres(genres):
 
 
 def store_movie_videos(movie_obj):
-    video_data = tmdb_api_obj.get_data_from_endpoint(f"/movie/{movie_obj.movie_id}/videos")
+    video_data = tmdb_api_obj.get_data_from_endpoint(f"/movie/{movie_obj.tmdb_id}/videos")
     for video_data in video_data.get("results", []):
         MovieVideo.objects.get_or_create(
             movie=movie_obj,
@@ -144,13 +89,13 @@ def store_movie_videos(movie_obj):
         )
     return MovieVideo.objects.filter(movie_id=movie_obj.id)
     
-def store_movie_recommendations(movie_id):
-    recommendations_data = tmdb_api_obj.get_data_from_endpoint(f"/movie/{movie_id}/recommendations")
+def store_movie_recommendations(tmdb_id):
+    recommendations_data = tmdb_api_obj.get_data_from_endpoint(f"/movie/{tmdb_id}/recommendations")
     movie_recommendations = []
 
     for rec_data in recommendations_data.get("results",[]):
         recommendation, created = MovieRecommendation.objects.get_or_create(
-            movie_id=rec_data.get("id", 0),
+            tmdb_id=rec_data.get("id", 0),
             poster_path=rec_data.get("poster_path", ""),
         )
         movie_recommendations.append(recommendation)
@@ -206,74 +151,71 @@ def store_tv_data(data):
         homepage=data.get("homepage", ""),
     )
     if genres is not None:
-        movie_genres = store_movie_genres(genres)
+        tv_genres = store_tv_genres(genres)
     
-    movie.genres.add(*movie_genres)
+    tv.genres.add(*tv_genres)
     
-    movie_recommendations = store_movie_recommendations(movie.movie_id)
-    movie.recommendation.add(*movie_recommendations)
+    tv_recommendations = store_tv_recommendations(tv.tmdb_id)
+    tv.recommendation.add(*tv_recommendations)
     
-    return movie 
+    return tv
 
 
 def store_tv_genres(genres):
-    movie_genres = []
+    tv_genres = []
 
     for row in genres:
-        genre, created = MovieGenre.objects.get_or_create(
+        genre, created = TVSeriesGenre.objects.get_or_create(
             name=row.get("name", ""),
             genre_id=row.get("id", 0),
         )
-        movie_genres.append(genre)
+        tv_genres.append(genre)
 
-    return movie_genres
+    return tv_genres
 
 
-def store_tv_videos(movie_obj):
-    video_data = tmdb_api_obj.get_data_from_endpoint(f"/movie/{movie_obj.movie_id}/videos")
+def store_tv_videos(tv_obj):
+    video_data = tmdb_api_obj.get_data_from_endpoint(f"/tv/{tv_obj.tmdb_id}/videos")
     for video_data in video_data.get("results", []):
-        MovieVideo.objects.get_or_create(
-            movie=movie_obj,
+        TVSeriesVideo.objects.get_or_create(
+            tv=movie_obj,
             name=video_data.get("name", ""),
             key=video_data.get("key", ""),
         )
-    return MovieVideo.objects.filter(movie_id=movie_obj.id)
+    return TVSeriesVideo.objects.filter(tv_id=tv_obj.id)
     
-def store_tv_recommendations(movie_id):
-    recommendations_data = tmdb_api_obj.get_data_from_endpoint(f"/movie/{movie_id}/recommendations")
-    movie_recommendations = []
+def store_tv_recommendations(tmdb_id):
+    recommendations_data = tmdb_api_obj.get_data_from_endpoint(f"/tv/{tmdb_id}/recommendations")
+    tv_recommendations = []
 
     for rec_data in recommendations_data.get("results",[]):
-        recommendation, created = MovieRecommendation.objects.get_or_create(
-            movie_id=rec_data.get("id", 0),
+        recommendation, created = TVSeriesRecommendation.objects.get_or_create(
+            tmdb_id=rec_data.get("id", 0),
             poster_path=rec_data.get("poster_path", ""),
         )
         movie_recommendations.append(recommendation)
     return movie_recommendations
 
 def get_tv_genres_from_discover(genre_names):
-    genres =  MovieGenre.objects.filter(name__in=genre_names).values_list(
+    genres =  TVSeriesGenre.objects.filter(name__in=genre_names).values_list(
         "genre_id", flat=True
     )
     return genres
 
 def get_tv_providers_from_discover(watch_provider_names):
-    providers = MovieProvider.objects.filter(name__in=watch_provider_names).values_list(
+    providers = TVSeriesProvider.objects.filter(name__in=watch_provider_names).values_list(
         "provider_id", flat=True
     )
     return providers
 
-def get_tv_discover_data(
-     genres, person_id, sort_options, region, watch_region, providers, year
+def get_tv_discover_data(language, year, genres, sort_options, providers, 
 ):
     return tmdb_api_obj.get_data_from_endpoint(
         "/discover/movie",
-        region=region,
-        primary_release_year=year,
+        language=language,
+        first_air_date_year=year,
         with_genres=list(genres),
         sort_by=sort_options,
-        watch_region=watch_region,
         with_watch_providers=list(providers),
-        with_people=person_id,
     )
 
