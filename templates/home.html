@@ -17,9 +17,9 @@
                 <img src="{% static 'img/no_img.png' %}" alt="...">
             {% endif %}
             {% if media.media_type == 'movie' %}
-                <a href="{% url 'movie' movie_id=media.id  %}" class="btn btn-dark">View Details</a>
+                <a href="{% url 'movie' tmdb_id=media.id  %}" class="btn btn-dark">View Details</a>
             {% else %}
-                <a href="{% url 'tv_detail' tv_id=media.id  %}" class="btn btn-dark">View Details</a>
+                <a href="{% url 'tv' tmdb_id=media.id  %}" class="btn btn-dark">View Details</a>
             {% endif %}
         </div>
     {% endfor %}

@@ -67,22 +67,22 @@ class MovieStrategy(MediaService):
     def store_data(self, data):
         movie_data, video_data = data
         # Store movie data
-        genres = data.get("genres")
+        genres = movie_data.get("genres")
         movie, created = Movie.objects.get_or_create(
-            tmdb_id=data.get("id", 0),
-            title=data.get("title", ""),
-            backdrop_path=data.get("backdrop_path", ""),
-            tagline=data.get("tagline", ""),
-            vote_count=data.get("vote_count", 0),
-            vote_average=data.get("vote_average", 0),
-            popularity=data.get("popularity", 0),
-            release_date=data.get("release_date", ""),
-            runtime=data.get("runtime", 0),
-            production_company=data.get("production_company", ""),
-            overview=data.get("overview", ""),
-            budget=data.get("budget", 0),
-            revenue=data.get("revenue", 0),
-            homepage=data.get("homepage", ""),
+            tmdb_id=movie_data.get("id", 0),
+            title=movie_data.get("title", ""),
+            backdrop_path=movie_data.get("backdrop_path", ""),
+            tagline=movie_data.get("tagline", ""),
+            vote_count=movie_data.get("vote_count", 0),
+            vote_average=movie_data.get("vote_average", 0),
+            popularity=movie_data.get("popularity", 0),
+            release_date=movie_data.get("release_date", ""),
+            runtime=movie_data.get("runtime", 0),
+            production_company=movie_data.get("production_company", ""),
+            overview=movie_data.get("overview", ""),
+            budget=movie_data.get("budget", 0),
+            revenue=movie_data.get("revenue", 0),
+            homepage=movie_data.get("homepage", ""),
         )
         if genres is not None:
             movie_genres = self.store_genres(genres)
@@ -92,7 +92,7 @@ class MovieStrategy(MediaService):
         movie_recommendations = self.store_recommendations(movie.tmdb_id)
         movie.recommendation.add(*movie_recommendations)
 
-        videos = self.store_videos(movie)
+        videos = self.store_videos(movie, video_data)
 
         return movie, videos
 
@@ -107,8 +107,8 @@ class MovieStrategy(MediaService):
 
         return movie_genres
 
-    def store_videos(self, movie_obj):
-        for video_data in video_data.get("results", []):
+    def store_videos(self, movie_obj, video_data):
+        for video in video_data.get("results", []):
             MovieVideo.objects.get_or_create(
                 movie=movie_obj,
                 name=video_data.get("name", ""),
@@ -167,19 +167,19 @@ class TVSeriesStrategy(MediaService):
         # Store TV series data
         genres = data.get("genres")
         tv, created = TVSeries.objects.get_or_create(
-            tmdb_api_obj_id=data.get("id", 0),
-            name=data.get("name", ""),
-            backdrop_path=data.get("backdrop_path", ""),
-            tagline=data.get("tagline", ""),
-            vote_count=data.get("vote_count", 0),
-            vote_average=data.get("vote_average", 0),
-            popularity=data.get("popularity", 0),
-            first_air_date=data.get("first_air_date", ""),
-            number_of_episodes=data.get("number_of_episodes", 0),
-            number_of_seasons=data.get("number_of_seasons", 0),
-            production_company=data.get("production_company", ""),
-            overview=data.get("overview", ""),
-            homepage=data.get("homepage", ""),
+            tmdb_api_obj_id=tv_data.get("id", 0),
+            name=tv_data.get("name", ""),
+            backdrop_path=tv_data.get("backdrop_path", ""),
+            tagline=tv_data.get("tagline", ""),
+            vote_count=tv_data.get("vote_count", 0),
+            vote_average=tv_data.get("vote_average", 0),
+            popularity=tv_data.get("popularity", 0),
+            first_air_date=tv_data.get("first_air_date", ""),
+            number_of_episodes=tv_data.get("number_of_episodes", 0),
+            number_of_seasons=tv_data.get("number_of_seasons", 0),
+            production_company=tv_data.get("production_company", ""),
+            overview=tv_data.get("overview", ""),
+            homepage=tv_data.get("homepage", ""),
         )
         if genres is not None:
             tv_genres = store_genres(genres)
@@ -189,7 +189,7 @@ class TVSeriesStrategy(MediaService):
         tv_recommendations = store_recommendations(tv.tmdb_id)
         tv.recommendation.add(*tv_recommendations)
 
-        videos = self.store_videos(tv)
+        videos = self.store_videos(tv, video_data)
 
         return tv, videos
 
@@ -205,9 +205,8 @@ class TVSeriesStrategy(MediaService):
 
         return tv_genres
 
-    def store_videos(self, tv_obj):
-        video_data = tmdb_api_obj.get_data_from_endpoint(f"/tv/{tv_obj.tmdb_id}/videos")
-        for video_data in video_data.get("results", []):
+    def store_videos(self, tv_obj, video_data):
+        for video in video_data.get("results", []):
             TVSeriesVideo.objects.get_or_create(
                 tv=movie_obj,
                 name=video_data.get("name", ""),

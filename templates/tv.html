@@ -7,36 +7,36 @@
 
 <div class="container first" id="detailBc"> 
     
-    <img src="https://image.tmdb.org/t/p/w500{{ tv_detail.backdrop_path }}" alt="..." style="border-radius:15px; margin-left: 30px; margin-top: 30px;" >
+    <img src="https://image.tmdb.org/t/p/w500{{ tv.backdrop_path }}" alt="..." style="border-radius:15px; margin-left: 30px; margin-top: 30px;" >
     
     <div class="col mov-info" id="mediaInfo">
-        <h2> {{ tv_detail.name }}</h2>
-        {% for genre in tv_detail.genres %}
+        <h2> {{ tv.name }}</h2>
+        {% for genre in tv.genres %}
             <h8>{{genre.name}} |</h8>
         {% endfor %}
         
-        <h4><b>{{ tv_detail.tagline }}</b></h4>
-        <h4>Total Votes: <b>{{tv_detail.vote_count}}</b> | Vote Score: <b>{{ tv_detail.vote_average }}</b> | Popularity: <b>{{data.popularity}}</b></h4>
-        <h4>Air Date: <b>{{ tv_detail.first_air_date }}</b></h4> 
-        <h4>Episode Duration: <b>{{ tv_detail.episode_run_time }} minutes</b></h4>
+        <h4><b>{{ tv.tagline }}</b></h4>
+        <h4>Total Votes: <b>{{tv.vote_count}}</b> | Vote Score: <b>{{ tv.vote_average }}</b> | Popularity: <b>{{tv.popularity}}</b></h4>
+        <h4>Air Date: <b>{{ tv.first_air_date }}</b></h4> 
+        <h4>Episode Duration: <b>{{ tv.episode_run_time }} minutes</b></h4>
         <h4>Production companies:</h4>
-        {% for company in tv_detail.production_companies %}
+        {% for company in tv.production_companies %}
             <h8>{{company.name}} |</h8>
         {% endfor %}
     </div>
     
     <div class="col mediaOverview">
         <h3>Overview</h3>
-        <p>{{tv_detail.overview}}</p>
+        <p>{{tv.overview}}</p>
     </div>
 
     <div class="col mediaOverview">
         <h3>Seasons and Episodes</h3>
-        <p><b>Total Seasons:</b> {{tv_detail.number_of_seasons}}</p>
-        <p><b>Total Episodes:</b> {{tv_detail.number_of_episodes}}</p>
+        <p><b>Total Seasons:</b> {{tv.number_of_seasons}}</p>
+        <p><b>Total Episodes:</b> {{tv.number_of_episodes}}</p>
         <h3>Official Homepage</h3>
-        {% if tv_detail.homepage %}
-            <a href={{tv_detail.homepage}} id="detailHome">{{tv_detail.homepage}}</a>
+        {% if tv.homepage %}
+            <a href={{tv.homepage}} id="detailHome">{{tv.homepage}}</a>
         {% else %}
             <p>No homepage available.</p>
         {% endif %}
@@ -45,17 +45,15 @@
 
     <div class="col mediaOverview">
         <h3>Airing on networks</h3>
-        {% for network in tv_detail.networks %}
-
+        {% for network in tv.networks %}
             <h8>{{network.name}} |</h8>
-
         {% endfor %}
     </div>
 
     <div class="trailer" id="trailer"><h2>Trailer and Short Videos</h2></div>
     
     <div class="scrolling-wrapper" id="trailerScroll">
-        {% for vid in tv_videos.results%}
+        {% for vid in videos%}
             <div class="col-sm-6">
                 <div class="embed-responsive embed-responsive-16by9" id="trailerResults">
                     <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/{{ vid.key }}"></iframe>
