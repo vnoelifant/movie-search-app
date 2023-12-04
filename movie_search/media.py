@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from .models import Movie, MovieVideo, MovieGenre, MovieProvider, MovieRecommendation, \
      TVSeries, TVSeriesGenre, TVSeriesProvuder, TVSeriesRecommendation
-from .tmdb_api import TMDBApi()
+from .tmdb_api import TMDBApi
 
 tmdb_api_obj = TMDBApi()
 
@@ -21,7 +21,7 @@ class MediaService(ABC):
     @abstractmethod
     def fetch_from_api(self, tmdb_id):
         pass
-    
+
     @abstractmethod
     def store_data(self, data):
         pass
@@ -29,6 +29,32 @@ class MediaService(ABC):
     @abstractmethod
     def get_discover_data(self, **kwargs):
         pass
+
+class MovieStrategy(MediaService):
+    def fetch_from_api(self, tmdb_id):
+        return tmdb_api_obj.get_data_from_endpoint(f"/movie/{tmdb_id}")
+
+    def store_data(self, data):
+        # Store movie data
+        pass  # Implementation similar to the previous Movie class
+
+
+class TVSeriesStrategy(MediaService):
+    def fetch_from_api(self, tmdb_id):
+        return tmdb_api_obj.get_data_from_endpoint(f"/tv/{tmdb_id}")
+
+    def store_data(self, data):
+        # Store TV series data
+        pass  # Implementation similar to the previous TVSeries class
+
+# Context class to utilize the strategies
+class MediaContext:
+    def __init__(self, service: MediaService):
+        self._service = service
+
+    def process_media(self, tmdb_id):
+        data = self._service.fetch_from_api(tmdb_id)
+        return self._service.store_data(data)
 
 
 def fetch_and_store_movie_from_api(tmdb_id):
