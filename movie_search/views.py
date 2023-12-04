@@ -3,6 +3,7 @@ from pprint import pprint
 import requests
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.contrib import messages
 from movie_search import media
 from movie_search.decorators import timing
 from movie_search.media import MovieStrategy, MediaContext
@@ -62,6 +63,7 @@ def home(request):
 def add_to_watch_list(request, movie_id):
     movie = get_object_or_404(Movie, pk=movie_id)
     WatchList.objects.get_or_create(user=request.user, movie=movie)
+    messages.success(request, f'Successfully added movie {movie.title} to your watch list')
     return redirect("watch_list")
 
 
