@@ -60,9 +60,12 @@ class MediaContext:
 
 class MovieStrategy(MediaService):
     def fetch_from_api(self, tmdb_id):
-        return tmdb_api_obj.get_data_from_endpoint(f"/movie/{tmdb_id}")
+        movie_data = tmdb_api_obj.get_data_from_endpoint(f"/movie/{tmdb_id}")
+        video_data = tmdb_api_obj.get_data_from_endpoint(f"/movie/{tmdb_id}/videos")
+        return movie_data, video_data
 
     def store_data(self, data):
+        movie_data, video_data = data
         # Store movie data
         genres = data.get("genres")
         movie, created = Movie.objects.get_or_create(
@@ -105,9 +108,6 @@ class MovieStrategy(MediaService):
         return movie_genres
 
     def store_videos(self, movie_obj):
-        video_data = tmdb_api_obj.get_data_from_endpoint(
-            f"/movie/{movie_obj.tmdb_id}/videos"
-        )
         for video_data in video_data.get("results", []):
             MovieVideo.objects.get_or_create(
                 movie=movie_obj,
@@ -159,13 +159,12 @@ class MovieStrategy(MediaService):
 
 class TVSeriesStrategy(MediaService):
     def fetch_from_api(self, tmdb_id):
-        return tmdb_api_obj.get_data_from_endpoint(f"/tv/{tmdb_id}")
+        movie_data = tmdb_api_obj.get_data_from_endpoint(f"/tv/{tmdb_id}")
+        video_data = tmdb_api_obj.get_data_from_endpoint(f"/tv/{tmdb_id}/videos")
 
     def store_data(self, data):
+        tv_data, video_data = data
         # Store TV series data
-        pass  # Implementation similar to the previous TVSeries class
-
-    def store_data(data):
         genres = data.get("genres")
         tv, created = TVSeries.objects.get_or_create(
             tmdb_api_obj_id=data.get("id", 0),
@@ -190,7 +189,7 @@ class TVSeriesStrategy(MediaService):
         tv_recommendations = store_recommendations(tv.tmdb_id)
         tv.recommendation.add(*tv_recommendations)
 
-        videos = self.store_videos(tc)
+        videos = self.store_videos(tv)
 
         return tv, videos
 
@@ -258,3 +257,10 @@ class TVSeriesStrategy(MediaService):
             sort_by=sort_options,
             with_watch_providers=list(providers),
         )
+
+class PersonStrategy:
+    def fetch_person_data(self, person_name):
+        return fetch_api_data_by_query("/search/person", person_name, "name")
+
+    def get_person_id(self, person_data, person_name):
+        return lookup_id_in_data_by_query(person_data, person_name)
