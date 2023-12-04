@@ -1,21 +1,35 @@
 from abc import ABC, abstractmethod
-from .models import Movie, MovieVideo, MovieGenre, MovieProvider, MovieRecommendation, \
-     TVSeries, TVSeriesGenre, TVSeriesProvuder, TVSeriesRecommendation
+from .models import (
+    Movie,
+    MovieVideo,
+    MovieGenre,
+    MovieProvider,
+    MovieRecommendation,
+    TVSeries,
+    TVSeriesGenre,
+    TVSeriesProvuder,
+    TVSeriesRecommendation,
+)
 from .tmdb_api import TMDBApi
 
 tmdb_api_obj = TMDBApi()
 
+
+# standalone functions for general fetching of data
 def fetch_data_from_api(endpoint, **kwargs):
     """A common method to fetch data from media API"""
     return tmdb_api_obj.get_data_from_endpoint(endpoint, **kwargs)
+
 
 def fetch_api_data_by_query(endpoint, text_query, results_key):
     """A common method to fetch data by query from media API"""
     return tmdb_api_obj.get_data_by_query(endpoint, text_query, results_key)
 
+
 def lookup_id_in_data_by_query(data_dict, query):
     """A common method to fetch media ID from data by query"""
     return {item.lower(): idx for item, idx in data_dict.items()}.get(query)
+
 
 class MediaService(ABC):
     @abstractmethod
@@ -29,6 +43,7 @@ class MediaService(ABC):
     @abstractmethod
     def get_discover_data(self, **kwargs):
         pass
+
 
 # Context class to utilize the strategies
 class MediaContext:
@@ -65,9 +80,9 @@ class MovieStrategy(MediaService):
         )
         if genres is not None:
             movie_genres = self.store_genres(genres)
-        
+
         movie.genres.add(*movie_genres)
-        
+
         movie_recommendations = self.store_recommendations(movie.tmdb_id)
         movie.recommendation.add(*movie_recommendations)
 
@@ -87,7 +102,9 @@ class MovieStrategy(MediaService):
         return movie_genres
 
     def store_videos(self, movie_obj):
-        video_data = tmdb_api_obj.get_data_from_endpoint(f"/movie/{movie_obj.tmdb_id}/videos")
+        video_data = tmdb_api_obj.get_data_from_endpoint(
+            f"/movie/{movie_obj.tmdb_id}/videos"
+        )
         for video_data in video_data.get("results", []):
             MovieVideo.objects.get_or_create(
                 movie=movie_obj,
@@ -95,12 +112,14 @@ class MovieStrategy(MediaService):
                 key=video_data.get("key", ""),
             )
         return MovieVideo.objects.filter(movie_id=movie_obj.id)
-    
+
     def store_recommendations(self, tmdb_id):
-        recommendations_data = tmdb_api_obj.get_data_from_endpoint(f"/movie/{tmdb_id}/recommendations")
+        recommendations_data = tmdb_api_obj.get_data_from_endpoint(
+            f"/movie/{tmdb_id}/recommendations"
+        )
         movie_recommendations = []
 
-        for rec_data in recommendations_data.get("results",[]):
+        for rec_data in recommendations_data.get("results", []):
             recommendation, created = MovieRecommendation.objects.get_or_create(
                 tmdb_id=rec_data.get("id", 0),
                 poster_path=rec_data.get("poster_path", ""),
@@ -109,19 +128,19 @@ class MovieStrategy(MediaService):
         return movie_recommendations
 
     def get_genres_from_discover(self, genre_names):
-        genres =  MovieGenre.objects.filter(name__in=genre_names).values_list(
+        genres = MovieGenre.objects.filter(name__in=genre_names).values_list(
             "genre_id", flat=True
         )
         return genres
 
     def get_providers_from_discover(self, watch_provider_names):
-        providers = MovieProvider.objects.filter(name__in=watch_provider_names).values_list(
-            "provider_id", flat=True
-        )
+        providers = MovieProvider.objects.filter(
+            name__in=watch_provider_names
+        ).values_list("provider_id", flat=True)
         return providers
 
-    def get_discover_data(self,
-        genres, person_id, sort_options, region, watch_region, providers, year
+    def get_discover_data(
+        self, genres, person_id, sort_options, region, watch_region, providers, year
     ):
         return tmdb_api_obj.get_data_from_endpoint(
             "/discover/movie",
@@ -162,16 +181,15 @@ class TVSeriesStrategy(MediaService):
         )
         if genres is not None:
             tv_genres = store_genres(genres)
-        
+
         tv.genres.add(*tv_genres)
-        
+
         tv_recommendations = store_recommendations(tv.tmdb_id)
         tv.recommendation.add(*tv_recommendations)
 
         videos = self.store_videos(tc)
-        
-        return tv, videos
 
+        return tv, videos
 
     def store_genres(self, genres):
         tv_genres = []
@@ -185,7 +203,6 @@ class TVSeriesStrategy(MediaService):
 
         return tv_genres
 
-
     def store_videos(self, tv_obj):
         video_data = tmdb_api_obj.get_data_from_endpoint(f"/tv/{tv_obj.tmdb_id}/videos")
         for video_data in video_data.get("results", []):
@@ -195,12 +212,14 @@ class TVSeriesStrategy(MediaService):
                 key=video_data.get("key", ""),
             )
         return TVSeriesVideo.objects.filter(tv_id=tv_obj.id)
-    
+
     def store_recommendations(self, tmdb_id):
-        recommendations_data = tmdb_api_obj.get_data_from_endpoint(f"/tv/{tmdb_id}/recommendations")
+        recommendations_data = tmdb_api_obj.get_data_from_endpoint(
+            f"/tv/{tmdb_id}/recommendations"
+        )
         tv_recommendations = []
 
-        for rec_data in recommendations_data.get("results",[]):
+        for rec_data in recommendations_data.get("results", []):
             recommendation, created = TVSeriesRecommendation.objects.get_or_create(
                 tmdb_id=rec_data.get("id", 0),
                 poster_path=rec_data.get("poster_path", ""),
@@ -209,18 +228,24 @@ class TVSeriesStrategy(MediaService):
         return movie_recommendations
 
     def get_genres_from_discover(self, genre_names):
-        genres =  TVSeriesGenre.objects.filter(name__in=genre_names).values_list(
+        genres = TVSeriesGenre.objects.filter(name__in=genre_names).values_list(
             "genre_id", flat=True
         )
         return genres
 
     def get_providers_from_discover(self, watch_provider_names):
-        providers = TVSeriesProvider.objects.filter(name__in=watch_provider_names).values_list(
-            "provider_id", flat=True
-        )
+        providers = TVSeriesProvider.objects.filter(
+            name__in=watch_provider_names
+        ).values_list("provider_id", flat=True)
         return providers
 
-    def get_discover_data(self, language, year, genres, sort_options, providers, 
+    def get_discover_data(
+        self,
+        language,
+        year,
+        genres,
+        sort_options,
+        providers,
     ):
         return tmdb_api_obj.get_data_from_endpoint(
             "/discover/movie",
@@ -230,9 +255,3 @@ class TVSeriesStrategy(MediaService):
             sort_by=sort_options,
             with_watch_providers=list(providers),
         )
-
-
-
-
-
-

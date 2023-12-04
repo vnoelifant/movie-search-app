@@ -3,9 +3,9 @@ from pprint import pprint
 import requests
 from django.http import HttpResponse
 from django.shortcuts import render
-
 from movie_search import media
 from movie_search.decorators import timing
+from movie_search.media import MovieStrategy, MediaContext
 
 from .models import (
     Movie,
@@ -89,8 +89,10 @@ def get_movie_from_db_or_api(tmdb_id):
         # If the movie exists, fetch related objects
         videos = MovieVideo.objects.filter(movie=movie)
     except Movie.DoesNotExist:
-        # If the movie does not exist, use media.py to fetch from the API and store in the database
-        movie, videos = media.fetch_and_store_movie_from_api(tmdb_id)
+        # If the movie does not exist, use context class to fetch and store data based on concrete class
+        movie_strategy = MovieStrategy()
+        media_context = MediaContext(movie_strategy)
+        movie, videos = media_context.process_media(tmdb_id)
     return movie, videos
 
 
@@ -135,12 +137,15 @@ def movies_trending_week(request):
 
 
 def movie(request, tmdb_id):
-    movie, videos = get_movie_from_db_or_api(tmdb_id)
+    movie_strategy = MovieStrategy()
+    media_context = MediaContext(movie_strategy)
+    movie, videos = media_context.process_media(tmdb_id)
     context = {
         "movie": movie,
         "videos": videos,
     }
     return render(request, "movie.html", context)
+
 
 def tv(request, tmdb_id):
     tv, videos = get_tv_from_db_or_api(tmdb_id)
@@ -185,7 +190,10 @@ def tv_detail(request, tv_id):
 
 
 # Discover Movie View
-def discover(request):
+def movie_discover(request):
+    movie_strategy = MovieStrategy()
+    media_context = MediaContext(movie_strategy)
+
     (
         genres,
         person_id,
@@ -194,19 +202,19 @@ def discover(request):
         watch_region,
         providers,
         year,
-    ) = process_movie_discover_request(request)
+    ) = process_movie_discover_request(request, media_context)
 
-    data = media.get_movie_discover_data(
+    data = media_context.get_movie_discover_data(
         genres, person_id, sort_options, region, watch_region, providers, year
     )
 
     return render(request, "discover.html", {"data": data})
 
 
-def process_movie_discover_request(request):
+def process_movie_discover_request(request, media_context):
     # Process genres
     genre_names = request.GET.getlist("genre")
-    genres = media.get_genres_from_discover(genre_names)
+    genres = media_context.get_genres_from_discover(genre_names)
 
     # Process person
     person_name = request.GET.get("personName")
@@ -220,7 +228,7 @@ def process_movie_discover_request(request):
     region = request.GET.get("region")
     watch_region = request.GET.get("watch_region")
     watch_provider_names = request.GET.getlist("providers")
-    providers = media.get_providers_from_discover(watch_provider_names)
+    providers = media_context.get_providers_from_discover(watch_provider_names)
 
     # Process year
     year = request.GET.get("year")
@@ -287,7 +295,9 @@ def handle_movie_search(request, query, choice):
 
 
 def render_movie(request, tmdb_id):
-    movie, videos = get_movie_from_db_or_api(tmdb_id)
+    movie_strategy = MovieStrategy()
+    media_context = MediaContext(movie_strategy)
+    movie, videos = media_context.process_media(tmdb_id)
     context = {
         "movie": movie,
         "videos": videos,
