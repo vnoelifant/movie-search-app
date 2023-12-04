@@ -7,7 +7,7 @@ from .models import (
     MovieRecommendation,
     TVSeries,
     TVSeriesGenre,
-    TVSeriesProvuder,
+    TVSeriesProvider,
     TVSeriesRecommendation,
 )
 from .tmdb_api import TMDBApi
