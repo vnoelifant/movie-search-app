@@ -49,6 +49,9 @@ class MediaService(ABC):
 class MediaContext:
     def __init__(self, service: MediaService):
         self._service = service
+    
+    def set_service(self, service: MediaService):
+        self._service = service
 
     def process_media(self, tmdb_id):
         data = self._service.fetch_from_api(tmdb_id)
