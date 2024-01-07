@@ -194,8 +194,8 @@ class TVSeriesService(MediaService):
 
     def store_data(self, data):
         tv_data, video_data = data
-        # Store TV series data
         genres = tv_data.get("genres")
+        production_companies = tv_data.get("production_companies")
         tvseries, created = TVSeries.objects.get_or_create(
             tmdb_id=tv_data.get("id", 0),
             name=tv_data.get("name", ""),
