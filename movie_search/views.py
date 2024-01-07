@@ -74,7 +74,7 @@ def add_movie_to_watch_list(request, movie_id):
 @login_required
 def remove_movie_from_watch_list(request, movie_id):
     movie_in_watchlist = get_object_or_404(
-        MovieWatchList, user=request.user, movie_id=movie_id
+        MovieWatchList, user=request.user, pk=movie_id
     )
     movie_in_watchlist.delete()
     return redirect("watch_list")
