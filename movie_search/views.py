@@ -93,11 +93,11 @@ def get_movie_from_db_or_api(tmdb_id):
     movie_service = MovieService()
     try:
         movie = Movie.objects.get(tmdb_id=tmdb_id)
-        videos = MovieVideo.objects.filter(movie=movie)
     except Movie.DoesNotExist:
         movie_data, video_data = movie_service.fetch_from_api(tmdb_id)
         movie, videos = movie_service.store_data((movie_data, video_data))
-
+    else:
+        videos = MovieVideo.objects.filter(movie=movie)
     return movie, videos
 
 
@@ -106,11 +106,11 @@ def get_tv_from_db_or_api(tmdb_id):
     tv_service = TVSeriesService()
     try:
         tv_series = TVSeries.objects.get(tmdb_id=tmdb_id)
-        videos = TVSeriesVideo.objects.filter(tv=tv_series)
     except TVSeries.DoesNotExist:
         tv_data, video_data = tv_service.fetch_from_api(tmdb_id)
         tv_series, videos = tv_service.store_data((tv_data, video_data))
-
+    else:
+        videos = TVSeriesVideo.objects.filter(tv=tv_series)
     return tv_series, videos
 
 
