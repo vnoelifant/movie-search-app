@@ -6,7 +6,7 @@
     <fieldset class="group">
 
       <legend id="sidebarLegend">Genre</legend>
-      {% load movie_genres %}
+      {% load media_tags %}
       {% get_movie_genres as movie_genre_names %}
       <ul class="checkbox">
         {% for movie_genre in movie_genre_names %}
@@ -17,7 +17,7 @@
       <hr class="a">
 
       <legend id="sidebarLegend">Provider</legend>
-      {% load movie_providers %}
+      {% load media_tags %}
       {% get_movie_providers as movie_provider_names %}
       <select class="form-select" multiple="multiple" size="7" name="providers" id="providers">
         {% for movie_provider in movie_provider_names %}

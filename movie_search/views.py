@@ -7,10 +7,9 @@ from django.contrib import messages
 from movie_search import media
 from movie_search.decorators import timing
 from movie_search.media import (
-    MovieStrategy,
-    TVSeriesStrategy,
-    PersonStrategy,
-    MediaContext,
+    MovieService,
+    TVSeriesService,
+    PersonService,
 )
 
 from .models import (
@@ -31,8 +30,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-
-# Create your views here.
 
 
 def login_view(request):
@@ -65,9 +62,9 @@ def home(request):
 
 
 @login_required
-def add_to_watch_list(request, movie_id):
+def add_movie_to_watch_list(request, movie_id):
     movie = get_object_or_404(Movie, pk=movie_id)
-    WatchList.objects.get_or_create(user=request.user, movie=movie)
+    MovieWatchList.objects.get_or_create(user=request.user, movie=movie)
     messages.success(
         request, f"Successfully added movie {movie.title} to your watch list"
     )
@@ -75,9 +72,9 @@ def add_to_watch_list(request, movie_id):
 
 
 @login_required
-def remove_from_watch_list(request, movie_id):
+def remove_movie_from_watch_list(request, movie_id):
     movie_in_watchlist = get_object_or_404(
-        WatchList, user=request.user, movie_id=movie_id
+        MovieWatchList, user=request.user, movie_id=movie_id
     )
     movie_in_watchlist.delete()
     return redirect("watch_list")
@@ -93,30 +90,28 @@ def watch_list(request):
 
 def get_movie_from_db_or_api(tmdb_id):
     # Check if the movie exists in the database
+    movie_service = MovieService()
     try:
         movie = Movie.objects.get(tmdb_id=tmdb_id)
-        # If the movie exists, fetch related objects
         videos = MovieVideo.objects.filter(movie=movie)
     except Movie.DoesNotExist:
-        # If the movie does not exist, use context class to fetch and store data based on concrete class
-        movie_strategy = MovieStrategy()
-        media_context = MediaContext(movie_strategy)
-        movie, videos = media_context.process_media(tmdb_id)
+        movie_data, video_data = movie_service.fetch_from_api(tmdb_id)
+        movie, videos = movie_service.store_data((movie_data, video_data))
+
     return movie, videos
 
 
 def get_tv_from_db_or_api(tmdb_id):
     # Check if the tv exists in the database
+    tv_service = TVSeriesService()
     try:
-        tv = TVSeries.objects.get(tmdb_id=tmdb_id)
-        # If the movie exists, fetch related objects
-        videos = TVSeriesVideo.objects.filter(tv=tv)
+        tv_series = TVSeries.objects.get(tmdb_id=tmdb_id)
+        videos = TVSeriesVideo.objects.filter(tv=tv_series)
     except TVSeries.DoesNotExist:
-        # If the movie does not exist, use media.py to fetch from the API and store in the database
-        tv_strategy = TVStrategy()
-        media_context = MediaContext(tv_strategy)
-        tv, videos = media_context.process_media(tmdb_id)
-    return tv, videos
+        tv_data, video_data = tv_service.fetch_from_api(tmdb_id)
+        tv_series, videos = tv_service.store_data((tv_data, video_data))
+
+    return tv_series, videos
 
 
 def _get_media_list(request, media_type, media_list_type, template_name):
@@ -187,8 +182,7 @@ def tv_air_today(request):
 
 # Discover Movie View
 def movie_discover(request):
-    movie_strategy = MovieStrategy()
-    media_context = MediaContext(movie_strategy)
+    movie_service = MovieService()
 
     (
         genres,
@@ -198,26 +192,26 @@ def movie_discover(request):
         watch_region,
         providers,
         year,
-    ) = process_movie_discover_request(request, media_context)
+    ) = process_movie_discover_request(request, movie_service)
 
-    data = media_context.get_discover_data(
+    data = movie_service.get_discover_data(
         genres, person_id, sort_options, region, watch_region, providers, year
     )
 
     return render(request, "discover.html", {"data": data})
 
 
-def process_movie_discover_request(request, media_context):
+def process_movie_discover_request(request, movie_service):
     # Process genres
     genre_names = request.GET.getlist("genre")
-    genres = media_context.get_genres_from_discover(genre_names)
+    genres = movie_service.get_genres_from_discover(genre_names)
 
     # Process person
     person_name = request.GET.get("personName")
     if person_name:
-        person_strategy = PersonStrategy()
-        person_data = person_strategy.fetch_person_data(person_name)
-        person_id = person_strategy.get_person_id(person_data, person_name)
+        person_service = PersonService()
+        person_data = person_service.fetch_person_data(person_name)
+        person_id = person_service.get_person_id(person_data, person_name)
     else:
         person_id = None
 
@@ -226,7 +220,7 @@ def process_movie_discover_request(request, media_context):
     region = request.GET.get("region")
     watch_region = request.GET.get("watch_region")
     watch_provider_names = request.GET.getlist("providers")
-    providers = media_context.get_providers_from_discover(watch_provider_names)
+    providers = movie_service.get_providers_from_discover(watch_provider_names)
 
     # Process year
     year = request.GET.get("year")
@@ -310,15 +304,15 @@ def render_movie_sim_or_rec(request, tmdb_id, choice):
 
 def handle_tv_search(request, query, choice):
     tv = media.fetch_api_data_by_query(f"/search/tv", query, "original_name")
-    tv_id = media.lookup_id_in_data_by_query(tv, query)
+    tmdb_id = media.lookup_id_in_data_by_query(tv, query)
 
     if choice == "general":
-        return render_tv_detail(request, tv_id)
+        return render_tv(request, tmdb_id)
 
-    return render_tv_sim_or_rec(request, tv_id, choice)
+    return render_tv_sim_or_rec(request, tmdb_id, choice)
 
 
-def render_tv(request, tv_id):
+def render_tv(request, tmdb_id):
     tv, videos = get_tv_from_db_or_api(tmdb_id)
     context = {
         "tv": tv,
@@ -328,6 +322,6 @@ def render_tv(request, tv_id):
     return render(request, "tv.html", context)
 
 
-def render_tv_sim_or_rec(request, tv_id, choice):
-    tv = media.fetch_data_from_api(f"/tv/{tv_id}/{choice}")
+def render_tv_sim_or_rec(request, tmdb_id, choice):
+    tv = media.fetch_data_from_api(f"/tv/{tmdb_id}/{choice}")
     return render(request, "tv_search_sim_rec.html", {"tv": tv, "choice": choice})

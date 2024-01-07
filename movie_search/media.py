@@ -6,6 +6,7 @@ from .models import (
     MovieProvider,
     MovieRecommendation,
     TVSeries,
+    TVSeriesVideo,
     TVSeriesGenre,
     TVSeriesProvider,
     TVSeriesRecommendation,
@@ -45,20 +46,7 @@ class MediaService(ABC):
         pass
 
 
-# Context class to utilize the strategies
-class MediaContext:
-    def __init__(self, service: MediaService):
-        self._service = service
-    
-    def set_service(self, service: MediaService):
-        self._service = service
-
-    def process_media(self, tmdb_id):
-        data = self._service.fetch_from_api(tmdb_id)
-        return self._service.store_data(data)
-
-
-class MovieStrategy(MediaService):
+class MovieService(MediaService):
     def fetch_from_api(self, tmdb_id):
         movie_data = tmdb_api_obj.get_data_from_endpoint(f"/movie/{tmdb_id}")
         video_data = tmdb_api_obj.get_data_from_endpoint(f"/movie/{tmdb_id}/videos")
@@ -157,7 +145,7 @@ class MovieStrategy(MediaService):
         )
 
 
-class TVSeriesStrategy(MediaService):
+class TVSeriesService(MediaService):
     def fetch_from_api(self, tmdb_id):
         movie_data = tmdb_api_obj.get_data_from_endpoint(f"/tv/{tmdb_id}")
         video_data = tmdb_api_obj.get_data_from_endpoint(f"/tv/{tmdb_id}/videos")
@@ -182,11 +170,11 @@ class TVSeriesStrategy(MediaService):
             homepage=tv_data.get("homepage", ""),
         )
         if genres is not None:
-            tv_genres = store_genres(genres)
+            tv_genres = self.store_genres(genres)
 
         tv.genres.add(*tv_genres)
 
-        tv_recommendations = store_recommendations(tv.tmdb_id)
+        tv_recommendations = self.store_recommendations(tv.tmdb_id)
         tv.recommendation.add(*tv_recommendations)
 
         videos = self.store_videos(tv, video_data)
@@ -208,7 +196,7 @@ class TVSeriesStrategy(MediaService):
     def store_videos(self, tv_obj, video_data):
         for video in video_data.get("results", []):
             TVSeriesVideo.objects.get_or_create(
-                tv=movie_obj,
+                tv=tv_obj,
                 name=video_data.get("name", ""),
                 key=video_data.get("key", ""),
             )
@@ -225,8 +213,8 @@ class TVSeriesStrategy(MediaService):
                 tmdb_id=rec_data.get("id", 0),
                 poster_path=rec_data.get("poster_path", ""),
             )
-            movie_recommendations.append(recommendation)
-        return movie_recommendations
+            tv_recommendations.append(recommendation)
+        return tv_recommendations
 
     def get_genres_from_discover(self, genre_names):
         genres = TVSeriesGenre.objects.filter(name__in=genre_names).values_list(
@@ -257,7 +245,7 @@ class TVSeriesStrategy(MediaService):
             with_watch_providers=list(providers),
         )
 
-class PersonStrategy:
+class PersonService:
     def fetch_person_data(self, person_name):
         return fetch_api_data_by_query("/search/person", person_name, "name")
 
