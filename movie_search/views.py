@@ -168,7 +168,7 @@ def tv_top_rated(request):
 
 
 def tv_trending_week(request):
-    return _get_media_list(request, "tv", "trending/week", "tv_trending.html")
+    return _get_media_list(request, "trending/week", "week", "tv_trending.html")
 
 
 def tv_air(request):
