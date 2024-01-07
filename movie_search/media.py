@@ -125,7 +125,6 @@ class MovieService(MediaService):
             popularity=movie_data.get("popularity", 0),
             release_date=movie_data.get("release_date", ""),
             runtime=movie_data.get("runtime", 0),
-            production_company=movie_data.get("production_company", ""),
             overview=movie_data.get("overview", ""),
             budget=movie_data.get("budget", 0),
             revenue=movie_data.get("revenue", 0),
@@ -208,7 +207,6 @@ class TVSeriesService(MediaService):
             first_air_date=tv_data.get("first_air_date", ""),
             number_of_episodes=tv_data.get("number_of_episodes", 0),
             number_of_seasons=tv_data.get("number_of_seasons", 0),
-            production_company=tv_data.get("production_company", ""),
             overview=tv_data.get("overview", ""),
             homepage=tv_data.get("homepage", ""),
         )
