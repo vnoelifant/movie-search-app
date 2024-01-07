@@ -94,7 +94,7 @@ def get_movie_from_db_or_api(tmdb_id):
     try:
         movie = Movie.objects.get(tmdb_id=tmdb_id)
     except Movie.DoesNotExist:
-        movie_data, video_data = movie_service.fetch_from_api(tmdb_id)
+        movie_data, video_data = movie_service.fetch_movie_data_from_api(tmdb_id)
         movie, videos = movie_service.store_data((movie_data, video_data))
     else:
         videos = MovieVideo.objects.filter(movie=movie)
@@ -107,7 +107,7 @@ def get_tv_from_db_or_api(tmdb_id):
     try:
         tv_series = TVSeries.objects.get(tmdb_id=tmdb_id)
     except TVSeries.DoesNotExist:
-        tv_data, video_data = tv_service.fetch_from_api(tmdb_id)
+        tv_data, video_data = tv_service.fetch_tv_data_from_api(tmdb_id)
         tv_series, videos = tv_service.store_data((tv_data, video_data))
     else:
         videos = TVSeriesVideo.objects.filter(tv=tv_series)
@@ -184,51 +184,24 @@ def tv_air_today(request):
 def movie_discover(request):
     movie_service = MovieService()
 
-    (
-        genres,
-        person_id,
-        sort_options,
-        region,
-        watch_region,
-        providers,
-        year,
-    ) = process_movie_discover_request(request, movie_service)
+    # Extract parameters from request and construct kwargs
+    discover_params = {
+        "genres": request.GET.getlist("genre"),
+        "person_name": request.GET.get("personName"),
+        "sort_options": request.GET.getlist("sort"),
+        "region": request.GET.get("region"),
+        "watch_region": request.GET.get("watch_region"),
+        "watch_provider_names": request.GET.getlist("providers"),
+        "year": request.GET.get("year"),
+    }
 
-    data = movie_service.get_discover_data(
-        genres, person_id, sort_options, region, watch_region, providers, year
-    )
+    # Clean up discover_params to remove None values
+    discover_params = {k: v for k, v in discover_params.items() if v is not None}
 
-    return render(request, "discover.html", {"data": data})
+    # Pass parameters as kwargs to the service layer
+    movie_discover_data = movie_service.get_movie_discover_data(**discover_params)
 
-
-def process_movie_discover_request(request, movie_service):
-    # Process genres
-    genre_names = request.GET.getlist("genre")
-    genres = movie_service.get_genres_from_discover(genre_names)
-
-    # Process person
-    person_name = request.GET.get("personName")
-    if person_name:
-        person_service = PersonService()
-        person_data = person_service.fetch_person_data(person_name)
-        person_id = person_service.get_person_id(person_data, person_name)
-    else:
-        person_id = None
-
-    # Other parameters
-    sort_options = request.GET.getlist("sort")
-    region = request.GET.get("region")
-    watch_region = request.GET.get("watch_region")
-    watch_provider_names = request.GET.getlist("providers")
-    providers = movie_service.get_providers_from_discover(watch_provider_names)
-
-    # Process year
-    year = request.GET.get("year")
-    if year:
-        year = int(year)
-
-    return genres, person_id, sort_options, region, watch_region, providers, year
-
+    return render(request, "discover.html", {"movie_discover_data": movie_discover_data})
 
 # Search Views
 def search(request):
