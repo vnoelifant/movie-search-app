@@ -50,13 +50,15 @@ class MediaService(ABC):
         return genres
 
     def store_videos(self, media_obj, video_data, VideoModel):
+        relationship_field = 'movie' if isinstance(media_obj, Movie) else 'tvseries'
         for video in video_data.get("results", []):
-            VideoModel.objects.get_or_create(
-                media=media_obj,
-                name=video.get("name", ""),
-                key=video.get("key", ""),
-            )
-        return VideoModel.objects.filter(media_id=media_obj.id)
+            create_kwargs = {
+                relationship_field: media_obj,
+                'name': video.get("name", ""),
+                'key': video.get("key", "")
+            }
+            VideoModel.objects.get_or_create(**create_kwargs)
+        return VideoModel.objects.filter(**{relationship_field + '_id': media_obj.id})
 
     def store_recommendations(self, tmdb_id, RecommendationModel, fetch_endpoint):
         recommendations_data = tmdb_api_obj.get_data_from_endpoint(fetch_endpoint)
@@ -101,7 +103,7 @@ class MovieService(MediaService):
         # Store movie data
         genres = movie_data.get("genres")
         movie, created = Movie.objects.get_or_create(
-            tmdb_id=movie_data.get("movie_id", 0),
+            tmdb_id=movie_data.get("id", 0),
             title=movie_data.get("title", ""),
             backdrop_path=movie_data.get("backdrop_path", ""),
             tagline=movie_data.get("tagline", ""),
@@ -170,7 +172,7 @@ class TVSeriesService(MediaService):
         # Store TV series data
         genres = tv_data.get("genres")
         tvseries, created = TVSeries.objects.get_or_create(
-            tmdb_id=tv_data.get("series_id", 0),
+            tmdb_id=tv_data.get("id", 0),
             name=tv_data.get("name", ""),
             backdrop_path=tv_data.get("backdrop_path", ""),
             tagline=tv_data.get("tagline", ""),
@@ -192,7 +194,7 @@ class TVSeriesService(MediaService):
         tv_recommendations = self.store_recommendations(tvseries.tmdb_id, TVSeriesRecommendation, f"/tv/{tvseries.tmdb_id}/recommendations")
         tvseries.recommendation.add(*tv_recommendations)
 
-        videos = self.store_videos(tv, video_data, TVSeriesVideo)
+        videos = self.store_videos(tvseries, video_data, TVSeriesVideo)
 
         return tvseries, videos
 

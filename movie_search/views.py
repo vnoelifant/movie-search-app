@@ -110,7 +110,7 @@ def get_tv_from_db_or_api(tmdb_id):
         tv_data, video_data = tv_service.fetch_tv_data_from_api(tmdb_id)
         tveries, videos = tv_service.store_data((tv_data, video_data))
     else:
-        videos = TVSeriesVideo.objects.filter(tv=tv)
+        videos = TVSeriesVideo.objects.filter(tvseries=tvseries)
     return tvseries, videos
 
 
@@ -153,6 +153,8 @@ def movie(request, tmdb_id):
 
 def tv(request, tmdb_id):
     tvseries, videos = get_tv_from_db_or_api(tmdb_id)
+    print("TV Series: ", tvseries)
+    print("TV Videos: ", videos)
     context = {
         "tv": tv,
         "videos": videos,
