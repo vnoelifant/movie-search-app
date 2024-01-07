@@ -105,13 +105,13 @@ def get_tv_from_db_or_api(tmdb_id):
     # Check if the tv exists in the database
     tv_service = TVSeriesService()
     try:
-        tv_series = TVSeries.objects.get(tmdb_id=tmdb_id)
+        tvseries = TVSeries.objects.get(tmdb_id=tmdb_id)
     except TVSeries.DoesNotExist:
         tv_data, video_data = tv_service.fetch_tv_data_from_api(tmdb_id)
-        tv_series, videos = tv_service.store_data((tv_data, video_data))
+        tveries, videos = tv_service.store_data((tv_data, video_data))
     else:
-        videos = TVSeriesVideo.objects.filter(tv=tv_series)
-    return tv_series, videos
+        videos = TVSeriesVideo.objects.filter(tv=tv)
+    return tvseries, videos
 
 
 def _get_media_list(request, media_type, media_list_type, template_name):
@@ -152,7 +152,7 @@ def movie(request, tmdb_id):
 
 
 def tv(request, tmdb_id):
-    tv, videos = get_tv_from_db_or_api(tmdb_id)
+    tvseries, videos = get_tv_from_db_or_api(tmdb_id)
     context = {
         "tv": tv,
         "videos": videos,

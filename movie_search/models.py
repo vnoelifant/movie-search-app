@@ -125,7 +125,7 @@ class TVSeries(models.Model):
 
 
     def __str__(self):
-        return f"{self.tmdb_id}: {self.title}"
+        return f"{self.tmdb_id}: {self.name}"
 
 
 
@@ -143,7 +143,7 @@ class TVSeriesVideo(models.Model):
     key = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.movie.tmdb_id}: {self.name}, {self.key}"
+        return f"{self.tvseries.tmdb_id}: {self.name}, {self.key}"
 
     class Meta:
         verbose_name_plural = "tv series videos"
@@ -154,10 +154,10 @@ class TVSeriesWatchList(models.Model):
 
     class Meta:
         unique_together = ('user', 'tvseries')
-        verbose_name_plural = 'movie watchlist'
+        verbose_name_plural = 'tv series watchlist'
 
     def __str__(self):
-        return f"{self.user.username} - {self.movie.title}"
+        return f"{self.user.username} - {self.tvseries.name}"
 
 
 
