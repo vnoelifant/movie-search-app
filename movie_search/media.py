@@ -74,8 +74,10 @@ class MediaService(ABC):
             VideoModel.objects.get_or_create(**create_kwargs)
         return VideoModel.objects.filter(**{relationship_field + "_id": media_obj.id})
 
-    def store_recommendations(self, tmdb_id, RecommendationModel, fetch_endpoint):
-        recommendations_data = tmdb_api_obj.get_data_from_endpoint(fetch_endpoint)
+    def store_recommendations(self, media_type, tmdb_id, RecommendationModel):
+        recommendations_data = tmdb_api_obj.get_data_from_endpoint(
+            f"{media_type}{tmdb_id}/recommendations"
+        )
         recommendations = []
         for rec_data in recommendations_data.get("results", []):
             recommendation, created = RecommendationModel.objects.get_or_create(
@@ -141,10 +143,9 @@ class MovieService(MediaService):
 
         movie.production_companies.add(*movie_production_companies)
 
-        movie_recommendations = self.store_recommendations(
+        movie_recommendations = self.store_recommendations("movie",
             movie.tmdb_id,
             MovieRecommendation,
-            f"/movie/{movie.tmdb_id}/recommendations",
         )
         movie.recommendation.add(*movie_recommendations)
 
@@ -188,7 +189,7 @@ class MovieService(MediaService):
 
 class TVSeriesService(MediaService):
     def fetch_tv_data_from_api(self, tmdb_id):
-        tv_data, video_data = self.fetch_media_details_from_api("tv", tmdb_id)
+        tv_data, video_data = self.fetch_media_details_from_api("tvseries", tmdb_id)
         return tv_data, video_data
 
     def store_data(self, data):
@@ -214,10 +215,9 @@ class TVSeriesService(MediaService):
 
         tvseries.genres.add(*tv_genres)
 
-        tv_recommendations = self.store_recommendations(
+        tv_recommendations = self.store_recommendations("tvseries",
             tvseries.tmdb_id,
             TVSeriesRecommendation,
-            f"/tv/{tvseries.tmdb_id}/recommendations",
         )
         tvseries.recommendation.add(*tv_recommendations)
 
