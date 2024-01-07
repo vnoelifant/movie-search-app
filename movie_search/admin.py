@@ -8,12 +8,14 @@ from .models import (
     MovieProvider,
     MovieVideo,
     MovieRecommendation,
+    MovieProductionCompany,
     MovieWatchList,
     TVSeriesGenre,
     TVSeries,
     TVSeriesProvider,
     TVSeriesVideo,
     TVSeriesRecommendation,
+    TVSeriesProductionCompany,
     TVSeriesWatchList,
 )
 

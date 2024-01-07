@@ -20,7 +20,7 @@
         <h4>Release Date: <b>{{ movie.release_date }}</b></h4>
         <h4>Duration: <b>{{ movie.runtime }} minutes</b></h4>
         <h4>Production Companies:</h4>
-        {% for company in movie.production_companies %}
+        {% for company in movie.production_companies.all %}
             <h8>{{company.name}} |</h8>
         {% endfor %}
     </div>

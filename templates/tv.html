@@ -18,9 +18,8 @@
         <h4><b>{{ tv.tagline }}</b></h4>
         <h4>Total Votes: <b>{{tv.vote_count}}</b> | Vote Score: <b>{{ tv.vote_average }}</b> | Popularity: <b>{{tv.popularity}}</b></h4>
         <h4>Air Date: <b>{{ tv.first_air_date }}</b></h4> 
-        <h4>Episode Duration: <b>{{ tv.episode_run_time }} minutes</b></h4>
         <h4>Production companies:</h4>
-        {% for company in tv.production_companies %}
+        {% for company in tv.production_companies.all %}
             <h8>{{company.name}} |</h8>
         {% endfor %}
     </div>

@@ -15,15 +15,9 @@ from movie_search.media import (
 from .models import (
     Movie,
     MovieVideo,
-    MovieGenre,
-    MovieProvider,
-    MovieRecommendation,
     MovieWatchList,
     TVSeries,
     TVSeriesVideo,
-    TVSeriesGenre,
-    TVSeriesProvider,
-    TVSeriesRecommendation,
 )
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -85,7 +79,9 @@ def movie_watch_list(request):
     movie_watch_list = MovieWatchList.objects.filter(user=request.user).select_related(
         "movie"
     )
-    return render(request, "movie_watch_list.html", {"movie_watch_list": movie_watch_list})
+    return render(
+        request, "movie_watch_list.html", {"movie_watch_list": movie_watch_list}
+    )
 
 
 def get_movie_from_db_or_api(tmdb_id):
@@ -182,6 +178,7 @@ def tv_air(request):
 def tv_air_today(request):
     return _get_media_list(request, "tv", "airing_today", "tv_air_today.html")
 
+
 # Discover Movie View
 def movie_discover(request):
     movie_service = MovieService()
@@ -203,7 +200,10 @@ def movie_discover(request):
     # Pass parameters as kwargs to the service layer
     movie_discover_data = movie_service.get_movie_discover_data(**discover_params)
 
-    return render(request, "discover.html", {"movie_discover_data": movie_discover_data})
+    return render(
+        request, "discover.html", {"movie_discover_data": movie_discover_data}
+    )
+
 
 # Search Views
 def search(request):
@@ -293,7 +293,7 @@ def render_tv(request, tmdb_id):
         "tv": tvseries,
         "videos": videos,
     }
-    
+
     return render(request, "tv.html", context)
 
 

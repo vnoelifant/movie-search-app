@@ -5,11 +5,13 @@ from .models import (
     MovieGenre,
     MovieProvider,
     MovieRecommendation,
+    MovieProductionCompany,
     TVSeries,
     TVSeriesVideo,
     TVSeriesGenre,
     TVSeriesProvider,
     TVSeriesRecommendation,
+    TVSeriesProductionCompany,
 )
 from .tmdb_api import TMDBApi
 
@@ -33,10 +35,11 @@ def lookup_id_in_data_by_query(data_dict, query):
 
 
 class MediaService(ABC):
-
     def fetch_from_api(self, tmdb_id, endpoint):
         main_data = tmdb_api_obj.get_data_from_endpoint(f"/{endpoint}/{tmdb_id}")
-        video_data = tmdb_api_obj.get_data_from_endpoint(f"/{endpoint}/{tmdb_id}/videos")
+        video_data = tmdb_api_obj.get_data_from_endpoint(
+            f"/{endpoint}/{tmdb_id}/videos"
+        )
         return main_data, video_data
 
     def store_genres(self, genres_data, GenreModel):
@@ -49,16 +52,28 @@ class MediaService(ABC):
             genres.append(genre)
         return genres
 
+    def store_production_companies(
+        self, production_companies_data, ProductionCompanyModel
+    ):
+        production_companies = []
+        for production_company_data in production_companies_data:
+            production_company, created = ProductionCompanyModel.objects.get_or_create(
+                name=production_company_data.get("name", ""),
+                genre_id=production_company_data.get("id", 0),
+            )
+            production_companies.append(production_company)
+        return production_companies
+
     def store_videos(self, media_obj, video_data, VideoModel):
-        relationship_field = 'movie' if isinstance(media_obj, Movie) else 'tvseries'
+        relationship_field = "movie" if isinstance(media_obj, Movie) else "tvseries"
         for video in video_data.get("results", []):
             create_kwargs = {
                 relationship_field: media_obj,
-                'name': video.get("name", ""),
-                'key': video.get("key", "")
+                "name": video.get("name", ""),
+                "key": video.get("key", ""),
             }
             VideoModel.objects.get_or_create(**create_kwargs)
-        return VideoModel.objects.filter(**{relationship_field + '_id': media_obj.id})
+        return VideoModel.objects.filter(**{relationship_field + "_id": media_obj.id})
 
     def store_recommendations(self, tmdb_id, RecommendationModel, fetch_endpoint):
         recommendations_data = tmdb_api_obj.get_data_from_endpoint(fetch_endpoint)
@@ -70,7 +85,7 @@ class MediaService(ABC):
             )
             recommendations.append(recommendation)
         return recommendations
-    
+
     def get_genres_from_discover(self, genre_names, GenreModel):
         genres = GenreModel.objects.filter(name__in=genre_names).values_list(
             "genre_id", flat=True
@@ -82,10 +97,9 @@ class MediaService(ABC):
             name__in=watch_provider_names
         ).values_list("provider_id", flat=True)
         return providers
-    
+
     def get_discover_data(self, endpoint, **kwargs):
         return tmdb_api_obj.get_data_from_endpoint(endpoint, **kwargs)
-
 
     @abstractmethod
     def store_data(self, data):
@@ -93,15 +107,14 @@ class MediaService(ABC):
 
 
 class MovieService(MediaService):
-    
     def fetch_movie_data_from_api(self, tmdb_id):
-        movie_data, video_data = self.fetch_from_api(tmdb_id, 'movie')
+        movie_data, video_data = self.fetch_from_api(tmdb_id, "movie")
         return movie_data, video_data
 
     def store_data(self, data):
         movie_data, video_data = data
-        # Store movie data
         genres = movie_data.get("genres")
+        production_companies = movie_data.get("production_companies")
         movie, created = Movie.objects.get_or_create(
             tmdb_id=movie_data.get("id", 0),
             title=movie_data.get("title", ""),
@@ -123,20 +136,31 @@ class MovieService(MediaService):
 
         movie.genres.add(*movie_genres)
 
-        movie_recommendations = self.store_recommendations(movie.tmdb_id, MovieRecommendation, f"/movie/{movie.tmdb_id}/recommendations")
+        if production_companies is not None:
+            movie_production_companies = self.store_production_companies(
+                production_companies, MovieProductionCompany
+            )
+
+        movie.production_companies.add(*movie_production_companies)
+
+        movie_recommendations = self.store_recommendations(
+            movie.tmdb_id,
+            MovieRecommendation,
+            f"/movie/{movie.tmdb_id}/recommendations",
+        )
         movie.recommendation.add(*movie_recommendations)
 
         videos = self.store_videos(movie, video_data, MovieVideo)
 
         return movie, videos
-    
+
     def get_movie_discover_data(self, **kwargs):
         # Process genres
-        genre_names = kwargs.get('genre_names', [])
+        genre_names = kwargs.get("genre_names", [])
         genres = self.get_genres_from_discover(genre_names, MovieGenre)
 
         # Process person
-        person_name = kwargs.get('person_name')
+        person_name = kwargs.get("person_name")
         person_id = None
         if person_name:
             person_service = PersonService()
@@ -144,15 +168,19 @@ class MovieService(MediaService):
             person_id = person_service.get_person_id(person_data, person_name)
 
         # Process providers
-        watch_provider_names = kwargs.get('watch_provider_names', [])
-        providers = self.get_providers_from_discover(watch_provider_names, MovieProvider)
+        watch_provider_names = kwargs.get("watch_provider_names", [])
+        providers = self.get_providers_from_discover(
+            watch_provider_names, MovieProvider
+        )
 
         # Update kwargs with processed data
-        kwargs.update({
-            'with_genres': ','.join(map(str, genres)),
-            'with_watch_providers': ','.join(map(str, providers)),
-            'with_people': person_id
-        })
+        kwargs.update(
+            {
+                "with_genres": ",".join(map(str, genres)),
+                "with_watch_providers": ",".join(map(str, providers)),
+                "with_people": person_id,
+            }
+        )
 
         # Remove None values from kwargs
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
@@ -161,11 +189,9 @@ class MovieService(MediaService):
 
 
 class TVSeriesService(MediaService):
-
     def fetch_tv_data_from_api(self, tmdb_id):
-        tv_data, video_data = self.fetch_from_api(tmdb_id, 'tv')
+        tv_data, video_data = self.fetch_from_api(tmdb_id, "tv")
         return tv_data, video_data
-    
 
     def store_data(self, data):
         tv_data, video_data = data
@@ -191,7 +217,11 @@ class TVSeriesService(MediaService):
 
         tvseries.genres.add(*tv_genres)
 
-        tv_recommendations = self.store_recommendations(tvseries.tmdb_id, TVSeriesRecommendation, f"/tv/{tvseries.tmdb_id}/recommendations")
+        tv_recommendations = self.store_recommendations(
+            tvseries.tmdb_id,
+            TVSeriesRecommendation,
+            f"/tv/{tvseries.tmdb_id}/recommendations",
+        )
         tvseries.recommendation.add(*tv_recommendations)
 
         videos = self.store_videos(tvseries, video_data, TVSeriesVideo)
