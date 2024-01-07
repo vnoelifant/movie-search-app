@@ -20,9 +20,9 @@ urlpatterns = [
     path("media_search/", views.search, name="media_search"),
     path("error/", views.search, name="error"),
     path("discover/movie/", views.movie_discover, name="movie_discover"),
-    path('watch_list/add/<int:movie_id>/', views.add_movie_to_watch_list, name='add_to_watch_list'),
-    path('watch_list/remove/<int:movie_id>/', views.remove_movie_from_watch_list, name='remove_from_watch_list'),
-    path('watch_list/', views.watch_list, name='watch_list'),
+    path('movie_watch_list/add/<int:tmdb_id>/', views.add_movie_to_watch_list, name='add_movie_to_watch_list'),
+    path('movie_watch_list/remove/<int:tmdb_id>/', views.remove_movie_from_watch_list, name='remove_movie_from_watch_list'),
+    path('movie_watch_list/', views.movie_watch_list, name='movie_watch_list'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
 ]

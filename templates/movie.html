@@ -35,7 +35,7 @@
 
         <div>
             <!-- Add to Favorites form with a bit of margin on the left to move it to the right -->
-            <form action="{% url 'add_to_watch_list' movie.id %}" method="post" class="watchlist-form">
+            <form action="{% url 'add_movie_to_watch_list' movie.id %}" method="post" class="watchlist-form">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-success">Add to Watchlist</button>
             </form>
@@ -73,7 +73,7 @@
                     {% else %}
                         <img src="{% static 'img/no_img.png' %}"  alt="...">
                     {% endif %}
-                    <a href="{% url 'movie' tmdb_id=movie.tmdb_id  %}" class="btn btn-dark">View Details</a>
+                    <a href="{% url 'movie' tmdb_id=movie.id  %}" class="btn btn-dark">View Details</a>
                 </div>
             {% endfor %}
         </div>

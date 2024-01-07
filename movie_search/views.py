@@ -81,11 +81,11 @@ def remove_movie_from_watch_list(request, movie_id):
 
 
 @login_required
-def watch_list(request):
-    watch_list = MovieWatchList.objects.filter(user=request.user).select_related(
+def movie_watch_list(request):
+    movie_watch_list = MovieWatchList.objects.filter(user=request.user).select_related(
         "movie"
     )
-    return render(request, "watch_list.htmld", {"watch_list": watch_list})
+    return render(request, "movie_watch_list.html", {"movie_watch_list": movie_watch_list})
 
 
 def get_movie_from_db_or_api(tmdb_id):
