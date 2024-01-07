@@ -156,7 +156,7 @@ def tv(request, tmdb_id):
     print("TV Series: ", tvseries)
     print("TV Videos: ", videos)
     context = {
-        "tv": tv,
+        "tv": tvseries,
         "videos": videos,
     }
     return render(request, "tv.html", context)
@@ -288,9 +288,9 @@ def handle_tv_search(request, query, choice):
 
 
 def render_tv(request, tmdb_id):
-    tv, videos = get_tv_from_db_or_api(tmdb_id)
+    tvseries, videos = get_tv_from_db_or_api(tmdb_id)
     context = {
-        "tv": tv,
+        "tv": tvseries,
         "videos": videos,
     }
     
@@ -298,5 +298,5 @@ def render_tv(request, tmdb_id):
 
 
 def render_tv_sim_or_rec(request, tmdb_id, choice):
-    tv = media.fetch_data_from_api(f"/tv/{tmdb_id}/{choice}")
-    return render(request, "tv_search_sim_rec.html", {"tv": tv, "choice": choice})
+    tvseries = media.fetch_data_from_api(f"/tv/{tmdb_id}/{choice}")
+    return render(request, "tv_search_sim_rec.html", {"tv": tvseries, "choice": choice})

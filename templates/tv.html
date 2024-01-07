@@ -11,7 +11,7 @@
     
     <div class="col mov-info" id="mediaInfo">
         <h2> {{ tv.name }}</h2>
-        {% for genre in tv.genres %}
+        {% for genre in tv.genres.all %}
             <h8>{{genre.name}} |</h8>
         {% endfor %}
         
