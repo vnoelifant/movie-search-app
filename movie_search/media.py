@@ -38,8 +38,8 @@ class MediaService(ABC):
     
     def fetch_media_details_from_api(self, media_type, tmdb_id):
         media_data = tmdb_api_obj.get_data_from_endpoint(f"/{media_type}/{tmdb_id}")
-        video_data = tmdb_api_obj.get_data_from_endpoint(f"/{media_type}/{tmdb_id}/videos")
-        return media_data, video_data
+        videos_data = tmdb_api_obj.get_data_from_endpoint(f"/{media_type}/{tmdb_id}/videos")
+        return media_data, videos_data
 
     def store_genres(self, genres_data, GenreModel):
         genres = []
@@ -63,16 +63,6 @@ class MediaService(ABC):
             production_companies.append(production_company)
         return production_companies
 
-    def store_videos(self, media_obj, video_data, VideoModel):
-        relationship_field = "movie" if isinstance(media_obj, Movie) else "tvseries"
-        for video in video_data.get("results", []):
-            create_kwargs = {
-                relationship_field: media_obj,
-                "name": video.get("name", ""),
-                "key": video.get("key", ""),
-            }
-            VideoModel.objects.get_or_create(**create_kwargs)
-        return VideoModel.objects.filter(**{relationship_field + "_id": media_obj.id})
 
     def store_recommendations(self, media_type, tmdb_id, RecommendationModel):
         recommendations_data = tmdb_api_obj.get_data_from_endpoint(
@@ -106,14 +96,17 @@ class MediaService(ABC):
     def store_data(self, data):
         pass
 
+    @abstractmethod
+    def store_videos(self, data):
+        pass
 
 class MovieService(MediaService):
     def fetch_movie_data_from_api(self, tmdb_id):
-        movie_data, video_data = self.fetch_media_details_from_api("movie", tmdb_id)
-        return movie_data, video_data
+        movie_data, videos_data = self.fetch_media_details_from_api("movie", tmdb_id)
+        return movie_data, videos_data
 
     def store_data(self, data):
-        movie_data, video_data = data
+        movie_data, videos_data = data
         genres = movie_data.get("genres")
         production_companies = movie_data.get("production_companies")
         movie, created = Movie.objects.get_or_create(
@@ -149,9 +142,18 @@ class MovieService(MediaService):
         )
         movie.recommendation.add(*movie_recommendations)
 
-        videos = self.store_videos(movie, video_data, MovieVideo)
+        videos = self.store_videos(movie, videos_data)
 
         return movie, videos
+    
+    def store_videos(self, movie_obj, videos_data):
+        for video_data in videos_data.get("results", []):
+            MovieVideo.objects.get_or_create(
+                movie=movie_obj,
+                name=video_data.get("name", ""),
+                key=video_data.get("key", ""),
+            )
+        return MovieVideo.objects.filter(movie_id=movie_obj.id)
 
     def get_movie_discover_data(self, **kwargs):
         # Process genres
@@ -189,11 +191,11 @@ class MovieService(MediaService):
 
 class TVSeriesService(MediaService):
     def fetch_tv_data_from_api(self, tmdb_id):
-        tv_data, video_data = self.fetch_media_details_from_api("tvseries", tmdb_id)
-        return tv_data, video_data
+        tv_data, videos_data = self.fetch_media_details_from_api("tvseries", tmdb_id)
+        return tv_data, videos_data
 
     def store_data(self, data):
-        tv_data, video_data = data
+        tv_data, videos_data = data
         genres = tv_data.get("genres")
         production_companies = tv_data.get("production_companies")
         tvseries, created = TVSeries.objects.get_or_create(
@@ -221,9 +223,18 @@ class TVSeriesService(MediaService):
         )
         tvseries.recommendation.add(*tv_recommendations)
 
-        videos = self.store_videos(tvseries, video_data, TVSeriesVideo)
+        videos = self.store_videos(tvseries, videos_data)
 
         return tvseries, videos
+    
+    def store_videos(self, tv_obj, videos_data):
+        for video_data in videos_data.get("results", []):
+            TVSeriesVideo.objects.get_or_create(
+                tvseries=tv_obj,
+                name=video_data.get("name", ""),
+                key=video_data.get("key", ""),
+            )
+        return TVSeriesVideo.objects.filter(tvseries_id=tv_obj.id)
 
 
 class PersonService:
