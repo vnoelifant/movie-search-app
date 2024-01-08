@@ -31,8 +31,10 @@ class TMDBApi:
                 print(f"Failed to parse JSON response for URL: {url}")
                 print(f"HTTP Status Code: {response.status_code}")
                 print("Response Text:", response.text[:500])  # Print first 500 characters of the response
+                error_message = f"Failed to parse JSON response for URL: {url} - Status Code: {response.status_code} - Response: {response.text[:500]}"
+                print(error_message)
                 # Optionally, raise an exception or return a default value
-                raise JSONDecodeError("Invalid JSON response received from the API")
+                raise JSONDecodeError(error_message)
 
     def get_data_by_query(self, endpoint, text_query, result_key):
         response_json = self.get_data_from_endpoint(endpoint, query=text_query)
