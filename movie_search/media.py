@@ -56,9 +56,10 @@ class MediaService(ABC):
     ):
         production_companies = []
         for production_company_data in production_companies_data:
+            # breakpoint()  # Inspect each production_company_data
             production_company, created = ProductionCompanyModel.objects.get_or_create(
                 name=production_company_data.get("name", ""),
-                genre_id=production_company_data.get("id", 0),
+                production_company_id=production_company_data.get("id", 0),
             )
             production_companies.append(production_company)
         return production_companies
