@@ -217,6 +217,11 @@ class TVSeriesService(MediaService):
 
         tvseries.genres.add(*tv_genres)
 
+        if production_companies is not None:
+            tv_production_companies = self.store_production_companies(production_companies, TVSeriesProductionCompany)
+
+        tvseries.production_companies.add(*tv_production_companies)
+
         tv_recommendations = self.store_recommendations("tvseries",
             tvseries.tmdb_id,
             TVSeriesRecommendation,

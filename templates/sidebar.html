@@ -5,12 +5,16 @@
   <form action="{% url 'movie_discover' %}" method="get" class="d-flex">
     <fieldset class="group">
 
-      <legend id="sidebarLegend">Genre</legend>
+      <legend id="sidebarLegend">Genres</legend>
       {% load media_tags %}
       {% get_movie_genres as movie_genre_names %}
+      {% get_tv_genres as tv_genre_names %}
       <ul class="checkbox">
         {% for movie_genre in movie_genre_names %}
         <li><input name="genre" type="checkbox" id="cb" value="{{movie_genre}}" /><label for="cb">{{movie_genre}}</label></li>
+        {% endfor %}
+        {% for tv_genre in tv_genre_names %}
+        <li><input name="genre" type="checkbox" id="cb" value="{{tv_genre}}" /><label for="cb">{{tv_genre}}</label></li>
         {% endfor %}
         <script src="{% static 'js/checkbox.js' %}"></script>
       </ul>

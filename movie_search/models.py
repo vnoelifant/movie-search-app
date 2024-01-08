@@ -43,7 +43,7 @@ class MovieProductionCompany(models.Model):
 
 
 class Movie(models.Model):
-    tmdb_id = models.PositiveSmallIntegerField(default=0)
+    tmdb_id = models.PositiveSmallIntegerField(default=0, unique=True)
     title = models.CharField(max_length=200, null=True, blank=True)
     backdrop_path = models.CharField(max_length=200, null=True, blank=True)
     genres = models.ManyToManyField(MovieGenre, related_name="movies", blank=True)
@@ -134,7 +134,7 @@ class TVSeriesProductionCompany(models.Model):
 
 
 class TVSeries(models.Model):
-    tmdb_id = models.PositiveSmallIntegerField(default=0)
+    tmdb_id = models.PositiveSmallIntegerField(default=0, unique=True)
     name = models.CharField(max_length=200, null=True, blank=True)
     backdrop_path = models.CharField(max_length=200, null=True, blank=True)
     genres = models.ManyToManyField(TVSeriesGenre, related_name="tvseries", blank=True)

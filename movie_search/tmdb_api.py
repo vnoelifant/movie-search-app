@@ -28,5 +28,17 @@ class TMDBApi:
         response_json = self.get_data_from_endpoint(endpoint, query=text_query)
         data = response_json["results"]
         return {row[result_key]: row["id"] for row in data}
+    
+
+    def main():
+        from utils import dump_movie_data_to_json
+        obj = TMDBApi()
+        data = obj.get_data_from_endpoint("/genre/movie/list")
+        print("Dumping data to json file")
+        dump_movie_data_to_json("genres_data_test.json", data)
+
+    if __name__ == 'main':
+        main()
+
 
 
