@@ -105,7 +105,6 @@ def get_tv_from_db_or_api(series_id):
         tvseries = TVSeries.objects.get(series_id=series_id)
         videos = TVSeriesVideo.objects.filter(tvseries=tvseries)
     except TVSeries.DoesNotExist:
-        # breakpoint() # Check series_id
         tv_data, videos_data = tv_service.fetch_tv_data_from_api(series_id)
         tvseries, videos = tv_service.store_media_data((tv_data, videos_data))
     return tvseries, videos
