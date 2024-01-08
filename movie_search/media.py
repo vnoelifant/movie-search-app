@@ -139,7 +139,7 @@ class MovieService(MediaService):
     
     def store_recommendations(self, tmdb_id):
         recommendations_data = tmdb_api_obj.get_data_from_endpoint(
-            f"/{tmdb_id}/recommendations"
+            f"/movie/{tmdb_id}/recommendations"
         )
         recommendations = []
         for rec_data in recommendations_data.get("results", []):
@@ -237,7 +237,7 @@ class TVSeriesService(MediaService):
     
     def store_recommendations(self, tmdb_id):
         recommendations_data = tmdb_api_obj.get_data_from_endpoint(
-            f"/{tmdb_id}/recommendations"
+            f"/tv/{tmdb_id}/recommendations"
         )
         recommendations = []
         for rec_data in recommendations_data.get("results", []):

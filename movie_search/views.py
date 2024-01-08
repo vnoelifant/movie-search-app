@@ -141,8 +141,9 @@ def movies_trending_week(request):
 
 def movie(request, movie_id):
     movie, videos = get_movie_from_db_or_api(movie_id)
-    print("Movie Series: ", movie)
-    print("MovieVideos: ", videos)
+    print("Movie: ", movie)
+    # print("MovieVideos: ", videos)
+    print("MovieRecommendations: ", movie.recommendation.all())
     context = {
         "movie": movie,
         "videos": videos,
