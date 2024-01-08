@@ -104,7 +104,7 @@ def get_tv_from_db_or_api(tmdb_id):
         tvseries = TVSeries.objects.get(tmdb_id=tmdb_id)
     except TVSeries.DoesNotExist:
         tv_data, video_data = tv_service.fetch_tv_data_from_api(tmdb_id)
-        tveries, videos = tv_service.store_data((tv_data, video_data))
+        tvseries, videos = tv_service.store_data((tv_data, video_data))
     else:
         videos = TVSeriesVideo.objects.filter(tvseries=tvseries)
     return tvseries, videos

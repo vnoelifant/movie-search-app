@@ -191,7 +191,7 @@ class MovieService(MediaService):
 
 class TVSeriesService(MediaService):
     def fetch_tv_data_from_api(self, tmdb_id):
-        tv_data, videos_data = self.fetch_media_details_from_api("tvseries", tmdb_id)
+        tv_data, videos_data = self.fetch_media_details_from_api("tv", tmdb_id)
         return tv_data, videos_data
 
     def store_data(self, data):

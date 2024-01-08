@@ -21,6 +21,7 @@ class TMDBApi:
         params = {"api_key": self.api_key, "language": self.language}
         params.update(kwargs)
         response = requests.get(url, params=params)
+        # breakpoint()  # Debug: Inspect the response and the URL
         response.raise_for_status()
         return response.json()
 
