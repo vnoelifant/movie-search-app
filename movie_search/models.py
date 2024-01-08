@@ -21,7 +21,7 @@ class MovieGenre(models.Model):
 
 
 class MovieRecommendation(models.Model):
-    tmdb_id = models.PositiveSmallIntegerField(default=0)
+    tmdb_id = models.PositiveSmallIntegerField(default=0, unique=True)
     poster_path = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
@@ -112,7 +112,7 @@ class TVSeriesGenre(models.Model):
 
 
 class TVSeriesRecommendation(models.Model):
-    tmdb_id = models.PositiveSmallIntegerField(default=0)
+    tmdb_id = models.PositiveSmallIntegerField(default=0, unique=True)
     poster_path = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
