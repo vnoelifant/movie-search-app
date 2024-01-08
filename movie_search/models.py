@@ -21,11 +21,11 @@ class MovieGenre(models.Model):
 
 
 class MovieRecommendation(models.Model):
-    tmdb_id = models.PositiveSmallIntegerField(default=0, unique=True)
+    movie_id = models.PositiveSmallIntegerField(default=0, unique=True)
     poster_path = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.tmdb_id}: {self.poster_path}"
+        return f"{self.movie_id}: {self.poster_path}"
 
     class Meta:
         verbose_name_plural = "movie recommendations"
@@ -43,7 +43,7 @@ class MovieProductionCompany(models.Model):
 
 
 class Movie(models.Model):
-    tmdb_id = models.PositiveSmallIntegerField(default=0, unique=True)
+    movie_id = models.PositiveSmallIntegerField(default=0, unique=True)
     title = models.CharField(max_length=200, null=True, blank=True)
     backdrop_path = models.CharField(max_length=200, null=True, blank=True)
     genres = models.ManyToManyField(MovieGenre, related_name="movies", blank=True)
@@ -65,7 +65,7 @@ class Movie(models.Model):
     )
 
     def __str__(self):
-        return f"{self.tmdb_id}: {self.title}"
+        return f"{self.movie_id}: {self.title}"
 
 
 class MovieProvider(models.Model):
@@ -82,7 +82,7 @@ class MovieVideo(models.Model):
     key = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.movie.tmdb_id}: {self.name}, {self.key}"
+        return f"{self.movie.movie_id}: {self.name}, {self.key}"
 
     class Meta:
         verbose_name_plural = "movie videos"
@@ -112,11 +112,11 @@ class TVSeriesGenre(models.Model):
 
 
 class TVSeriesRecommendation(models.Model):
-    tmdb_id = models.PositiveSmallIntegerField(default=0, unique=True)
+    series_id = models.PositiveSmallIntegerField(default=0, unique=True)
     poster_path = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.tmdb_id}: {self.poster_path}"
+        return f"{self.series_id}: {self.poster_path}"
 
     class Meta:
         verbose_name_plural = "tv series recommendations"
@@ -134,7 +134,7 @@ class TVSeriesProductionCompany(models.Model):
 
 
 class TVSeries(models.Model):
-    tmdb_id = models.PositiveSmallIntegerField(default=0, unique=True)
+    series_id = models.PositiveSmallIntegerField(default=0, unique=True)
     name = models.CharField(max_length=200, null=True, blank=True)
     backdrop_path = models.CharField(max_length=200, null=True, blank=True)
     genres = models.ManyToManyField(TVSeriesGenre, related_name="tvseries", blank=True)
@@ -155,7 +155,7 @@ class TVSeries(models.Model):
     )
 
     def __str__(self):
-        return f"{self.tmdb_id}: {self.name}"
+        return f"{self.series_id}: {self.name}"
 
 
 class TVSeriesProvider(models.Model):
@@ -174,7 +174,7 @@ class TVSeriesVideo(models.Model):
     key = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.tvseries.tmdb_id}: {self.name}, {self.key}"
+        return f"{self.tvseries.series_id}: {self.name}, {self.key}"
 
     class Meta:
         verbose_name_plural = "tv series videos"

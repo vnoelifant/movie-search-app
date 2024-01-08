@@ -84,29 +84,29 @@ def movie_watch_list(request):
     )
 
 
-def get_movie_from_db_or_api(tmdb_id):
+def get_movie_from_db_or_api(movie_id):
     # Check if the movie exists in the database
     movie_service = MovieService()
     try:
-        movie = Movie.objects.get(tmdb_id=tmdb_id)
+        movie = Movie.objects.get(movie_id=movie_id)
     except Movie.DoesNotExist:
-        movie_data, video_data = movie_service.fetch_movie_data_from_api(tmdb_id)
+        movie_data, video_data = movie_service.fetch_movie_data_from_api(movie_id)
         movie, videos = movie_service.store_data((movie_data, video_data))
     else:
         videos = MovieVideo.objects.filter(movie=movie)
     return movie, videos
 
 
-def get_tv_from_db_or_api(tmdb_id):
+def get_tv_from_db_or_api(series_id):
     # Check if the tv exists in the database
     tv_service = TVSeriesService()
     try:
-        tvseries = TVSeries.objects.get(tmdb_id=tmdb_id)
+        tvseries = TVSeries.objects.get(series_id=series_id)
         # breakpoint() 
     except TVSeries.DoesNotExist:
-        # breakpoint() # Check tmdb_id
-        tv_data, video_data = tv_service.fetch_tv_data_from_api(tmdb_id)
-        tvseries, videos = tv_service.store_data((tv_data, video_data))
+        # breakpoint() # Check series_id
+        tv_data, videos_data = tv_service.fetch_tv_data_from_api(series_id)
+        tvseries, videos = tv_service.store_data((tv_data, videos_data))
     else:
         videos = TVSeriesVideo.objects.filter(tvseries=tvseries)
     return tvseries, videos
@@ -140,8 +140,8 @@ def movies_trending_week(request):
     return _get_media_list(request, "trending/movie", "week", "movie_trending.html")
 
 
-def movie(request, tmdb_id):
-    movie, videos = get_movie_from_db_or_api(tmdb_id)
+def movie(request, movie_id):
+    movie, videos = get_movie_from_db_or_api(movie_id)
     context = {
         "movie": movie,
         "videos": videos,
@@ -149,8 +149,8 @@ def movie(request, tmdb_id):
     return render(request, "movie.html", context)
 
 
-def tv(request, tmdb_id):
-    tvseries, videos = get_tv_from_db_or_api(tmdb_id)
+def tv(request, series_id):
+    tvseries, videos = get_tv_from_db_or_api(series_id)
     print("TV Series: ", tvseries)
     print("TV Videos: ", videos)
     context = {
@@ -203,7 +203,7 @@ def movie_discover(request):
     movie_discover_data = movie_service.get_movie_discover_data(**discover_params)
 
     return render(
-        request, "discover.html", {"movie_discover_data": movie_discover_data}
+        request, "movie_discover.html", {"movie_discover_data": movie_discover_data}
     )
 
 
@@ -257,14 +257,14 @@ def render_person_tv_credits(request, person_id):
 
 def handle_movie_search(request, query, choice):
     movie = media.fetch_api_data_by_query(f"/search/movie", query, "original_title")
-    tmdb_id = media.lookup_id_in_data_by_query(movie, query)
+    movie_id = media.lookup_id_in_data_by_query(movie, query)
     if choice == "general":
-        return render_movie(request, tmdb_id)
-    return render_movie_sim_or_rec(request, tmdb_id, choice)
+        return render_movie(request, movie_id)
+    return render_movie_sim_or_rec(request, movie_id, choice)
 
 
-def render_movie(request, tmdb_id):
-    movie, videos = get_movie_from_db_or_api(tmdb_id)
+def render_movie(request, movie_id):
+    movie, videos = get_movie_from_db_or_api(movie_id)
     context = {
         "movie": movie,
         "videos": videos,
@@ -272,8 +272,8 @@ def render_movie(request, tmdb_id):
     return render(request, "movie.html", context)
 
 
-def render_movie_sim_or_rec(request, tmdb_id, choice):
-    movie = media.fetch_data_from_api(f"/movie/{tmdb_id}/{choice}")
+def render_movie_sim_or_rec(request, movie_id, choice):
+    movie = media.fetch_data_from_api(f"/movie/{movie_id}/{choice}")
     return render(
         request, "movie_search_sim_rec.html", {"movie": movie, "choice": choice}
     )
@@ -281,16 +281,16 @@ def render_movie_sim_or_rec(request, tmdb_id, choice):
 
 def handle_tv_search(request, query, choice):
     tv = media.fetch_api_data_by_query(f"/search/tv", query, "original_name")
-    tmdb_id = media.lookup_id_in_data_by_query(tv, query)
+    series_id = media.lookup_id_in_data_by_query(tv, query)
 
     if choice == "general":
-        return render_tv(request, tmdb_id)
+        return render_tv(request, series_id)
 
-    return render_tv_sim_or_rec(request, tmdb_id, choice)
+    return render_tv_sim_or_rec(request, series_id, choice)
 
 
-def render_tv(request, tmdb_id):
-    tvseries, videos = get_tv_from_db_or_api(tmdb_id)
+def render_tv(request, series_id):
+    tvseries, videos = get_tv_from_db_or_api(series_id)
     context = {
         "tv": tvseries,
         "videos": videos,
@@ -299,6 +299,6 @@ def render_tv(request, tmdb_id):
     return render(request, "tv.html", context)
 
 
-def render_tv_sim_or_rec(request, tmdb_id, choice):
-    tvseries = media.fetch_data_from_api(f"/tv/{tmdb_id}/{choice}")
+def render_tv_sim_or_rec(request, series_id, choice):
+    tvseries = media.fetch_data_from_api(f"/tv/{series_id}/{choice}")
     return render(request, "tv_search_sim_rec.html", {"tv": tvseries, "choice": choice})

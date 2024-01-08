@@ -102,8 +102,8 @@ class MediaService(ABC):
         pass
 
 class MovieService(MediaService):
-    def fetch_movie_data_from_api(self, tmdb_id):
-        movie_data, videos_data = self.fetch_media_details_from_api("movie", tmdb_id)
+    def fetch_movie_data_from_api(self, movie_id):
+        movie_data, videos_data = self.fetch_media_details_from_api("movie", movie_id)
         return movie_data, videos_data
 
     def store_data(self, data):
@@ -111,7 +111,7 @@ class MovieService(MediaService):
         genres = movie_data.get("genres")
         production_companies = movie_data.get("production_companies")
         movie, created = Movie.objects.get_or_create(
-            tmdb_id=movie_data.get("id", 0),
+            movie_id=movie_data.get("id", 0),
             title=movie_data.get("title", ""),
             backdrop_path=movie_data.get("backdrop_path", ""),
             tagline=movie_data.get("tagline", ""),
@@ -138,7 +138,7 @@ class MovieService(MediaService):
         movie.production_companies.add(*movie_production_companies)
 
         movie_recommendations = self.store_recommendations("movie",
-            movie.tmdb_id,
+            movie.movie_id,
             MovieRecommendation,
         )
         movie.recommendation.add(*movie_recommendations)
@@ -191,8 +191,8 @@ class MovieService(MediaService):
 
 
 class TVSeriesService(MediaService):
-    def fetch_tv_data_from_api(self, tmdb_id):
-        tv_data, videos_data = self.fetch_media_details_from_api("tv", tmdb_id)
+    def fetch_tv_data_from_api(self, series_id):
+        tv_data, videos_data = self.fetch_media_details_from_api("tv", series_id)
         return tv_data, videos_data
 
     def store_data(self, data):
@@ -200,7 +200,7 @@ class TVSeriesService(MediaService):
         genres = tv_data.get("genres")
         production_companies = tv_data.get("production_companies")
         tvseries, created = TVSeries.objects.get_or_create(
-            tmdb_id=tv_data.get("id", 0),
+            series_id=tv_data.get("id", 0),
             name=tv_data.get("name", ""),
             backdrop_path=tv_data.get("backdrop_path", ""),
             tagline=tv_data.get("tagline", ""),
@@ -224,7 +224,7 @@ class TVSeriesService(MediaService):
         tvseries.production_companies.add(*tv_production_companies)
 
         tv_recommendations = self.store_recommendations("tvseries",
-            tvseries.tmdb_id,
+            tvseries.series_id,
             TVSeriesRecommendation,
         )
         tvseries.recommendation.add(*tv_recommendations)

@@ -12,7 +12,7 @@
         {% for tv in week.results %}
             <div class="card" id="movieCard">
                 <img src="https://image.tmdb.org/t/p/w500{{ tv.poster_path }}" class="card-img-top" alt="...">
-                <a href="{% url 'tv' tmdb_id=tv.id  %}" class="btn btn-dark">View Details</a>
+                <a href="{% url 'tv' series_id=tv.id  %}" class="btn btn-dark">View Details</a>
             </div>
         {% endfor %}
     </div>
