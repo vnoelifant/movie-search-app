@@ -89,11 +89,12 @@ def get_movie_from_db_or_api(movie_id):
     movie_service = MovieService()
     try:
         movie = Movie.objects.get(movie_id=movie_id)
-    except Movie.DoesNotExist:
-        movie_data, video_data = movie_service.fetch_movie_data_from_api(movie_id)
-        movie, videos = movie_service.store_data((movie_data, video_data))
-    else:
+        # If the movie exists, fetch related objects
         videos = MovieVideo.objects.filter(movie=movie)
+    except Movie.DoesNotExist:
+        # Fetch movie and video data from the API if the movie doesn't exist in the DB
+        movie_data, video_data = movie_service.fetch_movie_data_from_api(movie_id)
+        movie, videos = movie_service.store_media_data((movie_data, video_data))
     return movie, videos
 
 
@@ -102,13 +103,11 @@ def get_tv_from_db_or_api(series_id):
     tv_service = TVSeriesService()
     try:
         tvseries = TVSeries.objects.get(series_id=series_id)
-        # breakpoint() 
+        videos = TVSeriesVideo.objects.filter(tvseries=tvseries)
     except TVSeries.DoesNotExist:
         # breakpoint() # Check series_id
         tv_data, videos_data = tv_service.fetch_tv_data_from_api(series_id)
-        tvseries, videos = tv_service.store_data((tv_data, videos_data))
-    else:
-        videos = TVSeriesVideo.objects.filter(tvseries=tvseries)
+        tvseries, videos = tv_service.store_media_data((tv_data, videos_data))
     return tvseries, videos
 
 
@@ -142,6 +141,8 @@ def movies_trending_week(request):
 
 def movie(request, movie_id):
     movie, videos = get_movie_from_db_or_api(movie_id)
+    print("Movie Series: ", movie)
+    print("MovieVideos: ", videos)
     context = {
         "movie": movie,
         "videos": videos,

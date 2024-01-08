@@ -65,19 +65,6 @@ class MediaService(ABC):
         return production_companies
 
 
-    def store_recommendations(self, media_type, tmdb_id, RecommendationModel):
-        recommendations_data = tmdb_api_obj.get_data_from_endpoint(
-            f"{media_type}{tmdb_id}/recommendations"
-        )
-        recommendations = []
-        for rec_data in recommendations_data.get("results", []):
-            recommendation, created = RecommendationModel.objects.get_or_create(
-                tmdb_id=rec_data.get("id", 0),
-                poster_path=rec_data.get("poster_path", ""),
-            )
-            recommendations.append(recommendation)
-        return recommendations
-
     def get_genres_from_discover(self, genre_names, GenreModel):
         genres = GenreModel.objects.filter(name__in=genre_names).values_list(
             "genre_id", flat=True
@@ -94,11 +81,15 @@ class MediaService(ABC):
         return tmdb_api_obj.get_data_from_endpoint(endpoint, **kwargs)
 
     @abstractmethod
-    def store_data(self, data):
+    def store_media_data(self, media_data):
         pass
 
     @abstractmethod
-    def store_videos(self, data):
+    def store_videos(self, media_obj, videos_data):
+        pass
+
+    @abstractmethod
+    def store_recommendations(self, tmdb_id):
         pass
 
 class MovieService(MediaService):
@@ -106,8 +97,8 @@ class MovieService(MediaService):
         movie_data, videos_data = self.fetch_media_details_from_api("movie", movie_id)
         return movie_data, videos_data
 
-    def store_data(self, data):
-        movie_data, videos_data = data
+    def store_media_data(self, media_data):
+        movie_data, videos_data = media_data
         genres = movie_data.get("genres")
         production_companies = movie_data.get("production_companies")
         movie, created = Movie.objects.get_or_create(
@@ -137,9 +128,8 @@ class MovieService(MediaService):
 
         movie.production_companies.add(*movie_production_companies)
 
-        movie_recommendations = self.store_recommendations("movie",
+        movie_recommendations = self.store_recommendations(
             movie.movie_id,
-            MovieRecommendation,
         )
         movie.recommendation.add(*movie_recommendations)
 
@@ -147,14 +137,27 @@ class MovieService(MediaService):
 
         return movie, videos
     
-    def store_videos(self, movie_obj, videos_data):
+    def store_recommendations(self, tmdb_id):
+        recommendations_data = tmdb_api_obj.get_data_from_endpoint(
+            f"/{tmdb_id}/recommendations"
+        )
+        recommendations = []
+        for rec_data in recommendations_data.get("results", []):
+            recommendation, created = MovieRecommendation.objects.get_or_create(
+                movie_id=rec_data.get("id", 0),
+                poster_path=rec_data.get("poster_path", ""),
+            )
+            recommendations.append(recommendation)
+        return recommendations
+    
+    def store_videos(self, media_obj, videos_data):
         for video_data in videos_data.get("results", []):
             MovieVideo.objects.get_or_create(
-                movie=movie_obj,
+                movie=media_obj,
                 name=video_data.get("name", ""),
                 key=video_data.get("key", ""),
             )
-        return MovieVideo.objects.filter(movie_id=movie_obj.id)
+        return MovieVideo.objects.filter(movie_id=media_obj.id)
 
     def get_movie_discover_data(self, **kwargs):
         # Process genres
@@ -195,8 +198,8 @@ class TVSeriesService(MediaService):
         tv_data, videos_data = self.fetch_media_details_from_api("tv", series_id)
         return tv_data, videos_data
 
-    def store_data(self, data):
-        tv_data, videos_data = data
+    def store_media_data(self, media_data):
+        tv_data, videos_data = media_data
         genres = tv_data.get("genres")
         production_companies = tv_data.get("production_companies")
         tvseries, created = TVSeries.objects.get_or_create(
@@ -223,9 +226,8 @@ class TVSeriesService(MediaService):
 
         tvseries.production_companies.add(*tv_production_companies)
 
-        tv_recommendations = self.store_recommendations("tvseries",
+        tv_recommendations = self.store_recommendations(
             tvseries.series_id,
-            TVSeriesRecommendation,
         )
         tvseries.recommendation.add(*tv_recommendations)
 
@@ -233,14 +235,27 @@ class TVSeriesService(MediaService):
 
         return tvseries, videos
     
-    def store_videos(self, tv_obj, videos_data):
+    def store_recommendations(self, tmdb_id):
+        recommendations_data = tmdb_api_obj.get_data_from_endpoint(
+            f"/{tmdb_id}/recommendations"
+        )
+        recommendations = []
+        for rec_data in recommendations_data.get("results", []):
+            recommendation, created = MovieRecommendation.objects.get_or_create(
+                series_id=rec_data.get("id", 0),
+                poster_path=rec_data.get("poster_path", ""),
+            )
+            recommendations.append(recommendation)
+        return recommendations
+    
+    def store_videos(self, media_obj, videos_data):
         for video_data in videos_data.get("results", []):
             TVSeriesVideo.objects.get_or_create(
-                tvseries=tv_obj,
+                tvseries=media_obj,
                 name=video_data.get("name", ""),
                 key=video_data.get("key", ""),
             )
-        return TVSeriesVideo.objects.filter(tvseries_id=tv_obj.id)
+        return TVSeriesVideo.objects.filter(tvseries_id=media_obj.id)
 
 
 class PersonService:
