@@ -2,26 +2,30 @@
 <div class="col-2 sidebar">
   <h3>Discover Media</h4><br>
   <!-- Navigation links in sidebar-->
-  <form action="{% url 'discover' %}" method="get" class="d-flex">
+  <form action="{% url 'movie_discover' %}" method="get" class="d-flex">
     <fieldset class="group">
 
-      <legend id="sidebarLegend">Genre</legend>
-      {% load genres %}
-      {% get_genres as genre_names %}
+      <legend id="sidebarLegend">Genres</legend>
+      {% load media_tags %}
+      {% get_movie_genres as movie_genre_names %}
+      {% get_tv_genres as tv_genre_names %}
       <ul class="checkbox">
-        {% for genre in genre_names %}
-        <li><input name="genre" type="checkbox" id="cb" value="{{genre}}" /><label for="cb">{{genre}}</label></li>
+        {% for movie_genre in movie_genre_names %}
+        <li><input name="genre" type="checkbox" id="cb" value="{{movie_genre}}" /><label for="cb">{{movie_genre}}</label></li>
+        {% endfor %}
+        {% for tv_genre in tv_genre_names %}
+        <li><input name="genre" type="checkbox" id="cb" value="{{tv_genre}}" /><label for="cb">{{tv_genre}}</label></li>
         {% endfor %}
         <script src="{% static 'js/checkbox.js' %}"></script>
       </ul>
       <hr class="a">
 
       <legend id="sidebarLegend">Provider</legend>
-      {% load providers %}
-      {% get_providers as provider_names %}
+      {% load media_tags %}
+      {% get_movie_providers as movie_provider_names %}
       <select class="form-select" multiple="multiple" size="7" name="providers" id="providers">
-        {% for provider in provider_names %}
-        <option value="{{provider}}">{{provider}}</option>
+        {% for movie_provider in movie_provider_names %}
+        <option value="{{movie_provider}}">{{movie_provider}}</option>
         {% endfor %}
       </select>
       <hr class="a">

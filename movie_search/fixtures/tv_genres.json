@@ -1,0 +1,115 @@
+[
+    {
+      "model": "movie_search.TVSeriesGenre",
+      "fields": {
+        "name": "Action & Adventure",
+        "genre_id": 10759
+      }
+    },
+    {
+        "model": "movie_search.TVSeriesGenre",
+        "fields": {
+          "name": "Animation",
+          "genre_id": 16
+        }
+      },
+      {
+        "model": "movie_search.TVSeriesGenre",
+        "fields": {
+          "name": "Comedy",
+          "genre_id": 35
+        }
+      },
+      {
+        "model": "movie_search.TVSeriesGenre",
+        "fields": {
+          "name": "Crime",
+          "genre_id": 80
+        }
+      },
+      {
+        "model": "movie_search.TVSeriesGenre",
+        "fields": {
+          "name": "Documentary",
+          "genre_id": 99
+        }
+      },
+      {
+        "model": "movie_search.TVSeriesGenre",
+        "fields": {
+          "name": "Drama",
+          "genre_id": 18
+        }
+      },
+      {
+        "model": "movie_search.TVSeriesGenre",
+        "fields": {
+          "name": "Family",
+          "genre_id": 10751
+        }
+      },
+      {
+        "model": "movie_search.TVSeriesGenre",
+        "fields": {
+          "name": "Kids",
+          "genre_id": 10762
+        }
+      },
+      {
+        "model": "movie_search.TVSeriesGenre",
+        "fields": {
+          "name": "Mystery",
+          "genre_id": 9648
+        }
+      },
+      {
+        "model": "movie_search.TVSeriesGenre",
+        "fields": {
+          "name": "News",
+          "genre_id": 10763
+        }
+      },
+      {
+        "model": "movie_search.TVSeriesGenre",
+        "fields": {
+          "name": "Reality",
+          "genre_id": 10764
+        }
+      },
+      {
+        "model": "movie_search.TVSeriesGenre",
+        "fields": {
+          "name": "Sci-Fi & Fantasy",
+          "genre_id": 10765
+        }
+      },
+      {
+        "model": "movie_search.TVSeriesGenre",
+        "fields": {
+          "name": "Soap",
+          "genre_id": 10766
+        }
+      },
+      {
+        "model": "movie_search.TVSeriesGenre",
+        "fields": {
+          "name": "Talk",
+          "genre_id": 10767
+        }
+      },
+      {
+        "model": "movie_search.TVSeriesGenre",
+        "fields": {
+          "name": "War & Politics",
+          "genre_id": 10751
+        }
+      },
+      
+      {
+        "model": "movie_search.TVSeriesGenre",
+        "fields": {
+          "name": "Western",
+          "genre_id":36
+        }
+      }      
+]

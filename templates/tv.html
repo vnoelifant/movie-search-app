@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}TV Details{% endblock %}
+
+{% block body %}
+
+<div class="container first" id="mediaBgColor"> 
+    
+    <img src="https://image.tmdb.org/t/p/w500{{ tv.backdrop_path }}" alt="..." style="border-radius:15px; margin-left: 30px; margin-top: 30px;" >
+    
+    <div class="col mov-info" id="mediaInfo">
+        <h2> {{ tv.name }}</h2>
+        {% for genre in tv.genres.all %}
+            <h8>{{genre.name}} |</h8>
+        {% endfor %}
+        
+        <h4><b>{{ tv.tagline }}</b></h4>
+        <h4>Total Votes: <b>{{tv.vote_count}}</b> | Vote Score: <b>{{ tv.vote_average }}</b> | Popularity: <b>{{tv.popularity}}</b></h4>
+        <h4>Air Date: <b>{{ tv.first_air_date }}</b></h4> 
+        <h4>Production companies:</h4>
+        {% for company in tv.production_companies.all %}
+            <h8>{{company.name}} |</h8>
+        {% endfor %}
+    </div>
+    
+    <div class="col mediaOverview">
+        <h3>Overview</h3>
+        <p>{{tv.overview}}</p>
+    </div>
+
+    <div class="col mediaOverview">
+        <h3>Seasons and Episodes</h3>
+        <p><b>Total Seasons:</b> {{tv.number_of_seasons}}</p>
+        <p><b>Total Episodes:</b> {{tv.number_of_episodes}}</p>
+        <h3>Official Homepage</h3>
+        {% if tv.homepage %}
+            <a href={{tv.homepage}} id="detailHome">{{tv.homepage}}</a>
+        {% else %}
+            <p>No homepage available.</p>
+        {% endif %}
+        
+    </div>
+
+    <div class="col mediaOverview">
+        <h3>Airing on networks</h3>
+        {% for network in tv.networks %}
+            <h8>{{network.name}} |</h8>
+        {% endfor %}
+    </div>
+
+    <div class="trailer" id="trailer"><h2>Trailer and Short Videos</h2></div>
+    
+    <div class="scrolling-wrapper" id="trailerScroll">
+        {% for vid in videos%}
+            <div class="col-sm-6">
+                <div class="embed-responsive embed-responsive-16by9" id="trailerResults">
+                    <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/{{ vid.key }}"></iframe>
+                </div>
+            </div>    
+        {% endfor %}
+    </div>
+
+    <div class="rcm" style="color:black; margin-left: 30px; font-weight: bold;"><h2>Recommended TV Series</h2></div>
+        <div class="row" id="movieRow">
+            {% for tv in tv.recommendation.all %}
+                <div class="card" id="movieCard">
+                    {% if tv.poster_path %}
+                        <img src="https://image.tmdb.org/t/p/w500{{ tv.poster_path }}" class="card-img-top" alt="...">
+                    {% else %}
+                        <img src="{% static 'img/no_img.png' %}"  alt="...">
+                    {% endif %}
+                    <a href="{% url 'tv' series_id=tv.id  %}" class="btn btn-dark">View Details</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+</div>
+
+{% endblock %}

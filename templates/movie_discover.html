@@ -9,7 +9,7 @@
     <h2 class="x-sign"> Discovered Movies</h2><br><br>
 
     <div class="row " id="movieRow">
-        {% for movie in data.results %}
+        {% for movie in movie_discover_data.results %}
             <div class="card" id="movieCard">
                 {% if movie.poster_path %}
                     <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" class="card-img-top" alt="...">

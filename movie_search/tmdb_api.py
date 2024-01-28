@@ -7,27 +7,50 @@ import pycountry
 import requests
 import json
 from django.conf import settings
-
-BASE_URL = "https://api.themoviedb.org/3"
-LANG_ENG = "en-US"
+from requests.exceptions import JSONDecodeError
 
 
-def get_data_from_endpoint(endpoint, **kwargs):
-    """This function returns a JSON object of tmdb media data."""
-    url = f"{BASE_URL}{endpoint}"
-    params = {"api_key": settings.TMDB_API_KEY, "language": LANG_ENG}
-    params.update(kwargs)
+class TMDBApi:
 
-    response = requests.get(url, params=params)
-    response.raise_for_status()  # Raise an exception for HTTP errors
-    print(json.dumps(response.json(), indent=4, sort_keys=True))
-    return response.json()
+    def __init__(self, language = None):
+        self.base_url = settings.TMDB_API_URL
+        self.api_key = settings.TMDB_API_KEY
+        self.language = language or settings.TMDB_API_LANG
+
+    def get_data_from_endpoint(self, endpoint, **kwargs):
+            url = f"{self.base_url}{endpoint}"
+            params = {"api_key": self.api_key, "language": self.language}
+            params.update(kwargs)
+            response = requests.get(url, params=params)
+
+            # Attempt to parse the response as JSON
+            try:
+                return response.json()
+            except JSONDecodeError:
+                # Handle JSON decoding error
+                print(f"Failed to parse JSON response for URL: {url}")
+                print(f"HTTP Status Code: {response.status_code}")
+                print("Response Text:", response.text[:500])  # Print first 500 characters of the response
+                error_message = f"Failed to parse JSON response for URL: {url} - Status Code: {response.status_code} - Response: {response.text[:500]}"
+                print(error_message)
+                # Optionally, raise an exception or return a default value
+                raise JSONDecodeError(error_message)
+
+    def get_data_by_query(self, endpoint, text_query, result_key):
+        response_json = self.get_data_from_endpoint(endpoint, query=text_query)
+        data = response_json["results"]
+        return {row[result_key]: row["id"] for row in data}
+    
+
+    def main():
+        from utils import dump_movie_data_to_json
+        obj = TMDBApi()
+        data = obj.get_data_from_endpoint("/genre/movie/list")
+        print("Dumping data to json file")
+        dump_movie_data_to_json("genres_data_test.json", data)
+
+    if __name__ == 'main':
+        main()
 
 
-def get_data_by_query(
-    endpoint: str, text_query: str, result_key: str
-) -> dict[str, int]:
-    """Returns a dictionary of details based on a text query."""
-    response_json = get_data_from_endpoint(endpoint, query=text_query)
-    data = response_json["results"]
-    return {row[result_key]: row["id"] for row in data}
+
