@@ -41,6 +41,10 @@ class TMDBApi:
         data = response_json["results"]
         return {row[result_key]: row["id"] for row in data}
     
+    def lookup_id_in_data_by_query(self, data, query):
+        data = {item.lower(): val for item, val in data.items()}
+        return data.get(query)
+    
 
     def main():
         from utils import dump_movie_data_to_json

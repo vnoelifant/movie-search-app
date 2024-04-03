@@ -13,32 +13,15 @@ from .models import (
     TVSeriesRecommendation,
     TVSeriesProductionCompany,
 )
-from .tmdb_api import TMDBApi
-
-tmdb_api_obj = TMDBApi()
-
-
-# standalone functions for general fetching of data
-def fetch_data_from_api(endpoint, **kwargs):
-    """A common method to fetch data from media API"""
-    return tmdb_api_obj.get_data_from_endpoint(endpoint, **kwargs)
-
-
-def fetch_api_data_by_query(endpoint, text_query, results_key):
-    """A common method to fetch data by query from media API"""
-    return tmdb_api_obj.get_data_by_query(endpoint, text_query, results_key)
-
-
-def lookup_id_in_data_by_query(data_dict, query):
-    """A common method to fetch media ID from data by query"""
-    return {item.lower(): idx for item, idx in data_dict.items()}.get(query)
 
 
 class MediaService(ABC):
+    def __init__(self, tmdb_api):
+        self.tmdb_api = tmdb_api
     
     def fetch_media_details_from_api(self, media_type, tmdb_id):
-        media_data = tmdb_api_obj.get_data_from_endpoint(f"/{media_type}/{tmdb_id}")
-        videos_data = tmdb_api_obj.get_data_from_endpoint(f"/{media_type}/{tmdb_id}/videos")
+        media_data = self.tmdb_api.get_data_from_endpoint(f"/{media_type}/{tmdb_id}")
+        videos_data = self.tmdb_api.get_data_from_endpoint(f"/{media_type}/{tmdb_id}/videos")
         return media_data, videos_data
 
     def store_genres(self, genres_data, GenreModel):
@@ -77,7 +60,7 @@ class MediaService(ABC):
         return providers
 
     def get_discover_data(self, endpoint, **kwargs):
-        return tmdb_api_obj.get_data_from_endpoint(endpoint, **kwargs)
+        return self.tmdb_api.get_data_from_endpoint(endpoint, **kwargs)
 
     @abstractmethod
     def store_media_data(self, media_data):
@@ -137,7 +120,7 @@ class MovieService(MediaService):
         return movie, videos
     
     def store_recommendations(self, tmdb_id):
-        recommendations_data = tmdb_api_obj.get_data_from_endpoint(
+        recommendations_data = self.tmdb_api.get_data_from_endpoint(
             f"/movie/{tmdb_id}/recommendations"
         )
         recommendations = []
@@ -235,7 +218,7 @@ class TVSeriesService(MediaService):
         return tvseries, videos
     
     def store_recommendations(self, tmdb_id):
-        recommendations_data = tmdb_api_obj.get_data_from_endpoint(
+        recommendations_data = self.tmdb_api.get_data_from_endpoint(
             f"/tv/{tmdb_id}/recommendations"
         )
         recommendations = []
@@ -259,7 +242,7 @@ class TVSeriesService(MediaService):
 
 class PersonService:
     def fetch_person_data(self, person_name):
-        return fetch_api_data_by_query("/search/person", person_name, "name")
+        return self.tmdb_api.get_data_from_endpoint("/search/person", person_name, "name")
 
     def get_person_id(self, person_data, person_name):
-        return lookup_id_in_data_by_query(person_data, person_name)
+        return self.tmdb_api.lookup_id_in_data_by_query(person_data, person_name)
