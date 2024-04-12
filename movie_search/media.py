@@ -143,34 +143,27 @@ class MovieService(MediaService):
 
     def get_movie_discover_data(self, **kwargs):
         # Process genres
-        genre_names = kwargs.get("genre_names", [])
+        genre_names = kwargs.get("with_genres", [])
         genres = self.get_genres_from_discover(genre_names, MovieGenre)
-
+        if genres:
+            kwargs["with_genres"] = ",".join(map(str, genres))
+        
         # Process person
-        person_name = kwargs.get("person_name")
-        person_id = None
+        person_name = kwargs.get("person_name", [])
         if person_name:
             person_service = PersonService()
             person_data = person_service.fetch_person_data(person_name)
             person_id = person_service.get_person_id(person_data, person_name)
-
+            if person_id:
+                kwargs["with_people"] = person_id
+        
         # Process providers
         watch_provider_names = kwargs.get("watch_provider_names", [])
         providers = self.get_providers_from_discover(
             watch_provider_names, MovieProvider
         )
-
-        # Update kwargs with processed data
-        kwargs.update(
-            {
-                "with_genres": ",".join(map(str, genres)),
-                "with_watch_providers": ",".join(map(str, providers)),
-                "with_people": person_id,
-            }
-        )
-
-        # Remove None values from kwargs
-        kwargs = {k: v for k, v in kwargs.items() if v is not None}
+        if providers:
+            kwargs["with_watch_providers"] = ",".join(map(str, providers))
 
         return self.get_discover_data("/discover/movie", **kwargs)
 

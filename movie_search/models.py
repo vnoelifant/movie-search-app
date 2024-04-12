@@ -11,7 +11,7 @@ class CustomUser(AbstractUser):
 
 class MovieGenre(models.Model):
     name = models.CharField(max_length=200, null=True, blank=True, unique=True)
-    genre_id = models.PositiveSmallIntegerField(default=0)
+    genre_id = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.genre_id}: {self.name}"
@@ -21,7 +21,7 @@ class MovieGenre(models.Model):
 
 
 class MovieRecommendation(models.Model):
-    movie_id = models.PositiveSmallIntegerField(default=0, unique=True)
+    movie_id = models.PositiveIntegerField(default=0, unique=True)
     poster_path = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
@@ -33,7 +33,7 @@ class MovieRecommendation(models.Model):
 
 class MovieProductionCompany(models.Model):
     name = models.CharField(max_length=200, null=True, blank=True, unique=True)
-    production_company_id = models.PositiveSmallIntegerField(default=0)
+    production_company_id = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.production_company_id}: {self.name}"
@@ -43,12 +43,12 @@ class MovieProductionCompany(models.Model):
 
 
 class Movie(models.Model):
-    movie_id = models.PositiveSmallIntegerField(default=0, unique=True)
+    movie_id = models.PositiveIntegerField(default=0, unique=True)
     title = models.CharField(max_length=200, null=True, blank=True)
     backdrop_path = models.CharField(max_length=200, null=True, blank=True)
     genres = models.ManyToManyField(MovieGenre, related_name="movies", blank=True)
     tagline = models.CharField(max_length=200, null=True, blank=True)
-    vote_count = models.PositiveSmallIntegerField(default=0)
+    vote_count = models.PositiveIntegerField(default=0)
     vote_average = models.FloatField(default=0)
     popularity = models.FloatField(default=0, null=True, blank=True)
     release_date = models.CharField(max_length=200, null=True, blank=True)
@@ -70,7 +70,7 @@ class Movie(models.Model):
 
 class MovieProvider(models.Model):
     name = models.CharField(max_length=200, null=True, blank=True)
-    provider_id = models.PositiveSmallIntegerField(default=0)
+    provider_id = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.provider_id}: {self.name}"
@@ -102,7 +102,7 @@ class MovieWatchList(models.Model):
 
 class TVSeriesGenre(models.Model):
     name = models.CharField(max_length=200, null=True, blank=True, unique=True)
-    genre_id = models.PositiveSmallIntegerField(default=0)
+    genre_id = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.genre_id}: {self.name}"
@@ -112,7 +112,7 @@ class TVSeriesGenre(models.Model):
 
 
 class TVSeriesRecommendation(models.Model):
-    series_id = models.PositiveSmallIntegerField(default=0, unique=True)
+    series_id = models.PositiveIntegerField(default=0, unique=True)
     poster_path = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
@@ -124,7 +124,7 @@ class TVSeriesRecommendation(models.Model):
 
 class TVSeriesProductionCompany(models.Model):
     name = models.CharField(max_length=200, null=True, blank=True, unique=True)
-    production_company_id = models.PositiveSmallIntegerField(default=0)
+    production_company_id = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.production_company_id}: {self.name}"
@@ -134,12 +134,12 @@ class TVSeriesProductionCompany(models.Model):
 
 
 class TVSeries(models.Model):
-    series_id = models.PositiveSmallIntegerField(default=0, unique=True)
+    series_id = models.PositiveIntegerField(default=0, unique=True)
     name = models.CharField(max_length=200, null=True, blank=True)
     backdrop_path = models.CharField(max_length=200, null=True, blank=True)
     genres = models.ManyToManyField(TVSeriesGenre, related_name="tvseries", blank=True)
     tagline = models.CharField(max_length=200, null=True, blank=True)
-    vote_count = models.PositiveSmallIntegerField(default=0)
+    vote_count = models.PositiveIntegerField(default=0)
     vote_average = models.FloatField(default=0)
     popularity = models.FloatField(default=0, null=True, blank=True)
     first_air_date = models.CharField(max_length=200, null=True, blank=True)
@@ -160,7 +160,7 @@ class TVSeries(models.Model):
 
 class TVSeriesProvider(models.Model):
     name = models.CharField(max_length=200, null=True, blank=True)
-    provider_id = models.PositiveSmallIntegerField(default=0)
+    provider_id = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.provider_id}: {self.name}"
