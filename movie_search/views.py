@@ -86,7 +86,7 @@ def movie_watch_list(request):
 
 def get_movie_from_db_or_api(request, movie_id):
     # Check if the movie exists in the database
-    movie_service = MovieService(request.tmdb_api)
+    movie_service = MovieService(request)
     try:
         movie = Movie.objects.get(movie_id=movie_id)
         # If the movie exists, fetch related objects
@@ -100,7 +100,7 @@ def get_movie_from_db_or_api(request, movie_id):
 
 def get_tv_from_db_or_api(request, series_id):
     # Check if the tv exists in the database
-    tv_service = TVSeriesService(request.tmdb_api)
+    tv_service = TVSeriesService(request)
     try:
         tvseries = TVSeries.objects.get(series_id=series_id)
         videos = TVSeriesVideo.objects.filter(tvseries=tvseries)
@@ -184,7 +184,7 @@ def tv_air_today(request):
 
 # Discover Movie View
 def movie_discover(request):
-    movie_service = MovieService(request.tmdb_api)
+    movie_service = MovieService(request)
 
     # Extract parameters from request and construct kwargs
     discover_params = {
@@ -229,8 +229,8 @@ def search(request):
 
 
 def handle_person_search(request, query, choice):
-    person = request.tmdb_api.get_data_by_query(f"/search/person", query, "name")
-    person_id = request.tmdb_api.lookup_id_in_data_by_query(person, query)
+    person = request.get_data_by_query(f"/search/person", query, "name")
+    person_id = request.lookup_id_in_data_by_query(person, query)
 
     if choice == "movie_credits":
         return render_person_movie_credits(request, person_id)
@@ -239,7 +239,7 @@ def handle_person_search(request, query, choice):
 
 
 def render_person_movie_credits(request, person_id):
-    person = request.tmdb_api.get_data_from_endpoint(f"/person/{person_id}/movie_credits")
+    person = request.get_data_from_endpoint(f"/person/{person_id}/movie_credits")
     if not person:
         context = {"message": "No data available"}
     else:
@@ -248,7 +248,7 @@ def render_person_movie_credits(request, person_id):
 
 
 def render_person_tv_credits(request, person_id):
-    person = request.tmdb_api.get_data_from_endpoint(f"/person/{person_id}/tv_credits")
+    person = request.get_data_from_endpoint(f"/person/{person_id}/tv_credits")
     if not person:
         context = {"message": "No data available"}
     else:
@@ -257,8 +257,8 @@ def render_person_tv_credits(request, person_id):
 
 
 def handle_movie_search(request, query, choice):
-    movie = request.tmdb_api.get_data_by_query(f"/search/movie", query, "original_title")
-    movie_id = request.tmdb_api.lookup_id_in_data_by_query(movie, query)
+    movie = request.get_data_by_query(f"/search/movie", query, "original_title")
+    movie_id = request.lookup_id_in_data_by_query(movie, query)
     if choice == "general":
         return render_movie(request, movie_id)
     return render_movie_sim_or_rec(request, movie_id, choice)
@@ -274,15 +274,15 @@ def render_movie(request, movie_id):
 
 
 def render_movie_sim_or_rec(request, movie_id, choice):
-    movie = request.tmdb_api.get_data_from_endpoint(f"/movie/{movie_id}/{choice}")
+    movie = request.get_data_from_endpoint(f"/movie/{movie_id}/{choice}")
     return render(
         request, "movie_search_sim_rec.html", {"movie": movie, "choice": choice}
     )
 
 
 def handle_tv_search(request, query, choice):
-    tv = request.tmdb_api.get_data_by_query(f"/search/tv", query, "original_name")
-    series_id = request.tmdb_api.lookup_id_in_data_by_query(tv, query)
+    tv = request.get_data_by_query(f"/search/tv", query, "original_name")
+    series_id = request.lookup_id_in_data_by_query(tv, query)
 
     if choice == "general":
         return render_tv(request, series_id)
@@ -301,5 +301,5 @@ def render_tv(request, series_id):
 
 
 def render_tv_sim_or_rec(request, series_id, choice):
-    tvseries = request.tmdb_api.get_data_from_endpoint(f"/tv/{series_id}/{choice}")
+    tvseries = request.get_data_from_endpoint(f"/tv/{series_id}/{choice}")
     return render(request, "tv_search_sim_rec.html", {"tv": tvseries, "choice": choice})

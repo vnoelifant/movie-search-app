@@ -75,6 +75,8 @@ class MediaService(ABC):
         pass
 
 class MovieService(MediaService):
+    def __init__(self, request):
+        super().__init__(request.tmdb_api)
     def fetch_movie_data_from_api(self, movie_id):
         movie_data, videos_data = self.fetch_media_details_from_api("movie", movie_id)
         return movie_data, videos_data
@@ -169,6 +171,8 @@ class MovieService(MediaService):
 
 
 class TVSeriesService(MediaService):
+    def __init__(self, request):
+        super().__init__(request.tmdb_api)
     def fetch_tv_data_from_api(self, series_id):
         tv_data, videos_data = self.fetch_media_details_from_api("tv", series_id)
         return tv_data, videos_data
