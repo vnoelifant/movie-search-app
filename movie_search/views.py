@@ -23,8 +23,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
-tmdb_api = TMDBApi()
-
 
 def login_view(request):
     if request.method == "POST":
@@ -50,7 +48,7 @@ def logout_view(request):
 
 
 def home(request):
-    trending = tmdb_api.get_data_from_endpoint("/trending/all/day")
+    trending = request.tmdb_api.get_data_from_endpoint("/trending/all/day")
     context = {"trending": trending}
     return render(request, "home.html", context)
 
@@ -85,15 +83,19 @@ def movie_watch_list(request):
 
 
 def get_movie_from_db_or_api(request, movie_id):
+    print("get_movie_from_db_or_api - movie_id:", movie_id)
     # Check if the movie exists in the database
     movie_service = MovieService(request)
     try:
         movie = Movie.objects.get(movie_id=movie_id)
+        print("Movie found in DB:", movie.title)
         # If the movie exists, fetch related objects
         videos = MovieVideo.objects.filter(movie=movie)
     except Movie.DoesNotExist:
+        print("Movie not in DB, fetching from API...")
         # Fetch movie and video data from the API if the movie doesn't exist in the DB
         movie_data, video_data = movie_service.fetch_movie_data_from_api(movie_id)
+        print("Movie Data from API:", movie_data)
         movie, videos = movie_service.store_media_data((movie_data, video_data))
     return movie, videos
 
@@ -110,39 +112,39 @@ def get_tv_from_db_or_api(request, series_id):
     return tvseries, videos
 
 
-def _get_media_list(request, media_type, media_list_type, template_name):
-    data = request.tmdb_api.get_data_from_endpoint(f"/{media_type}/{media_list_type}")
-    context = {media_list_type: data}
+def _get_featured_media(request, media_type, media_category, template_name):
+    data = request.tmdb_api.get_data_from_endpoint(f"/{media_type}/{media_category}")
+    context = {media_category: data}
 
     return render(request, template_name, context)
 
 
 # Common Movie Views
 def movies_popular(request):
-    return _get_media_list(request, "movie", "popular", "movie_popular.html")
+    return _get_featured_media(request, "movie", "popular", "movie_popular.html")
 
 
 def movies_top_rated(request):
-    return _get_media_list(request, "movie", "top_rated", "movie_top_rated.html")
+    return _get_featured_media(request, "movie", "top_rated", "movie_top_rated.html")
 
 
 def movies_now_playing(request):
-    return _get_media_list(request, "movie", "now_playing", "movie_now_playing.html")
+    return _get_featured_media(request, "movie", "now_playing", "movie_now_playing.html")
 
 
 def movies_upcoming(request):
-    return _get_media_list(request, "movie", "upcoming", "movie_upcoming.html")
+    return _get_featured_media(request, "movie", "upcoming", "movie_upcoming.html")
 
 
 def movies_trending_week(request):
-    return _get_media_list(request, "trending/movie", "week", "movie_trending.html")
+    return _get_featured_media(request, "trending/movie", "week", "movie_trending.html")
 
 
 def movie(request, movie_id):
     movie, videos = get_movie_from_db_or_api(request, movie_id)
     print("Movie: ", movie)
     # print("MovieVideos: ", videos)
-    print("MovieRecommendations: ", movie.recommendation.all())
+    # print("MovieRecommendations: ", movie.recommendation.all())
     context = {
         "movie": movie,
         "videos": videos,
@@ -163,23 +165,23 @@ def tv(request, series_id):
 
 # Common TV Views
 def tv_popular(request):
-    return _get_media_list(request, "tv", "popular", "tv_popular.html")
+    return _get_featured_media(request, "tv", "popular", "tv_popular.html")
 
 
 def tv_top_rated(request):
-    return _get_media_list(request, "tv", "top_rated", "tv_top_rated.html")
+    return _get_featured_media(request, "tv", "top_rated", "tv_top_rated.html")
 
 
 def tv_trending_week(request):
-    return _get_media_list(request, "trending/tv", "week", "tv_trending.html")
+    return _get_featured_media(request, "trending/tv", "week", "tv_trending.html")
 
 
 def tv_air(request):
-    return _get_media_list(request, "tv", "on_the_air", "tv_air.html")
+    return _get_featured_media(request, "tv", "on_the_air", "tv_air.html")
 
 
 def tv_air_today(request):
-    return _get_media_list(request, "tv", "airing_today", "tv_air_today.html")
+    return _get_featured_media(request, "tv", "airing_today", "tv_air_today.html")
 
 
 # Discover Movie View
@@ -229,9 +231,8 @@ def search(request):
 
 
 def handle_person_search(request, query, choice):
-    person = request.tmdb_api.get_data_by_query(f"/search/person", query, "name")
-    person_id = request.tmdb_api.lookup_id_in_data_by_query(person, query)
-
+    person_id = request.tmdb_api.get_data_by_query(f"/search/person", query)
+    print("Queried Person ID:", person_id)
     if choice == "movie_credits":
         return render_person_movie_credits(request, person_id)
 
@@ -257,8 +258,15 @@ def render_person_tv_credits(request, person_id):
 
 
 def handle_movie_search(request, query, choice):
-    movie = request.tmdb_api.get_data_by_query(f"/search/movie", query, "original_title")
-    movie_id = request.tmdb_api.lookup_id_in_data_by_query(movie, query)
+    primary_release_year = request.GET.get("primary_release_year")
+    movie_id = request.tmdb_api.get_data_by_query(f"/search/movie", query, primary_release_year=primary_release_year)
+
+    # Log to verify the correct movie ID
+    print("Queried Movie ID:", movie_id)
+    if not movie_id:
+        # Handle case where no matching movie is found
+        return render(request, "error.html", {"message": "No movie found for the query."})
+    
     if choice == "general":
         return render_movie(request, movie_id)
     return render_movie_sim_or_rec(request, movie_id, choice)
@@ -281,8 +289,13 @@ def render_movie_sim_or_rec(request, movie_id, choice):
 
 
 def handle_tv_search(request, query, choice):
-    tv = request.tmdb_api.get_data_by_query(f"/search/tv", query, "original_name")
-    series_id = request.tmdb_api.lookup_id_in_data_by_query(tv, query)
+    first_air_date_year = request.GET.get("first_air_date_year")
+    series_id = request.tmdb_api.get_data_by_query("/search/tv", query, primary_release_year=first_air_date_year)
+    print("Queried Series ID:", series_id)
+
+    if not series_id:
+        # Handle case where no matching TV series is found
+        return render(request, "error.html", {"message": "No TV series found for the query."})
 
     if choice == "general":
         return render_tv(request, series_id)
