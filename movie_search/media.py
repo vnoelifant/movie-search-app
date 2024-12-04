@@ -75,14 +75,22 @@ class MediaService(ABC):
         pass
 
 class MovieService(MediaService):
+    def __init__(self, request):
+        super().__init__(request.tmdb_api)
     def fetch_movie_data_from_api(self, movie_id):
         movie_data, videos_data = self.fetch_media_details_from_api("movie", movie_id)
         return movie_data, videos_data
 
     def store_media_data(self, media_data):
         movie_data, videos_data = media_data
-        genres = movie_data.get("genres")
-        production_companies = movie_data.get("production_companies")
+        genres = movie_data.get("genres", [])  # Default to empty list
+        # Ensure movie_genres is always defined
+        movie_genres = self.store_genres(genres, MovieGenre) if genres else []
+        production_companies = movie_data.get("production_companies", [])
+        # Process production companies
+        movie_production_companies = self.store_production_companies(
+            production_companies, MovieProductionCompany
+        ) if production_companies else []
         movie, created = Movie.objects.get_or_create(
             movie_id=movie_data.get("id", 0),
             title=movie_data.get("title", ""),
@@ -98,24 +106,18 @@ class MovieService(MediaService):
             revenue=movie_data.get("revenue", 0),
             homepage=movie_data.get("homepage", ""),
         )
-        if genres is not None:
-            movie_genres = self.store_genres(genres, MovieGenre)
 
-        movie.genres.add(*movie_genres)
+        if movie_genres:
+            movie.genres.add(*movie_genres)
 
-        if production_companies is not None:
-            movie_production_companies = self.store_production_companies(
-                production_companies, MovieProductionCompany
-            )
+        if movie_production_companies:
+            movie.production_companies.add(*movie_production_companies)
 
-        movie.production_companies.add(*movie_production_companies)
+        movie_recommendations = self.store_recommendations(movie.movie_id) or []
+        if movie_recommendations:
+            movie.recommendation.add(*movie_recommendations)
 
-        movie_recommendations = self.store_recommendations(
-            movie.movie_id,
-        )
-        movie.recommendation.add(*movie_recommendations)
-
-        videos = self.store_videos(movie, videos_data)
+        videos = self.store_videos(movie, videos_data) or []
 
         return movie, videos
     
@@ -143,47 +145,46 @@ class MovieService(MediaService):
 
     def get_movie_discover_data(self, **kwargs):
         # Process genres
-        genre_names = kwargs.get("genre_names", [])
+        genre_names = kwargs.get("with_genres", [])
         genres = self.get_genres_from_discover(genre_names, MovieGenre)
-
+        if genres:
+            kwargs["with_genres"] = ",".join(map(str, genres))
+        
         # Process person
-        person_name = kwargs.get("person_name")
-        person_id = None
+        person_name = kwargs.get("person_name", [])
         if person_name:
             person_service = PersonService()
             person_data = person_service.fetch_person_data(person_name)
             person_id = person_service.get_person_id(person_data, person_name)
-
+            if person_id:
+                kwargs["with_people"] = person_id
+        
         # Process providers
         watch_provider_names = kwargs.get("watch_provider_names", [])
         providers = self.get_providers_from_discover(
             watch_provider_names, MovieProvider
         )
-
-        # Update kwargs with processed data
-        kwargs.update(
-            {
-                "with_genres": ",".join(map(str, genres)),
-                "with_watch_providers": ",".join(map(str, providers)),
-                "with_people": person_id,
-            }
-        )
-
-        # Remove None values from kwargs
-        kwargs = {k: v for k, v in kwargs.items() if v is not None}
+        if providers:
+            kwargs["with_watch_providers"] = ",".join(map(str, providers))
 
         return self.get_discover_data("/discover/movie", **kwargs)
 
 
 class TVSeriesService(MediaService):
+    def __init__(self, request):
+        super().__init__(request.tmdb_api)
     def fetch_tv_data_from_api(self, series_id):
         tv_data, videos_data = self.fetch_media_details_from_api("tv", series_id)
         return tv_data, videos_data
 
     def store_media_data(self, media_data):
         tv_data, videos_data = media_data
-        genres = tv_data.get("genres")
-        production_companies = tv_data.get("production_companies")
+        genres = tv_data.get("genres", [])
+        tv_genres = self.store_genres(genres, TVSeriesGenre) if genres else []
+        production_companies = tv_data.get("production_companies", [])
+        tv_production_companies = self.store_production_companies(
+            production_companies, TVSeriesProductionCompany
+        ) if production_companies else []
         tvseries, created = TVSeries.objects.get_or_create(
             series_id=tv_data.get("id", 0),
             name=tv_data.get("name", ""),
@@ -198,22 +199,21 @@ class TVSeriesService(MediaService):
             overview=tv_data.get("overview", ""),
             homepage=tv_data.get("homepage", ""),
         )
-        if genres is not None:
-            tv_genres = self.store_genres(genres, TVSeriesGenre)
+        
+        if tv_genres:
+            tvseries.genres.add(*tv_genres)
 
-        tvseries.genres.add(*tv_genres)
-
-        if production_companies is not None:
-            tv_production_companies = self.store_production_companies(production_companies, TVSeriesProductionCompany)
-
-        tvseries.production_companies.add(*tv_production_companies)
+        if tv_production_companies:
+            tvseries.production_companies.add(*tv_production_companies)
 
         tv_recommendations = self.store_recommendations(
             tvseries.series_id,
-        )
-        tvseries.recommendation.add(*tv_recommendations)
+        ) or []
 
-        videos = self.store_videos(tvseries, videos_data)
+        if tv_recommendations:
+            tvseries.recommendation.add(*tv_recommendations)
+
+        videos = self.store_videos(tvseries, videos_data) or []
 
         return tvseries, videos
     
@@ -223,7 +223,7 @@ class TVSeriesService(MediaService):
         )
         recommendations = []
         for rec_data in recommendations_data.get("results", []):
-            recommendation, created = MovieRecommendation.objects.get_or_create(
+            recommendation, created = TVSeriesRecommendation.objects.get_or_create(
                 series_id=rec_data.get("id", 0),
                 poster_path=rec_data.get("poster_path", ""),
             )

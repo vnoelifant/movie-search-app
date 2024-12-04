@@ -17,7 +17,7 @@
 <body>
   {% bootstrap_messages %}
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a class="navbar-brand" href="#">
+      <a class="navbar-brand" href="{% url 'home' %}">
         <img alt="Brand" src="{% static 'img/reel.png' %}" id="logo">
       </a>
 
@@ -25,7 +25,7 @@
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-
+      
       <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item dropdown">
@@ -43,7 +43,7 @@
 
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Browse TV Shows
+                Browse TV 
             </a>
             <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
               <li><a class="dropdown-item" href="{% url 'tv_trending_week' %}">Trending of the Week</a></li>
@@ -56,14 +56,14 @@
 
           <form action="{% url 'media_search' %}" method="get" class="d-flex">
             <select class="form-select mr-sm-2" name="type" class="mb-3">
-              <option disabled="disabled" selected="selected">Select Movie, TV, or Person</option>
+              <option disabled="disabled" selected="selected">Search Options</option>
               <option value="movie">Movies</option>
               <option value="tv">TV Shows</option>
               <option value="person">Person</option>
             </select>
 
             <select class="form-select mr-sm-2" name="choice" id="selectionChoice" class="mb-3">
-              <option disabled="disabled" selected="selected">Select Criteria</option>
+              <option disabled="disabled" selected="selected">Search Criteria</option>
               <option value="general">General Media Details</option>
               <option value="similar">Similar Media</option>
               <option value="recommendations">Recommended Media</option>

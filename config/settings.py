@@ -59,8 +59,9 @@ MIDDLEWARE = [
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",  # Ensures CSRF protection is applied
+    "django.contrib.auth.middleware.AuthenticationMiddleware",  # Ensures user is authenticated
+    "movie_search.middleware.TMDBApiMiddleware",  # Now applied after authentication and security checks
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
